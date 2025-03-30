@@ -142,6 +142,12 @@ export default function AuthenticatedLayout({ header, rightHeader, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('all-tests.index')}
+                            active={route().current('all-tests.*')}
+                        >
+                            Štandardné testy
+                        </ResponsiveNavLink>
                     </div>
 
                     <div className="border-t border-gray-200 pb-1 pt-4">

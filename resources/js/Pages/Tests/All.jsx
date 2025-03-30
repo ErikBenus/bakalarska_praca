@@ -1,9 +1,6 @@
 import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import { Link } from '@inertiajs/react';
-import { useState } from "react";
-import Dropdown from "@/Components/Dropdown.jsx";
-import BackLink from "@/Components/BackLink.jsx";
 
 export default function All({ auth }) {
 
@@ -65,4 +62,3 @@ export default function All({ auth }) {
     );
 }
 
-}
