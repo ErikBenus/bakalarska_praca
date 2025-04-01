@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/react';
 
 export default function All({ auth }) {
 
+    const firstName = auth.user.name.split(" ")[0];
 
     const testLinks = [
         { name: 'Y Balance Test', href: route('all-tests.y-balance-test') },
@@ -33,14 +34,14 @@ export default function All({ auth }) {
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
                             <p className="mb-4">
-                                V tejto sekcii nájdete zoznam štandardizovaných testov, ktoré sa používajú na hodnotenie
+                                {firstName}, v tejto sekcii nájdete zoznam štandardizovaných testov, ktoré sa používajú na hodnotenie
                                 výkonnosti klientov. Testy sú rozdelené do kategórií podľa zamerania, aby ste si mohli
                                 jednoducho vybrať ten správny. Po výbere konkrétneho testu získate podrobné informácie o
                                 jeho vykonávaní a interpretácii výsledkov.
                             </p>
 
                             <p className="mb-4 font-semibold">
-                                voľte si kategóriu:</p>
+                                Zvoľte si kategóriu:</p>
 
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                                 {testLinks.map((link) => (
