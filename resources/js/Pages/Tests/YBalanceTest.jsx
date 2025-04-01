@@ -2,7 +2,7 @@ import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import BackLink from "@/Components/BackLink.jsx"
 
-export default function All({ auth }) {
+export default function YBalanceTest({ auth }) {
 
 
     return (
@@ -84,7 +84,15 @@ export default function All({ auth }) {
                                 zníženie rizika zranení.
                             </p>
 
-                            <BackLink routeName="all-tests.index" text="štandardné testy" />
+                            <h3 className="mt-8 mb-4 text-md font-semibold">Čo ďalej?</h3>
+
+                            <p className="mb-4">
+                                Na základe výsledkov vám vieme odporučiť cielené cvičenia na zlepšenie stability a
+                                pohybovej kontroly.
+                                Ak máte akékoľvek otázky, neváhajte nás kontaktovať – radi vám poradíme!
+                            </p>
+
+                            <BackLink routeName="all-tests.index" text="štandardné testy"/>
 
                         </div>
                     </div>
