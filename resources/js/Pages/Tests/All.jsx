@@ -4,8 +4,6 @@ import { Link } from '@inertiajs/react';
 
 export default function All({ auth }) {
 
-    const firstName = auth.user.name.split(" ")[0];
-
     const testLinks = [
         { name: 'Y Balance Test', href: route('all-tests.y-balance-test') },
         { name: 'Maximálna sila', href: route('all-tests.maximal-strength') },
@@ -27,14 +25,14 @@ export default function All({ auth }) {
                 </h2>
             }
         >
-            <Head title="Y Balance Test" />
+            <Head title="Štandardné testy" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
                             <p className="mb-4">
-                                {firstName}, v tejto sekcii nájdete zoznam štandardizovaných testov, ktoré sa používajú na hodnotenie
+                                {auth.user.first_name}, v tejto sekcii nájdete zoznam štandardizovaných testov, ktoré sa používajú na hodnotenie
                                 výkonnosti klientov. Testy sú rozdelené do kategórií podľa zamerania, aby ste si mohli
                                 jednoducho vybrať ten správny. Po výbere konkrétneho testu získate podrobné informácie o
                                 jeho vykonávaní a interpretácii výsledkov.

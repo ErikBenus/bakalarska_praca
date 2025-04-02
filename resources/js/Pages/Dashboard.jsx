@@ -1,14 +1,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import {Head, Link} from '@inertiajs/react';
+import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 
 export default function Dashboard(auth) {
+
     return (
         <AuthenticatedLayout
             user={auth.user}
+
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     Prehľad
                 </h2>
+            }
+            rightHeader={
+                <CreateTestingButton user={auth.user} />
             }
         >
             <Head title="Prehľad" />

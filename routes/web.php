@@ -4,6 +4,7 @@ use App\Http\Controllers\AllTestsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -35,6 +36,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/all-tests-jump-profile', [AllTestsController::class, 'jumpProfile'])->name('all-tests.jump-profile');
     Route::get('/all-tests-mobility-flexibility', [AllTestsController::class, 'mobilityFlexibility'])->name('all-tests.mobility-flexibility');
     Route::get('/all-tests-easy-force', [AllTestsController::class, 'easyForce'])->name('all-tests.easy-force');
+});
+
+
+Route::middleware('auth')->get('/user-permissions', function (Request $request) {
+    return response()->json([
+        'roles' => $request->user()->roles->pluck('name'),
+        'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+    ]);
 });
 
 require __DIR__.'/auth.php';
