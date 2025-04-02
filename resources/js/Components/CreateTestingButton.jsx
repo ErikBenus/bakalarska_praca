@@ -15,7 +15,7 @@ function CreateTestingButton({ user }) {
     if (permissions.includes("edit articles")) {
         return (
             <Link
-                href={route('all-tests.index')}
+                href={route('clients.index')}
                 className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
             >
                 Vytvoriť Testovanie

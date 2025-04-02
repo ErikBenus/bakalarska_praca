@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AllTestsController;
+use App\Http\Controllers\ManageClientsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/all-tests-jump-profile', [AllTestsController::class, 'jumpProfile'])->name('all-tests.jump-profile');
     Route::get('/all-tests-mobility-flexibility', [AllTestsController::class, 'mobilityFlexibility'])->name('all-tests.mobility-flexibility');
     Route::get('/all-tests-easy-force', [AllTestsController::class, 'easyForce'])->name('all-tests.easy-force');
+
+    Route::get('/all-clients', [ManageClientsController::class, 'index'])->name('clients.index');
+    Route::post('/api/all-clients', [ManageClientsController::class, 'store']);
 });
 
 
@@ -45,5 +49,6 @@ Route::middleware('auth')->get('/user-permissions', function (Request $request) 
         'permissions' => $request->user()->getAllPermissions()->pluck('name'),
     ]);
 });
+
 
 require __DIR__.'/auth.php';
