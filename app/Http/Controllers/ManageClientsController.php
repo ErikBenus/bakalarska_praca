@@ -79,7 +79,6 @@ class ManageClientsController extends Controller
             DB::rollback();
             return response()->json([
                 'message' => 'Chyba pri pridávaní klienta',
-                'error' => 'Podrobnosti o chybe sú srkyté.'
             ], 500);
 
         }

@@ -3,6 +3,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddClientForm from '@/Components/AddClientForm.jsx';
+import {usePermissions} from "@/Components/UsePermissions.jsx";
 
 export default function ClientsIndex({ clients }) {
     const { auth } = usePage().props;
@@ -32,15 +33,13 @@ export default function ClientsIndex({ clients }) {
                     for (const field in errorMessages) {
                         errorMessage += `${field}: ${errorMessages[field].join(', ')}\n`;
                     }
-                    alert(errorMessage); // Zobrazí konkrétne chyby
+                    alert(errorMessage);
                 } else {
                     console.error('Chyba pri pridávaní klienta:', error);
                     alert('Chyba pri pridávaní klienta!');
                 }
             });
     };
-
-
 
 
 
@@ -51,7 +50,9 @@ export default function ClientsIndex({ clients }) {
             .catch((error) => console.error('Chyba pri načítaní oprávnení', error));
     }, []);
 
-    if (permissions.includes('edit articles')) {
+    const { can } = usePermissions();
+
+    if (can('edit articles')) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Správa klientov</h2>}>
                 <Head title="Klienti" />

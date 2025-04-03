@@ -1,18 +1,10 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
-import { useEffect, useState } from "react";
-import axios from "axios";
+import {usePermissions} from "@/Components/UsePermissions.jsx";
 function CreateTestingButton({ user }) {
-        const [permissions, setPermissions] = useState([]);
+    const { can } = usePermissions();
 
-        useEffect(() => {
-            axios.get("/user-permissions")
-                .then(response => setPermissions(response.data.permissions))
-                .catch(error => console.error("Chyba pri načítaní oprávnení", error));
-        }, []);
-
-
-    if (permissions.includes("edit articles")) {
+    if (can("edit articles")) {
         return (
             <Link
                 href={route('clients.index')}

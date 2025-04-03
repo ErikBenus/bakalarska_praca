@@ -28,19 +28,11 @@ const AddClientForm = ({ onSave, onCancel }) => {
         axios.post('/api/all-clients', newClient)
             .then(response => {
                 toast.success('Klient úspešne pridaný!');
-                window.location.reload(); // Obnovíme stránku po úspechu
+                window.location.reload();
             })
             .catch(error => {
-                if (error.response && error.response.status === 422) {
-                    const errorMessages = error.response.data.errors;
-                    let errorMessage = '';
-                    for (const field in errorMessages) {
-                        errorMessage += `${field}: ${errorMessages[field].join(', ')}\n`;
-                    }
-                    toast.error(`Chyba: \n${errorMessage}`);
-                } else {
+                if (error.response && error.response.status === 422)
                     toast.error('Chyba pri pridávaní klienta!');
-                }
             });
     };
 
@@ -98,7 +90,7 @@ const AddClientForm = ({ onSave, onCancel }) => {
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 >
-                    <option value="">Dominantná ruka</option>
+                    <option value="">Dominantná ruka (voliteľné)</option>
                     <option value="pravá">Pravá</option>
                     <option value="ľavá">Ľavá</option>
                 </select>
@@ -108,14 +100,14 @@ const AddClientForm = ({ onSave, onCancel }) => {
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 >
-                    <option value="">Dominantná noha</option>
+                    <option value="">Dominantná noha (voliteľné)</option>
                     <option value="pravá">Pravá</option>
                     <option value="ľavá">Ľavá</option>
                 </select>
                 <input
                     type="text"
                     name="sport"
-                    placeholder="Šport"
+                    placeholder="Šport (voliteľné)"
                     value={newClient.sport}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
@@ -123,7 +115,7 @@ const AddClientForm = ({ onSave, onCancel }) => {
                 <input
                     type="number"
                     name="weight"
-                    placeholder="Váha (kg)"
+                    placeholder="Váha (kg) (voliteľné)"
                     value={newClient.weight}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
@@ -131,7 +123,7 @@ const AddClientForm = ({ onSave, onCancel }) => {
                 <input
                     type="number"
                     name="height"
-                    placeholder="Výška (cm)"
+                    placeholder="Výška (cm) (voliteľné)"
                     value={newClient.height}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
@@ -139,7 +131,7 @@ const AddClientForm = ({ onSave, onCancel }) => {
                 <input
                     type="number"
                     name="body_fat_percent"
-                    placeholder="Percento tuku"
+                    placeholder="Percento tuku (voliteľné)"
                     value={newClient.body_fat_percent}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
@@ -147,7 +139,7 @@ const AddClientForm = ({ onSave, onCancel }) => {
                 <input
                     type="number"
                     name="muscle_mass"
-                    placeholder="Svalová hmota"
+                    placeholder="Svalová hmota (voliteľné)"
                     value={newClient.muscle_mass}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
@@ -155,7 +147,7 @@ const AddClientForm = ({ onSave, onCancel }) => {
                 <input
                     type="number"
                     name="bmi"
-                    placeholder="BMI"
+                    placeholder="BMI (voliteľné)"
                     value={newClient.bmi}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
