@@ -9,6 +9,7 @@ class TestingLimb extends Model
 {
     use HasFactory;
 
+    protected $table = 'testing_limb';
     protected $fillable = [
         'name'
     ];

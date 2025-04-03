@@ -9,6 +9,7 @@ class YBalanceTest extends Model
 {
     use HasFactory;
 
+    protected $table = 'y_balance_test';
     protected $fillable = [
         'client_id',
         'name',

@@ -9,6 +9,8 @@ class MaxPowerTest extends Model
 {
     use HasFactory;
 
+    protected $table = 'max_power_test';
+
     protected $fillable = [
         'client_id',
         'exercise_name'

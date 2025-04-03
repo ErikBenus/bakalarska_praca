@@ -98,7 +98,7 @@ const EasyForceResults = () => {
                                 {testValues[test.id].map(value => (
                                     <tr key={value.id}>
                                         <td className="px-6 py-4 whitespace-nowrap">{value.attempt || '-'}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.id_limb}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{value.limb_name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{value.value}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{calculateMax(testValues[test.id], value.id_limb)}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{calculateMaxDifference(testValues[test.id])}</td>
