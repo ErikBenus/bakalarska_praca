@@ -1,0 +1,20 @@
+<?php
+
+use App\Http\Controllers\ManageClientsController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Tests\EasyForceController;
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+Route::prefix('/api')->group(function () {
+    Route::post('/all-clients', [ManageClientsController::class, 'store']);
+    Route::get('/all-clients/{id}/edit', [ManageClientsController::class, 'edit']);
+    Route::put('/all-clients/{id}', [ManageClientsController::class, 'update']);
+    Route::delete('/all-clients/{id}', [ManageClientsController::class, 'destroy']);
+
+    Route::get('/easy-force', [EasyForceController::class, 'index']);
+    Route::get('/easy-force/{testId}', [EasyForceController::class, 'show']);
+});

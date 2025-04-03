@@ -4,16 +4,46 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddClientForm from '@/Components/AddClientForm.jsx';
 import {usePermissions} from "@/Components/UsePermissions.jsx";
+import {toast, ToastContainer} from "react-toastify";
+
 
 export default function ClientsIndex({ clients }) {
     const [filter, setFilter] = useState('');
     const [showAddClientForm, setShowAddClientForm] = useState(false);
-
+    const [clientId, setClientId] = useState(null);
+    const [clientData, setClientData] = useState(null);
     const openModal = () => {
         setShowAddClientForm(!showAddClientForm);
     };
     const closeModal = () => setShowAddClientForm(false);
     const { can } = usePermissions();
+
+    const handleEdit = (id) => {
+        axios.get(`/api/all-clients/${id}/edit`)
+            .then(response => {
+                setClientData(response.data);
+                setClientId(id);
+                setShowAddClientForm(true);
+            })
+            .catch(error => {
+                console.error("Chyba pri načítaní údajov klienta:", error);
+                toast.error('Chyba pri načítaní údajov klienta!');
+            });
+    };
+
+    const handleDelete = (id) => {
+        if (window.confirm("Naozaj chcete odstrániť tohto klienta?")) {
+            axios.delete(`/api/all-clients/${id}`)
+                .then(() => {
+                    toast.success('Klient úspešne odstránený!');
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error("Chyba pri odstraňovaní klienta:", error);
+                    toast.error('Chyba pri odstraňovaní klienta!');
+                });
+        }
+    };
 
     if (can('edit articles')) {
         return (
@@ -35,7 +65,11 @@ export default function ClientsIndex({ clients }) {
                             <tr className="bg-gray-50">
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Meno</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Akcie</th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pridať
+                                    test
+                                </th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Edit</th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Zmazať</th>
                             </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -45,17 +79,33 @@ export default function ClientsIndex({ clients }) {
                                 )
                                 .map((client) => (
                                     <tr key={client.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {client.first_name} {client.last_name}
-                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{client.first_name} {client.last_name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{client.email}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+
+
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">
                                             <Link
                                                 href={`/clients/${client.id}/add-test`}
-                                                className="px-3 py-1 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                                                className="px-3 py-1 text-sm text-white bg-green-600 rounded-md hover:bg-green-700"
                                             >
                                                 Pridať test
                                             </Link>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                                            <button
+                                                onClick={() => handleEdit(client.id)}
+                                                className="px-3 py-1 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                                            >
+                                                Editovať
+                                            </button>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                                            <button
+                                                onClick={() => handleDelete(client.id)}
+                                                className="px-3 py-1 text-sm text-white bg-red-600 rounded-md hover:bg-red-700"
+                                            >
+                                                Zmazať
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -72,8 +122,9 @@ export default function ClientsIndex({ clients }) {
                         </div>
 
                         {showAddClientForm && (
-                            <AddClientForm onCancel={closeModal}/>
+                            <AddClientForm onCancel={closeModal} clientId={clientId} clientData={clientData} setClientId={setClientId}/>
                         )}
+                        <ToastContainer />
                     </div>
                 </div>
             </AuthenticatedLayout>

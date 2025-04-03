@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const AddClientForm = ({ onCancel }) => {
+const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
     const [newClient, setNewClient] = useState({
         first_name: '',
         last_name: '',
@@ -19,23 +19,36 @@ const AddClientForm = ({ onCancel }) => {
         bmi: '',
     });
 
+    useEffect(() => {
+        if (clientData) {
+            setNewClient(clientData);
+        }
+    }, [clientData]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewClient({ ...newClient, [name]: value });
     };
 
     const handleSave = () => {
-        axios.post('/api/all-clients', newClient)
+        const url = clientId ? `/api/all-clients/${clientId}` : '/api/all-clients';
+        const method = clientId ? 'put' : 'post';
+
+        axios({
+            method: method,
+            url: url,
+            data: newClient,
+        })
             .then(response => {
-                toast.success('Klient úspešne pridaný!');
+                toast.success(clientId ? 'Klient úspešne aktualizovaný!' : 'Klient úspešne pridaný!');
                 window.location.reload();
             })
             .catch(error => {
-                if (error.response && error.response.status === 422)
-                    toast.error('Chyba pri pridávaní klienta!');
+                if (error.response && error.response.status === 422) {
+                    toast.error(clientId ? 'Chyba pri aktualizácii klienta!' : 'Chyba pri pridávaní klienta!');
+                }
             });
     };
-
 
 
     return (

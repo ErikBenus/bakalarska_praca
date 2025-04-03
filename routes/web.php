@@ -21,7 +21,6 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/all-tests', [AllTestsController::class, 'index'])->name('all-tests.index');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -39,16 +38,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/all-tests-easy-force', [AllTestsController::class, 'easyForce'])->name('all-tests.easy-force');
 
     Route::get('/all-clients', [ManageClientsController::class, 'index'])->name('clients.index');
-    Route::post('/api/all-clients', [ManageClientsController::class, 'store']);
+
+    Route::get('/user-permissions', function (Request $request) {
+        return response()->json([
+            'roles' => $request->user()->roles->pluck('name'),
+            'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+        ]);
+    });
 });
 
-
-Route::middleware('auth')->get('/user-permissions', function (Request $request) {
-    return response()->json([
-        'roles' => $request->user()->roles->pluck('name'),
-        'permissions' => $request->user()->getAllPermissions()->pluck('name'),
-    ]);
-});
-
-
+require __DIR__.'/api.php';
 require __DIR__.'/auth.php';
