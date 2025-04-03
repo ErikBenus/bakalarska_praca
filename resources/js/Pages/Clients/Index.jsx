@@ -13,16 +13,6 @@ export default function ClientsIndex({ clients }) {
         setShowAddClientForm(!showAddClientForm);
     };
     const closeModal = () => setShowAddClientForm(false);
-
-
-
-    useEffect(() => {
-        axios
-            .get('/user-permissions')
-            .then((response) => setPermissions(response.data.permissions))
-            .catch((error) => console.error('Chyba pri načítaní oprávnení', error));
-    }, []);
-
     const { can } = usePermissions();
 
     if (can('edit articles')) {
