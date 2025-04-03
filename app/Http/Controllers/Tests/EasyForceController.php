@@ -14,9 +14,9 @@ class EasyForceController extends Controller
 
     public function index()
     {
+
         try {
             $userId = auth()->user()->id;
-
             $tests = Test::where('category', 'Easy Force')
                 ->where('client_id', $userId)
                 ->get();

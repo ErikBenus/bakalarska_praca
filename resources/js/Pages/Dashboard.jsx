@@ -3,12 +3,13 @@ import {Head, Link} from '@inertiajs/react';
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import {usePermissions} from "@/Components/UsePermissions.jsx";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
+import ResultsTestContainer from "@/Components/ResultsTestContainer.jsx";
 
 export default function Dashboard(auth) {
 
     const { can } = usePermissions();
 
-    if (can('see client dashboard')) {
+    if (can('see trainer dashboard')) {
         return (
             <AuthenticatedLayout
                 user={auth.user}
@@ -37,7 +38,7 @@ export default function Dashboard(auth) {
         );
     }
 
-    if (can('see trainer dashboard')) {
+    if (can('see client dashboard')) {
         return (
             <AuthenticatedLayout
                 user={auth.user}
@@ -58,8 +59,7 @@ export default function Dashboard(auth) {
                                     Vitaje, vo svojom prehľade testovaní!
                                 </h2>
                                 <p className="mb-4">Tu sú vaše testy, ktoré ste vykonali:</p>
-
-                                <EasyForceResults />
+                                <ResultsTestContainer title="Easy Force" component={EasyForceResults} />
                             </div>
                         </div>
                     </div>

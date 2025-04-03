@@ -9,6 +9,8 @@ class ValueLimb extends Model
 {
     use HasFactory;
 
+    protected $table = 'value_limb';
+
     protected $fillable = [
         'test_id',
         'id_limb',
