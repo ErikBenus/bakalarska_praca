@@ -6,8 +6,6 @@ import AddClientForm from '@/Components/AddClientForm.jsx';
 import {usePermissions} from "@/Components/UsePermissions.jsx";
 
 export default function ClientsIndex({ clients }) {
-    const { auth } = usePage().props;
-    const [permissions, setPermissions] = useState([]);
     const [filter, setFilter] = useState('');
     const [showAddClientForm, setShowAddClientForm] = useState(false);
 
@@ -15,31 +13,6 @@ export default function ClientsIndex({ clients }) {
         setShowAddClientForm(!showAddClientForm);
     };
     const closeModal = () => setShowAddClientForm(false);
-
-    const handleSaveClient = (newClient) => {
-        axios.post('/api/all-clients', newClient)
-            .then(response => {
-                if (response.status === 201) {
-                    alert('Klient úspešne pridaný!');
-                    window.location.reload();
-                } else {
-                    alert('Chyba pri pridávaní klienta!');
-                }
-            })
-            .catch(error => {
-                if (error.response && error.response.status === 422) {
-                    const errorMessages = error.response.data.errors;
-                    let errorMessage = '';
-                    for (const field in errorMessages) {
-                        errorMessage += `${field}: ${errorMessages[field].join(', ')}\n`;
-                    }
-                    alert(errorMessage);
-                } else {
-                    console.error('Chyba pri pridávaní klienta:', error);
-                    alert('Chyba pri pridávaní klienta!');
-                }
-            });
-    };
 
 
 
@@ -109,7 +82,7 @@ export default function ClientsIndex({ clients }) {
                         </div>
 
                         {showAddClientForm && (
-                            <AddClientForm onSave={handleSaveClient} onCancel={closeModal}/>
+                            <AddClientForm onCancel={closeModal}/>
                         )}
                     </div>
                 </div>
