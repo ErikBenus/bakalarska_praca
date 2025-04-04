@@ -45,6 +45,9 @@ Route::middleware('auth')->group(function () {
             'permissions' => $request->user()->getAllPermissions()->pluck('name'),
         ]);
     });
+
+    Route::get('/clients/{clientId}', [ManageClientsController::class, 'show']);
+
 });
 
 require __DIR__.'/api.php';

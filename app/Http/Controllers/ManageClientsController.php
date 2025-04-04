@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientsData;
+use App\Models\Test;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -174,5 +175,21 @@ class ManageClientsController extends Controller
             return response()->json(['message' => 'Chyba pri odstraňovaní klienta'], 500);
         }
     }
+
+    public function show($clientId)
+    {
+        $client = User::find($clientId);
+        $tests = Test::where('client_id', $clientId)->get();
+
+        return Inertia::render('Clients/ClientDetails', [
+            'client' => $client,
+            'tests' => $tests,
+            'clientId' => $clientId,
+        ]);
+    }
+
+
+
+
 }
 

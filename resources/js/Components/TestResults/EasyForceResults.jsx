@@ -6,7 +6,7 @@ import { ClipLoader } from 'react-spinners'; // Import spinnera
 const EasyForceResults = () => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
-    const [loading, setLoading] = useState(true); // Stav načítavania pre všetky testy
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         axios.get('/api/easy-force')
@@ -28,12 +28,12 @@ const EasyForceResults = () => {
                 );
 
                 Promise.all(promises).then(() => {
-                    setLoading(false); // Nastavíme načítavanie na false po načítaní všetkých dát
+                    setLoading(false);
                 });
             })
             .catch(error => {
                 console.error("Chyba pri načítaní testov:", error);
-                setLoading(false); // Nastavíme načítavanie na false aj pri chybe
+                setLoading(false);
             });
     }, []);
 
@@ -69,7 +69,7 @@ const EasyForceResults = () => {
             return '-';
         }
 
-        return (100 - (maxLimb3 / maxLimb4 * 100)).toFixed(2) + '%'; // Upravený vzorec
+        return (100 - (maxLimb3 / maxLimb4 * 100)).toFixed(2) + '%';
     };
 
     return (

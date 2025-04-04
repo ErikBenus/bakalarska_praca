@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ManageClientsController;
+use App\Models\Test;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Tests\EasyForceController;
@@ -17,4 +19,7 @@ Route::prefix('/api')->group(function () {
 
     Route::get('/easy-force', [EasyForceController::class, 'index']);
     Route::get('/easy-force/{testId}', [EasyForceController::class, 'show']);
+    Route::post('/easy-force', [EasyForceController::class, 'store']);
+
 });
+

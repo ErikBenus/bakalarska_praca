@@ -84,12 +84,10 @@ export default function ClientsIndex({ clients }) {
 
 
                                         <td className="px-6 py-4 whitespace-nowrap text-center">
-                                            <Link
-                                                href={`/clients/${client.id}/add-test`}
-                                                className="px-3 py-1 text-sm text-white bg-green-600 rounded-md hover:bg-green-700"
-                                            >
-                                                Pridať test
+                                            <Link href={`/clients/${client.id}`} className="text-blue-600 hover:text-blue-800">
+                                                Zobraziť detaily
                                             </Link>
+
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-center">
                                             <button

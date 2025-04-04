@@ -7,7 +7,6 @@ use App\Models\Test;
 use App\Models\TestingLimb;
 use App\Models\ValueLimb;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class EasyForceController extends Controller
 {
@@ -29,12 +28,11 @@ class EasyForceController extends Controller
         }
     }
 
-    // EasyForceController.php
 
     public function show($testId)
     {
         $values = ValueLimb::where('test_id', $testId)
-            ->with('limb') // Načítame vzťah s tabuľkou testing_limb
+            ->with('limb')
             ->get();
 
         return response()->json($values->map(function ($value) {
@@ -52,5 +50,33 @@ class EasyForceController extends Controller
                 'updated_at' => $value->updated_at,
             ];
         }));
+    }
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'client_id' => 'required|exists:users,id',
+            'created_at' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $test = new Test();
+            $test->client_id = $request->input('client_id');
+            $test->category = 'Easy Force';
+            $test->name = $request->input('name');
+            $test->description = $request->input('description');
+            $test->created_at = $request->input('created_at');
+            $test->updated_at = now();
+            $test->save();
+
+            return response()->json(['message' => 'Test vytvorený úspešne', 'test' => $test]);
+        } catch (\Exception $e) {
+            \Log::error('Chyba v EasyForceController@store: ' . $e->getMessage());
+            return response()->json(['error' => 'Server error'], 500);
+        }
     }
 }
