@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientsDataController;
 use App\Http\Controllers\ManageClientsController;
 use App\Models\Test;
 use App\Models\User;
@@ -20,6 +21,9 @@ Route::prefix('/api')->group(function () {
     Route::get('/easy-force', [EasyForceController::class, 'index']);
     Route::get('/easy-force/{testId}', [EasyForceController::class, 'show']);
     Route::post('/easy-force', [EasyForceController::class, 'store']);
+
+    Route::get('/clients/{clientId}/data', [ClientsDataController::class, 'show']);
+
 
 });
 

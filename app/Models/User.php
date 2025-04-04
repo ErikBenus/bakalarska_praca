@@ -28,6 +28,7 @@ class User extends Authenticatable
         'birth_date',
         'gender',
         'dominant_hand',
+        'dominant_leg',
         'email',
         'password',
     ];

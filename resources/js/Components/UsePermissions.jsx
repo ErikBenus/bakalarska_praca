@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export function usePermissions() {
-    const [permissions, setPermissions] = useState(null); // Netreba určovať string[] | null
+    const [permissions, setPermissions] = useState(null);
 
     useEffect(() => {
         axios

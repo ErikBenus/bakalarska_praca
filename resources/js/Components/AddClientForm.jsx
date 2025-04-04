@@ -7,6 +7,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
     const [newClient, setNewClient] = useState({
         first_name: '',
         last_name: '',
+        email: '',
         birth_date: '',
         gender: '',
         dominant_hand: '',
@@ -18,6 +19,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
         muscle_mass: '',
         bmi: '',
     });
+
 
     useEffect(() => {
         if (clientData) {
@@ -33,7 +35,6 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
     const handleSave = () => {
         const url = clientId ? `/api/all-clients/${clientId}` : '/api/all-clients';
         const method = clientId ? 'put' : 'post';
-
         axios({
             method: method,
             url: url,
@@ -59,7 +60,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="text"
                     name="first_name"
                     placeholder="Meno"
-                    value={newClient.first_name}
+                    value={newClient.first_name || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -67,7 +68,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="text"
                     name="last_name"
                     placeholder="Priezvisko"
-                    value={newClient.last_name}
+                    value={newClient.last_name || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -75,7 +76,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="email"
                     name="email"
                     placeholder="Email"
-                    value={newClient.email}
+                    value={newClient.email || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -83,23 +84,23 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="date"
                     name="birth_date"
                     placeholder="Dátum narodenia"
-                    value={newClient.birth_date}
+                    value={newClient.birth_date || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
                 <select
                     name="gender"
-                    value={newClient.gender}
+                    value={newClient.gender || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 >
                     <option value="">Pohlavie</option>
-                    <option value="male">Muž</option>
-                    <option value="female">Žena</option>
+                    <option value="Muž">Muž</option>
+                    <option value="Žena">Žena</option>
                 </select>
                 <select
                     name="dominant_hand"
-                    value={newClient.dominant_hand}
+                    value={newClient.dominant_hand || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 >
@@ -109,7 +110,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                 </select>
                 <select
                     name="dominant_leg"
-                    value={newClient.dominant_leg}
+                    value={newClient.dominant_leg || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 >
@@ -121,7 +122,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="text"
                     name="sport"
                     placeholder="Šport (voliteľné)"
-                    value={newClient.sport}
+                    value={newClient.sport || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -129,7 +130,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="number"
                     name="weight"
                     placeholder="Váha (kg) (voliteľné)"
-                    value={newClient.weight}
+                    value={newClient.weight || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -137,7 +138,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="number"
                     name="height"
                     placeholder="Výška (cm) (voliteľné)"
-                    value={newClient.height}
+                    value={newClient.height || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -145,7 +146,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="number"
                     name="body_fat_percent"
                     placeholder="Percento tuku (voliteľné)"
-                    value={newClient.body_fat_percent}
+                    value={newClient.body_fat_percent || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -153,7 +154,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="number"
                     name="muscle_mass"
                     placeholder="Svalová hmota (voliteľné)"
-                    value={newClient.muscle_mass}
+                    value={newClient.muscle_mass || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -161,7 +162,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     type="number"
                     name="bmi"
                     placeholder="BMI (voliteľné)"
-                    value={newClient.bmi}
+                    value={newClient.bmi || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />

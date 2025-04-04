@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ResultsTestContainer = ({ title, component: Component }) => {
+const ResultsTestContainer = ({ title, component: Component, parameters }) => {
     const [showComponent, setShowComponent] = useState(false);
 
     const toggleComponent = () => {
@@ -20,7 +20,7 @@ const ResultsTestContainer = ({ title, component: Component }) => {
                             {showComponent ? 'Skryť výsledky ↑' : 'Zobraziť výsledky ↓'}
                         </p>
 
-                        {showComponent && <Component/>}
+                        {showComponent && <Component {...parameters} />}
                     </div>
                 </div>
             </div>

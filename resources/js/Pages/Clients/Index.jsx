@@ -18,10 +18,17 @@ export default function ClientsIndex({ clients }) {
     const closeModal = () => setShowAddClientForm(false);
     const { can } = usePermissions();
 
+
     const handleEdit = (id) => {
         axios.get(`/api/all-clients/${id}/edit`)
             .then(response => {
-                setClientData(response.data);
+                const user = response.data;
+                const mergedData = {
+                    ...user,
+                    ...user.clients_data
+                };
+                delete mergedData.clients_data;
+                setClientData(mergedData);
                 setClientId(id);
                 setShowAddClientForm(true);
             })
@@ -65,8 +72,7 @@ export default function ClientsIndex({ clients }) {
                             <tr className="bg-gray-50">
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Meno</th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pridať
-                                    test
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Detail
                                 </th>
                                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Edit</th>
                                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Zmazať</th>

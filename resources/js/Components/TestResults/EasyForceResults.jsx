@@ -3,19 +3,19 @@ import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import { ClipLoader } from 'react-spinners'; // Import spinnera
 
-const EasyForceResults = () => {
+const EasyForceResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('/api/easy-force')
+        axios.get(`/api/easy-force?client_id=${clientId}`) // Použitie clientId v query parametri
             .then(response => {
-                console.log("Dáta z /api/easy-force:", response.data);
+                console.log(`Dáta z /api/easy-force pre klienta ${clientId}:`, response.data);
                 setTests(response.data);
 
                 const promises = response.data.map(test =>
-                    axios.get(`/api/easy-force/${test.id}`)
+                    axios.get(`/api/easy-force/${test.id}?client_id=${clientId}`) // Použitie clientId v query parametri
                         .then(response => {
                             setTestValues(prevValues => ({
                                 ...prevValues,
@@ -23,7 +23,7 @@ const EasyForceResults = () => {
                             }));
                         })
                         .catch(error => {
-                            console.error("Chyba pri načítaní hodnôt testu:", error);
+                            console.error(`Chyba pri načítaní hodnôt testu ${test.id} pre klienta ${clientId}:`, error);
                         })
                 );
 
@@ -32,10 +32,10 @@ const EasyForceResults = () => {
                 });
             })
             .catch(error => {
-                console.error("Chyba pri načítaní testov:", error);
+                console.error(`Chyba pri načítaní testov pre klienta ${clientId}:`, error);
                 setLoading(false);
             });
-    }, []);
+    }, [clientId]); // clientId ako závislosť useEffect
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);

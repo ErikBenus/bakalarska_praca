@@ -1,13 +1,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {Head, Link} from '@inertiajs/react';
+import {Head, Link, usePage} from '@inertiajs/react';
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import {usePermissions} from "@/Components/UsePermissions.jsx";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
 import ResultsTestContainer from "@/Components/ResultsTestContainer.jsx";
 
-export default function Dashboard(auth) {
+export default function Dashboard() {
 
     const { can } = usePermissions();
+    const { auth } = usePage().props;
 
     if (can('see trainer dashboard')) {
         return (
@@ -59,7 +60,9 @@ export default function Dashboard(auth) {
                                     Vitaje, vo svojom prehľade testovaní!
                                 </h2>
                                 <p className="mb-4">Tu sú vaše testy, ktoré ste vykonali:</p>
-                                <ResultsTestContainer title="Easy Force" component={EasyForceResults} />
+                                <ResultsTestContainer title="Easy Force"
+                                                      component={EasyForceResults}
+                                                      parameters={{ clientId: auth.user.id}}/>
                             </div>
                         </div>
                     </div>

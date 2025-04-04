@@ -12,13 +12,13 @@ class EasyForceController extends Controller
 {
 
 
-    public function index()
+    public function index(Request $request)
     {
+        $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov
 
         try {
-            $userId = auth()->user()->id;
             $tests = Test::where('category', 'Easy Force')
-                ->where('client_id', $userId)
+                ->where('client_id', $clientId)
                 ->get();
 
             return response()->json($tests);
@@ -28,10 +28,14 @@ class EasyForceController extends Controller
         }
     }
 
-
-    public function show($testId)
+    public function show($testId, Request $request)
     {
+        $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov
+
         $values = ValueLimb::where('test_id', $testId)
+            ->whereHas('test', function ($query) use ($clientId) {
+                $query->where('client_id', $clientId);
+            })
             ->with('limb')
             ->get();
 

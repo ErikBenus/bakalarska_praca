@@ -133,6 +133,7 @@ class ManageClientsController extends Controller
                 'dominant_leg' => $request->dominant_leg,
             ]);
 
+
             ClientsData::updateOrCreate(
                 ['client_id' => $user->id],
                 [
