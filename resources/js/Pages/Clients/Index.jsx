@@ -7,6 +7,7 @@ import {usePermissions} from "@/Components/UsePermissions.jsx";
 import {toast, ToastContainer} from "react-toastify";
 
 
+
 export default function ClientsIndex({ clients }) {
     const [filter, setFilter] = useState('');
     const [showAddClientForm, setShowAddClientForm] = useState(false);
@@ -126,7 +127,8 @@ export default function ClientsIndex({ clients }) {
                         </div>
 
                         {showAddClientForm && (
-                            <AddClientForm onCancel={closeModal} clientId={clientId} clientData={clientData} setClientId={setClientId}/>
+                            <AddClientForm isOpen={showAddClientForm}
+                                           onRequestClose={closeModal} clientId={clientId} clientData={clientData}/>
                         )}
                         <ToastContainer />
                     </div>

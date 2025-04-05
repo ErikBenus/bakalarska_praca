@@ -3,22 +3,24 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
 import ResultsTestContainer from "@/Components/ResultsTestContainer.jsx";
+import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
+import ClientHeader from "@/Components/ClientHeader.jsx";
 
 export default function ClientDetails({ client, tests, clientId }) {
-     const [clientData, setClientData] = useState(null);
+    const [clientData, setClientData] = useState(null);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('sk-SK');
     };
 
-    const calculateAge = (dateOfBirthString) => {
-        const today = new Date();
+    const calculateAge = (dateOfBirthString, DateOfTesting) => {
+        const testingDate = new Date(DateOfTesting)
         const birthDate = new Date(dateOfBirthString);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const month = today.getMonth() - birthDate.getMonth();
+        let age = testingDate.getFullYear() - birthDate.getFullYear();
+        const month = testingDate.getMonth() - birthDate.getMonth();
 
-        if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+        if (month < 0 || (month === 0 && testingDate.getDate() < birthDate.getDate())) {
             age--;
         }
 
@@ -37,7 +39,8 @@ export default function ClientDetails({ client, tests, clientId }) {
 
     if (!client) {
         return (
-            <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Klient nenájdený</h2>}>
+            <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Klient nenájdený</h2>}
+            rightHeader={<CreateTestingButton/>}>
                 <Head title="Klient nenájdený" />
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -49,7 +52,11 @@ export default function ClientDetails({ client, tests, clientId }) {
     }
 
     return (
-        <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">{client.first_name} {client.last_name}</h2>}>
+        <AuthenticatedLayout
+            header={
+                <ClientHeader client={client}/>
+        }
+            rightHeader={<CreateTestingButton/>}>
             <Head title={`${client.first_name} ${client.last_name}`} />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
@@ -107,7 +114,7 @@ export default function ClientDetails({ client, tests, clientId }) {
                                     {client.birth_date && (
                                         <div className="flex items-center mb-2">
                                             <strong className="mr-2">Vek:</strong>
-                                            <span>{calculateAge(client.birth_date)}</span>
+                                            <span>{calculateAge(client.birth_date, client.created_at)}</span>
                                         </div>
                                     )}
                                 </>
@@ -120,17 +127,6 @@ export default function ClientDetails({ client, tests, clientId }) {
                         component={EasyForceResults}
                         parameters={{clientId: client.id}}
                     />
-
-                    <div className="mt-6 flex justify-end">
-                        <Link href={`/clients/${clientId}/add-standardized-test`}
-                              className="px-3 py-1 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 mr-2">
-                            Pridať štandardizovaný test
-                        </Link>
-                        <Link href={`/clients/${clientId}/create-test`}
-                              className="px-3 py-1 text-sm text-white bg-green-600 rounded-md hover:bg-green-700">
-                            Vytvoriť test
-                        </Link>
-                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

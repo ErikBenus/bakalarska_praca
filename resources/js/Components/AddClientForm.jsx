@@ -2,12 +2,14 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Modal from 'react-modal';
 
-const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
+const AddClientForm = ({ isOpen, onRequestClose, clientId, clientData }) => {
     const [newClient, setNewClient] = useState({
         first_name: '',
         last_name: '',
         email: '',
+        phone_number: '',
         birth_date: '',
         gender: '',
         dominant_hand: '',
@@ -42,6 +44,7 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
         })
             .then(response => {
                 toast.success(clientId ? 'Klient úspešne aktualizovaný!' : 'Klient úspešne pridaný!');
+                onRequestClose(); // Zatvoríme modálne okno po úspešnom uložení
                 window.location.reload();
             })
             .catch(error => {
@@ -53,7 +56,12 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
 
 
     return (
-        <div className="bg-white p-6 rounded-md shadow-md">
+        <Modal
+            isOpen={isOpen}
+            onRequestClose={onRequestClose}
+            contentLabel="Pridať klienta"
+            className="bg-white p-6 rounded-md shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <h3 className="text-lg leading-6 font-medium text-gray-900">Pridať klienta</h3>
             <div className="mt-2">
                 <input
@@ -77,6 +85,14 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                     name="email"
                     placeholder="Email"
                     value={newClient.email || ""}
+                    onChange={handleInputChange}
+                    className="border border-gray-300 rounded-md p-2 mb-2 w-full"
+                />
+                <input
+                    type="phone"
+                    name="phone_number"
+                    placeholder="Tel.číslo (voliteľné)"
+                    value={newClient.phone_number || ""}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 mb-2 w-full"
                 />
@@ -176,13 +192,13 @@ const AddClientForm = ({ onCancel, clientId, setClientId, clientData }) => {
                 </button>
                 <button
                     className="px-4 py-2 bg-gray-200 text-black text-base font-medium rounded-md shadow-sm hover:bg-gray-300"
-                    onClick={onCancel}
+                    onClick={onRequestClose}
                 >
                     Zrušiť
                 </button>
                 <ToastContainer />
             </div>
-        </div>
+        </Modal>
     );
 };
 
