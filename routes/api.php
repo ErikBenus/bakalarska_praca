@@ -31,9 +31,10 @@ Route::prefix('/api')->group(function () {
         return response()->json([], 404);
     });
 
-    Route::get('/y_balance_test', [YBalanceTestController::class, 'index']); // Získanie testov pre klienta
-    Route::get('/y_balance_test/{testId}', [YBalanceTestController::class, 'show']); // Získanie detailu konkrétneho testu
-    Route::post('/y_balance_test', [YBalanceTestController::class, 'store']); // Vytvorenie nového testu
-    Route::put('/y_balance_test/{testId}', [YBalanceTestController::class, 'update']); // Aktualizovanie testu
+    Route::get('/y-balance-test', [YBalanceTestController::class, 'index']); // Získanie testov pre klienta
+    Route::get('/y-balance-test/{testId}', [YBalanceTestController::class, 'show']); // Získanie detailu konkrétneho testu
+    Route::post('/y-balance-test', [YBalanceTestController::class, 'store']); // Vytvorenie nového testu
+    Route::put('/y-balance-test/{testId}', [YBalanceTestController::class, 'update']); // Aktualizovanie testu
+
 });
 

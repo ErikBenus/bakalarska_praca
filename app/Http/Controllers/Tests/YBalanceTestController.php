@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Test;
 use App\Models\TestingLimb;
 use App\Models\ValueLimb;
+use App\Models\YBalanceTest;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\DB;
+
 
 class YBalanceTestController extends Controller
 {
@@ -28,10 +30,9 @@ class YBalanceTestController extends Controller
         }
     }
 
-    // Získanie konkrétneho testu podľa ID a jeho hodnoty
     public function show($testId, Request $request)
     {
-        $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov
+        $clientId = $request->query('client_id');
 
         $values = ValueLimb::where('test_id', $testId)
             ->whereHas('test', function ($query) use ($clientId) {
@@ -57,94 +58,122 @@ class YBalanceTestController extends Controller
         }));
     }
 
-    // Uloženie nového Y Balance testu
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // Validácia vstupov
+        $validated = $request->validate([
             'client_id' => 'required|exists:users,id',
-            'created_at' => 'required|date',
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        try {
-            // Vytvorenie nového testu
-            $test = new Test();
-            $test->client_id = $request->input('client_id');
-            $test->category = 'Y Balance Test';
-            $test->name = $request->input('name');
-            $test->description = $request->input('description');
-            $test->created_at = $request->input('created_at');
-            $test->updated_at = now();
-            $test->save();
-
-            // Uloženie hodnôt do tabuľky ValueLimb pre Y Balance Test
-            $values = $request->input('values'); // Predpokladám, že sú odosielané hodnoty v tomto formáte
-
-            foreach ($values as $value) {
-                ValueLimb::create([
-                    'test_id' => $test->id,
-                    'id_limb' => $value['id_limb'],
-                    'value' => $value['value'],
-                    'attempt' => $value['attempt'],
-                    'weight' => $value['weight'] ?? null,
-                    'avg_value' => $value['avg_value'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-
-            return response()->json(['message' => 'Y Balance Test vytvorený úspešne', 'test' => $test]);
-        } catch (\Exception $e) {
-            \Log::error('Chyba v YBalanceTestController@store: ' . $e->getMessage());
-            return response()->json(['error' => 'Server error'], 500);
-        }
-    }
-
-    // Aktualizácia existujúceho Y Balance testu
-    public function update($testId, Request $request)
-    {
-        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'description' => 'nullable|string',
             'values' => 'required|array',
+            'values.*.id_limb' => 'required|numeric',
+            'values.*.value' => 'required|numeric',
+            'values.*.attempt' => 'required|numeric',
+            'values.*.weight' => 'nullable|numeric',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         try {
-            // Získanie testu podľa ID
-            $test = Test::findOrFail($testId);
+            DB::beginTransaction();
 
-            // Aktualizovanie testu
-            $test->name = $request->input('name');
-            $test->description = $request->input('description');
-            $test->updated_at = now();
-            $test->save();
+            // Vytvorenie nového Y Balance Test záznamu
+            $yBalanceTest = YBalanceTest::create([
+                'client_id' => $validated['client_id'],
+                'name' => $validated['name'],
+                'absolute_value' => 0,
+                'updated_at' => now(),
+            ]);
 
-            // Aktualizovanie hodnôt v tabuľke ValueLimb
-            foreach ($request->input('values') as $value) {
-                ValueLimb::updateOrCreate(
-                    ['test_id' => $test->id, 'id_limb' => $value['id_limb'], 'attempt' => $value['attempt']],
-                    [
+            // Uloženie hodnôt pomocou ValueLimb::insert()
+            $valuesToInsert = [];
+            foreach ($validated['values'] as $value) {
+                if (!empty($value['id_limb']) && isset($value['value'])) {
+                    $valuesToInsert[] = [
+                        'test_id' => $yBalanceTest->id,
+                        'id_limb' => $value['id_limb'],
                         'value' => $value['value'],
+                        'attempt' => $value['attempt'],
                         'weight' => $value['weight'] ?? null,
-                        'avg_value' => $value['avg_value'] ?? null,
-                        'updated_at' => now(),
-                    ]
-                );
+                    ];
+                }
             }
 
-            return response()->json(['message' => 'Y Balance Test aktualizovaný úspešne', 'test' => $test]);
+            if (!empty($valuesToInsert)) {
+                ValueLimb::insert($valuesToInsert);
+            }
+
+//            $rightLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
+//                ->where('id_limb', 3) // Pravá noha
+//                ->pluck('value')
+//                ->toArray();
+//
+//            $leftLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
+//                ->where('id_limb', 4) // Ľavá noha
+//                ->pluck('value')
+//                ->toArray();
+//
+//            $rightLegAverage = count($rightLegValues) > 0 ? array_sum($rightLegValues) / count($rightLegValues) : 0;
+//            $leftLegAverage = count($leftLegValues) > 0 ? array_sum($leftLegValues) / count($leftLegValues) : 0;
+//
+//            $absoluteValue = abs($rightLegAverage - $leftLegAverage);
+//
+//            // Aktualizácia absolute_value v YBalanceTest
+//            YBalanceTest::where('id', $yBalanceTest->id)->update(['absolute_value' => $absoluteValue]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Y Balance Test vytvorený úspešne', 'test' => $yBalanceTest]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            \Log::error('Chyba validácie YBalanceTestController@store: ' . $e->getMessage());
+            return response()->json(['error' => 'Chyba validácie', 'messages' => $e->errors()], 422);
         } catch (\Exception $e) {
-            \Log::error('Chyba v YBalanceTestController@update: ' . $e->getMessage());
+            DB::rollBack();
+            \Log::error('Chyba YBalanceTestController@store: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }
+
+
+    // Aktualizácia existujúceho Y Balance testu
+//    public function update($testId, Request $request)
+//    {
+//        $validator = Validator::make($request->all(), [
+//            'name' => 'required|string',
+//            'description' => 'nullable|string',
+//            'values' => 'required|array',
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return response()->json(['errors' => $validator->errors()], 422);
+//        }
+//
+//        try {
+//            // Získanie testu podľa ID
+//            $test = Test::findOrFail($testId);
+//
+//            // Aktualizovanie testu
+//            $test->name = $request->input('name');
+//            $test->description = $request->input('description');
+//            $test->updated_at = now();
+//            $test->save();
+//
+//            // Aktualizovanie hodnôt v tabuľke ValueLimb
+//            foreach ($request->input('values') as $value) {
+//                ValueLimb::updateOrCreate(
+//                    ['test_id' => $test->id, 'id_limb' => $value['id_limb'], 'attempt' => $value['attempt']],
+//                    [
+//                        'value' => $value['value'],
+//                        'weight' => $value['weight'] ?? null,
+//                        'avg_value' => $value['avg_value'] ?? null,
+//                        'updated_at' => now(),
+//                    ]
+//                );
+//            }
+//
+//            return response()->json(['message' => 'Y Balance Test aktualizovaný úspešne', 'test' => $test]);
+//        } catch (\Exception $e) {
+//            \Log::error('Chyba v YBalanceTestController@update: ' . $e->getMessage());
+//            return response()->json(['error' => 'Server error'], 500);
+//        }
+//    }
 }

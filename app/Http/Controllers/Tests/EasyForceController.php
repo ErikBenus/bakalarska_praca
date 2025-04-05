@@ -7,6 +7,8 @@ use App\Models\Test;
 use App\Models\TestingLimb;
 use App\Models\ValueLimb;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class EasyForceController extends Controller
 {
@@ -23,7 +25,6 @@ class EasyForceController extends Controller
 
             return response()->json($tests);
         } catch (\Exception $e) {
-            \Log::error('Chyba v EasyForceController@index: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -58,29 +59,46 @@ class EasyForceController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'client_id' => 'required|exists:users,id',
-            'created_at' => 'required|date',
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'metrics' => 'nullable|string|max:255',
+            'description' => 'nullable|string'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
         try {
-            $test = new Test();
-            $test->client_id = $request->input('client_id');
-            $test->category = 'Easy Force';
-            $test->name = $request->input('name');
-            $test->description = $request->input('description');
-            $test->created_at = $request->input('created_at');
-            $test->updated_at = now();
-            $test->save();
+            DB::beginTransaction();
 
-            return response()->json(['message' => 'Test vytvorený úspešne', 'test' => $test]);
+            $test = Test::create([
+                'client_id' => $validated['client_id'],
+                'name' => $validated['name'],
+                'category' => $validated['category'],
+                'metrics' => $validated['metrics'],
+                'description' => $validated['description'] ?? null,
+                'updated_at' => now(),
+            ]);
+
+            if ($request->has('values') && is_array($request->values)) {
+                foreach ($request->values as $value) {
+                    if (!empty($value['id_limb']) && isset($value['value'])) {
+                        ValueLimb::create([
+                            'test_id' => $test->id,
+                            'id_limb' => $value['id_limb'],
+                            'value' => $value['value'],
+                            'attempt' => $value['attempt'] ?? null,
+                            'weight' => $value['weight'] ?? null,
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Test vytvorený úspešne', 'id' => $test->id], 201);
         } catch (\Exception $e) {
-            \Log::error('Chyba v EasyForceController@store: ' . $e->getMessage());
-            return response()->json(['error' => 'Server error'], 500);
+            DB::rollBack();
+            return response()->json(['message' => 'Chyba pri vytváraní testu', 'error' => $e->getMessage()], 500);
         }
     }
 }

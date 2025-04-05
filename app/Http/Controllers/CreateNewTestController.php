@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-namespace App\Http\Controllers;
-
 use App\Models\Test;
 use App\Models\ValueLimb;
 use Illuminate\Http\Request;
@@ -30,6 +28,7 @@ class CreateNewTestController extends Controller
                 'category' => $validated['category'],
                 'metrics' => $validated['metrics'],
                 'description' => $validated['description'] ?? null,
+                'updated_at' => now(),
             ]);
 
             if ($request->has('values') && is_array($request->values)) {

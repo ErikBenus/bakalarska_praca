@@ -1,25 +1,7 @@
 import React, { useEffect } from 'react';
 
 const EasyForceForm = ({ newTest, setNewTest }) => {
-    useEffect(() => {
-        const generatedValues = [
-            { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-            { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-            { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-            { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-            { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-            { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
-            { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-            { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
-        ];
 
-        setNewTest(prev => ({
-            ...prev,
-            name: '',
-            metrics: 'N',
-            values: generatedValues,
-        }));
-    }, [setNewTest]);
 
     const handleValueChange = (index, e) => {
         const updatedValues = [...newTest.values];

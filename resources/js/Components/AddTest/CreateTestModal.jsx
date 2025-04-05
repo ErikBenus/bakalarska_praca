@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EasyForceForm from "@/Components/AddTest/EasyForceForm.jsx";
 import YBalanceTestForm from "@/Components/AddTest/YBalanceTestForm.jsx";
+import GeneralAddTestForm from "@/Components/AddTest/GeneralAddTestForm.jsx";
 
 const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const [newTest, setNewTest] = useState({
@@ -27,40 +28,83 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setNewTest({ ...newTest, [name]: value });
-        if (newTest.category === 'Easy Force') {
-            generateEasyForceValues(value);
+
+        if (name === 'category') {
+            if (value === 'Easy Force') {
+                const generatedValues = [
+                    { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
+                    { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
+                    { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
+                    { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
+                    { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
+                    { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
+                    { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
+                    { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
+                ];
+                setNewTest({
+                    ...newTest,
+                    category: value,
+                    name: '',
+                    metrics: 'N',
+                    values: generatedValues,
+                });
+            } else if (value === 'Y Balance Test') {
+                const yBalanceValues = [
+                    // Anterior
+                    { id_limb: '3', value: '', attempt: 1, muscle: 'Anterior' },
+                    { id_limb: '3', value: '', attempt: 2, muscle: 'Anterior' },
+                    { id_limb: '3', value: '', attempt: 3, muscle: 'Anterior' },
+                    { id_limb: '4', value: '', attempt: 1, muscle: 'Anterior' },
+                    { id_limb: '4', value: '', attempt: 2, muscle: 'Anterior' },
+                    { id_limb: '4', value: '', attempt: 3, muscle: 'Anterior' },
+                    // Posteromedial
+                    { id_limb: '3', value: '', attempt: 1, muscle: 'Posteromedial' },
+                    { id_limb: '3', value: '', attempt: 2, muscle: 'Posteromedial' },
+                    { id_limb: '3', value: '', attempt: 3, muscle: 'Posteromedial' },
+                    { id_limb: '4', value: '', attempt: 1, muscle: 'Posteromedial' },
+                    { id_limb: '4', value: '', attempt: 2, muscle: 'Posteromedial' },
+                    { id_limb: '4', value: '', attempt: 3, muscle: 'Posteromedial' },
+                    // Posterolateral
+                    { id_limb: '3', value: '', attempt: 1, muscle: 'Posterolateral' },
+                    { id_limb: '3', value: '', attempt: 2, muscle: 'Posterolateral' },
+                    { id_limb: '3', value: '', attempt: 3, muscle: 'Posterolateral' },
+                    { id_limb: '4', value: '', attempt: 1, muscle: 'Posterolateral' },
+                    { id_limb: '4', value: '', attempt: 2, muscle: 'Posterolateral' },
+                    { id_limb: '4', value: '', attempt: 3, muscle: 'Posterolateral' },
+                ];
+                setNewTest({
+                    ...newTest,
+                    category: value,
+                    name: '',
+                    values: yBalanceValues,
+                });
+            } else {
+                // Default reset for other categories
+                setNewTest({
+                    ...newTest,
+                    category: value,
+                    name: '',
+                    metrics: '',
+                    values: [{ id_limb: '', value: '', attempt: '', weight: '' }],
+                });
+            }
+        } else {
+            setNewTest({ ...newTest, [name]: value });
         }
     };
 
-    // useEffect(() => {
-    //     if (newTest.category === 'Easy Force') {
-    //         const generatedValues = [
-    //             // Quadriceps
-    //             { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-    //             { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-    //             { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-    //             { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-    //             // Hamstring
-    //             { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-    //             { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
-    //             { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-    //             { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
-    //         ];
-    //         setNewTest(prev => ({
-    //             ...prev,
-    //             name: '',
-    //             values: generatedValues
-    //         }));
-    //     }
-    // }, [newTest.category]);
+
 
     const handleValueChange = (index, e) => {
-        const { value } = e.target;
+        const { name, value } = e.target;
         const updatedValues = [...newTest.values];
-        updatedValues[index].value = value;
+        updatedValues[index] = {
+            ...updatedValues[index],
+            [name]: value,
+        };
         setNewTest({ ...newTest, values: updatedValues });
     };
+
 
 
     const addLimbValue = () => {
@@ -76,39 +120,94 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             metrics: newTest.category === 'Easy Force' ? 'N' : newTest.metrics
         };
 
-        const quadricepsData = {
-            ...testDataToSave,
-            name: 'Quadriceps',
-            values: newTest.values.slice(0, 4),
-        };
+        const getApiUrlByCategory = (category, id) => {
+            let base = '/api/tests';
 
-        const hamstringData = {
-            ...testDataToSave,
-            name: 'Hamstring',
-            values: newTest.values.slice(4, 8),
+            if (category === 'Y Balance Test') base = '/api/y-balance-test';
+            if (category === 'Easy Force') base = '/api/easy-force';
+
+            return id ? `${base}/${id}` : base;
         };
 
         const saveTest = (data) => {
-            const url = testId ? `/api/tests/${testId}` : '/api/tests';
-            const method = testId ? 'put' : 'post';
+            const url = getApiUrlByCategory(data.category);
+            const method = 'post';
 
             return axios({
                 method,
                 url,
-                data: data,
+                data,
             });
         };
 
-        Promise.all([saveTest(quadricepsData), saveTest(hamstringData)])
-            .then(() => {
-                toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
-                onRequestClose();
-                window.location.reload();
-            })
-            .catch((err) => {
-                toast.error('Chyba pri ukladaní testov!');
-                console.error(err);
-            });
+        if (newTest.category === 'Easy Force') {
+            const quadricepsData = {
+                ...testDataToSave,
+                name: 'Quadriceps',
+                values: newTest.values.slice(0, 4),
+            };
+
+            const hamstringData = {
+                ...testDataToSave,
+                name: 'Hamstring',
+                values: newTest.values.slice(4, 8),
+            };
+
+            Promise.all([saveTest(quadricepsData), saveTest(hamstringData)])
+                .then(() => {
+                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
+                    onRequestClose();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    toast.error('Chyba pri ukladaní testov!');
+                    console.error(err);
+                });
+        } else if (newTest.category === 'Y Balance Test') {
+            const anteriorData = {
+                ...testDataToSave,
+                name: 'Anterior',
+                values: newTest.values.filter(val => val.muscle === 'Anterior')
+            };
+
+            const posteromedialData = {
+                ...testDataToSave,
+                name: 'Posteromedial',
+                values: newTest.values.filter(val => val.muscle === 'Posteromedial')
+            };
+
+            const posterolateralData = {
+                ...testDataToSave,
+                name: 'Posterolateral',
+                values: newTest.values.filter(val => val.muscle === 'Posterolateral')
+            };
+
+            Promise.all([
+                saveTest(anteriorData),
+                saveTest(posteromedialData),
+                saveTest(posterolateralData)
+            ])
+                .then(() => {
+                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
+                    onRequestClose();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    toast.error('Chyba pri ukladaní testov!');
+                    console.error(err);
+                });
+        } else {
+            saveTest(testDataToSave)
+                .then(() => {
+                    toast.success(testId ? 'Test bol upravený!' : 'Test bol pridaný!');
+                    onRequestClose();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    toast.error('Chyba pri ukladaní testu!');
+                    console.error(err);
+                });
+        }
     };
 
     return (
@@ -139,99 +238,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 <option value="Nedefinová kategória">Nedefinová kategória</option>
             </select>
             {newTest.category === 'Y Balance Test' && (
-                <YBalanceTestForm newTest={newTest}
-                                  setNewTest={setNewTest}
-                                  handleValueChange={handleValueChange}
-                                  addLimbValue={addLimbValue} />
-                )}
-            {newTest.category === 'Easy Force' ? (
-                <EasyForceForm
+                <YBalanceTestForm newTest={newTest} setNewTest={setNewTest} handleValueChange={handleValueChange} addLimbValue={addLimbValue} />
+            )}
+            {newTest.category === 'Easy Force' && (
+                <EasyForceForm newTest={newTest} setNewTest={setNewTest} handleValueChange={handleValueChange} addLimbValue={addLimbValue} />
+            )}
+            {newTest.category !== 'Easy Force' && newTest.category !== 'Y Balance Test' && (
+                <GeneralAddTestForm
                     newTest={newTest}
-                    setNewTest={setNewTest}
+                    handleInputChange={handleInputChange}
                     handleValueChange={handleValueChange}
                     addLimbValue={addLimbValue}
                 />
-            ) : (
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Názov testu"
-                    value={newTest.name || ""}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded-md p-2 mb-2 w-full"
-                />
             )}
-            {newTest.category !== 'Easy Force' && (
-                <input
-                    type="text"
-                    name="metrics"
-                    placeholder="Metrika (napr. sekundy, kg...)"
-                    value={newTest.metrics || ""}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded-md p-2 mb-2 w-full"
-                />
-            )}
-
-            <textarea
-                name="description"
-                placeholder="Popis (voliteľné)"
-                value={newTest.description || ""}
-                onChange={handleInputChange}
-                className="border border-gray-300 rounded-md p-2 mb-2 w-full"
-            />
-
-            {newTest.category !== 'Easy Force' && (
-                <div className="mb-2">
-                    {newTest.values.map((val, index) => (
-                        <div key={index} className="grid grid-cols-2 gap-2 mb-2">
-                            <input
-                                type="number"
-                                name="value"
-                                placeholder="Hodnota"
-                                value={val.value || ""}
-                                onChange={(e) => handleValueChange(index, e)}
-                                className="border border-gray-300 rounded-md p-2"
-                            />
-                            <input
-                                type="number"
-                                name="attempt"
-                                placeholder="Pokus (voliteľné)"
-                                value={val.attempt || ""}
-                                onChange={(e) => handleValueChange(index, e)}
-                                className="border border-gray-300 rounded-md p-2"
-                            />
-                            <input
-                                type="number"
-                                name="weight"
-                                placeholder="Záťaž (voliteľné)"
-                                value={val.weight || ""}
-                                onChange={(e) => handleValueChange(index, e)}
-                                className="border border-gray-300 rounded-md p-2"
-                            />
-                            <select
-                                name="id_limb"
-                                value={val.id_limb || ""}
-                                onChange={(e) => handleValueChange(index, e)}
-                                className="border border-gray-300 rounded-md p-2"
-                            >
-                                <option value="">-</option>
-                                <option value="1">Pravá ruka</option>
-                                <option value="2">Ľavá ruka</option>
-                                <option value="3">Pravá noha</option>
-                                <option value="4">Ľavá noha</option>
-                            </select>
-                        </div>
-                    ))}
-                    <button
-                        onClick={addLimbValue}
-                        className="text-sm text-blue-600 hover:underline mb-4"
-                    >
-                        + Pridať hodnotu
-                    </button>
-                </div>
-            )}
-
-
             <div className="flex justify-end space-x-2">
                 <button
                     className="px-4 py-2 bg-green-600 text-white font-medium rounded-md shadow-sm hover:bg-green-700"
@@ -245,7 +264,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 >
                     Zrušiť
                 </button>
-                <ToastContainer/>
+                <ToastContainer />
             </div>
         </Modal>
     );
