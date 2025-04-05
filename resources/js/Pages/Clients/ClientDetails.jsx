@@ -5,10 +5,12 @@ import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
 import ResultsTestContainer from "@/Components/ResultsTestContainer.jsx";
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import ClientHeader from "@/Components/ClientHeader.jsx";
+import AddTestForm from "@/Components/AddTest/CreateTestModal.jsx";
+
 
 export default function ClientDetails({ client, tests, clientId }) {
     const [clientData, setClientData] = useState(null);
-
+    const [showAddTestForm, setShowAddTestForm] = useState(false);
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('sk-SK');
@@ -26,6 +28,12 @@ export default function ClientDetails({ client, tests, clientId }) {
 
         return age;
     };
+
+    const openModal = () => {
+        setShowAddTestForm(!showAddTestForm);
+    };
+    const closeModal = () => setShowAddTestForm(false);
+
 
     useEffect(() => {
         axios.get(`/api/clients/${clientId}/data`)
@@ -54,7 +62,7 @@ export default function ClientDetails({ client, tests, clientId }) {
     return (
         <AuthenticatedLayout
             header={
-                <ClientHeader client={client}/>
+                <ClientHeader client={client} onCreateTestClick={openModal} />
         }
             rightHeader={<CreateTestingButton/>}>
             <Head title={`${client.first_name} ${client.last_name}`} />
@@ -129,6 +137,19 @@ export default function ClientDetails({ client, tests, clientId }) {
                     />
                 </div>
             </div>
+            {showAddTestForm && (
+                <AddTestForm
+                isOpen={showAddTestForm}
+                onRequestClose={closeModal}
+                testData={{
+                    client_id: client.id,
+                    name: '',
+                    category: '',
+                    metrics: '',
+                    description: '',
+                    values: [],
+                }}
+            />)}
         </AuthenticatedLayout>
     );
 }

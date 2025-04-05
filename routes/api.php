@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientsDataController;
+use App\Http\Controllers\CreateNewTestController;
 use App\Http\Controllers\ManageClientsController;
 use App\Models\Test;
 use App\Models\User;
@@ -24,6 +25,9 @@ Route::prefix('/api')->group(function () {
 
     Route::get('/clients/{clientId}/data', [ClientsDataController::class, 'show']);
 
-
+    Route::post('/tests', [CreateNewTestController::class, 'store']);
+    Route::post('/value-limb', function () {
+        return response()->json([], 404);
+    });
 });
 

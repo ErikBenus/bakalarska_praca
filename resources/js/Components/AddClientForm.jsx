@@ -22,7 +22,6 @@ const AddClientForm = ({ isOpen, onRequestClose, clientId, clientData }) => {
         bmi: '',
     });
 
-
     useEffect(() => {
         if (clientData) {
             setNewClient(clientData);
