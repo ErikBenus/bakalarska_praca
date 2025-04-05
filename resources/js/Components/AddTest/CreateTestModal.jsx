@@ -3,6 +3,8 @@ import Modal from 'react-modal';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import EasyForceForm from "@/Components/AddTest/EasyForceForm.jsx";
+import YBalanceTestForm from "@/Components/AddTest/YBalanceTestForm.jsx";
 
 const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const [newTest, setNewTest] = useState({
@@ -31,27 +33,27 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
         }
     };
 
-    useEffect(() => {
-        if (newTest.category === 'Easy Force') {
-            const generatedValues = [
-                // Quadriceps
-                { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-                { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-                { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-                { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-                // Hamstring
-                { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-                { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
-                { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-                { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
-            ];
-            setNewTest(prev => ({
-                ...prev,
-                name: '',
-                values: generatedValues
-            }));
-        }
-    }, [newTest.category]);
+    // useEffect(() => {
+    //     if (newTest.category === 'Easy Force') {
+    //         const generatedValues = [
+    //             // Quadriceps
+    //             { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
+    //             { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
+    //             { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
+    //             { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
+    //             // Hamstring
+    //             { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
+    //             { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
+    //             { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
+    //             { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
+    //         ];
+    //         setNewTest(prev => ({
+    //             ...prev,
+    //             name: '',
+    //             values: generatedValues
+    //         }));
+    //     }
+    // }, [newTest.category]);
 
     const handleValueChange = (index, e) => {
         const { value } = e.target;
@@ -136,34 +138,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 <option value="Easy Force">Easy Force</option>
                 <option value="Nedefinová kategória">Nedefinová kategória</option>
             </select>
+            {newTest.category === 'Y Balance Test' && (
+                <YBalanceTestForm newTest={newTest}
+                                  setNewTest={setNewTest}
+                                  handleValueChange={handleValueChange}
+                                  addLimbValue={addLimbValue} />
+                )}
             {newTest.category === 'Easy Force' ? (
-                <div>
-                    {['Quadriceps', 'Hamstring'].map((muscle) => (
-                        <div key={muscle} className="mb-4">
-                            <h4 className="font-semibold text-lg mb-2">{muscle}</h4>
-                            {newTest.values
-                                .map((val, i) => ({ val, i }))
-                                .filter(({ val }) => val.muscle === muscle)
-                                .map(({ val, i }) => (
-                                    <div key={i} className="grid grid-cols-3 gap-2 mb-2">
-                                        <div className="flex items-center">
-                                        <span className="text-gray-700 text-sm">
-                                            {val.id_limb === '3' ? 'Pravá noha' : 'Ľavá noha'}, pokus {val.attempt}
-                                        </span>
-                                        </div>
-                                        <input
-                                            type="number"
-                                            name="value"
-                                            placeholder="Hodnota"
-                                            value={val.value || ''}
-                                            onChange={(e) => handleValueChange(i, e)} // tu je ten správny index
-                                            className="border border-gray-300 rounded-md p-2"
-                                        />
-                                    </div>
-                                ))}
-                        </div>
-                    ))}
-                </div>
+                <EasyForceForm
+                    newTest={newTest}
+                    setNewTest={setNewTest}
+                    handleValueChange={handleValueChange}
+                    addLimbValue={addLimbValue}
+                />
             ) : (
                 <input
                     type="text"

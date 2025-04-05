@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientsDataController;
 use App\Http\Controllers\CreateNewTestController;
 use App\Http\Controllers\ManageClientsController;
+use App\Http\Controllers\Tests\YBalanceTestController;
 use App\Models\Test;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,5 +30,10 @@ Route::prefix('/api')->group(function () {
     Route::post('/value-limb', function () {
         return response()->json([], 404);
     });
+
+    Route::get('/y_balance_test', [YBalanceTestController::class, 'index']); // Získanie testov pre klienta
+    Route::get('/y_balance_test/{testId}', [YBalanceTestController::class, 'show']); // Získanie detailu konkrétneho testu
+    Route::post('/y_balance_test', [YBalanceTestController::class, 'store']); // Vytvorenie nového testu
+    Route::put('/y_balance_test/{testId}', [YBalanceTestController::class, 'update']); // Aktualizovanie testu
 });
 
