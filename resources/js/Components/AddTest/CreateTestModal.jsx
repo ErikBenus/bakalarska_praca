@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import EasyForceForm from "@/Components/AddTest/EasyForceForm.jsx";
 import YBalanceTestForm from "@/Components/AddTest/YBalanceTestForm.jsx";
 import GeneralAddTestForm from "@/Components/AddTest/GeneralAddTestForm.jsx";
+import MobilityFlexibilityForm from "@/Components/AddTest/MobilityFlexibilityForm.jsx";
 
 const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const [newTest, setNewTest] = useState({
@@ -18,6 +19,20 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             { id_limb: '', value: '', attempt: '', weight: '' },
         ],
     });
+
+    const muscles = [
+        'Illiopsoas',
+        'Rectus pemuas',
+        'Piriformis',
+        'Hamstring prox',
+        'Hamstring dist.',
+        'Gastrocnemius',
+        'Soleus',
+        'Flexia KK',
+        'Extenzia RK',
+        'Abdukcia',
+        'Extenzia v Abdukcii',
+    ];
 
 
     useEffect(() => {
@@ -78,7 +93,20 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     name: '',
                     values: yBalanceValues,
                 });
-            } else {
+            } else if (value === 'Mobilita a flexibilita') {
+            const mobilityValues = muscles.flatMap((name) => [
+                { id_limb: '3', value: '0'},
+                { id_limb: '4', value: '0'},
+            ]);
+            setNewTest({
+                ...newTest,
+                category: value,
+                name: '',
+                metrics: 'Stupne',
+                values: mobilityValues,
+            });
+        }
+        else {
                 // Default reset for other categories
                 setNewTest({
                     ...newTest,
@@ -198,7 +226,33 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     toast.error('Chyba pri ukladaní testov!');
                     console.error(err);
                 });
-        } else {
+        } else if (newTest.category === 'Mobilita a flexibilita') {
+            const promises = muscles.map((muscleName, index) => {
+                const rightValue = newTest.values[index * 2]?.value || '0';
+                const leftValue = newTest.values[index * 2 + 1]?.value || '0';
+
+                const muscleData = {
+                    ...testDataToSave,
+                    name: muscleName,
+                    values: [
+                        { id_limb: '3', value: rightValue },
+                        { id_limb: '4', value: leftValue },
+                    ],
+                };
+                return saveTest(muscleData);
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
+                    onRequestClose();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    toast.error('Chyba pri ukladaní testov!');
+                    console.error(err);
+                });
+        }else {
             saveTest(testDataToSave)
                 .then(() => {
                     toast.success(testId ? 'Test bol upravený!' : 'Test bol pridaný!');
@@ -240,19 +294,42 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 <option value="Nedefinová kategória">Nedefinová kategória</option>
             </select>
             {newTest.category === 'Y Balance Test' && (
-                <YBalanceTestForm newTest={newTest} setNewTest={setNewTest} handleValueChange={handleValueChange} addLimbValue={addLimbValue} />
-            )}
-            {newTest.category === 'Easy Force' && (
-                <EasyForceForm newTest={newTest} setNewTest={setNewTest} handleValueChange={handleValueChange} addLimbValue={addLimbValue} />
-            )}
-            {newTest.category !== 'Easy Force' && newTest.category !== 'Y Balance Test' && (
-                <GeneralAddTestForm
+                <YBalanceTestForm
                     newTest={newTest}
-                    handleInputChange={handleInputChange}
+                    setNewTest={setNewTest}
                     handleValueChange={handleValueChange}
                     addLimbValue={addLimbValue}
                 />
             )}
+
+            {newTest.category === 'Easy Force' && (
+                <EasyForceForm
+                    newTest={newTest}
+                    setNewTest={setNewTest}
+                    handleValueChange={handleValueChange}
+                    addLimbValue={addLimbValue}
+                />
+            )}
+
+            {newTest.category === 'Mobilita a flexibilita' && (
+                <MobilityFlexibilityForm
+                    newTest={newTest}
+                    setNewTest={setNewTest}
+                    handleValueChange={handleValueChange}
+                />
+            )}
+
+            {newTest.category !== 'Easy Force' &&
+                newTest.category !== 'Y Balance Test' &&
+                newTest.category !== 'Mobilita a flexibilita' && (
+                    <GeneralAddTestForm
+                        newTest={newTest}
+                        handleInputChange={handleInputChange}
+                        handleValueChange={handleValueChange}
+                        addLimbValue={addLimbValue}
+                    />
+                )}
+
             <div className="flex justify-end space-x-2">
                 <button
                     className="px-4 py-2 bg-green-600 text-white font-medium rounded-md shadow-sm hover:bg-green-700"
