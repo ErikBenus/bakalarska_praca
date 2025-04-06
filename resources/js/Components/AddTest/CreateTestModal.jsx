@@ -7,6 +7,7 @@ import EasyForceForm from "@/Components/AddTest/EasyForceForm.jsx";
 import YBalanceTestForm from "@/Components/AddTest/YBalanceTestForm.jsx";
 import GeneralAddTestForm from "@/Components/AddTest/GeneralAddTestForm.jsx";
 import MobilityFlexibilityForm from "@/Components/AddTest/MobilityFlexibilityForm.jsx";
+import JumpProfileForm from "@/Components/AddTest/JumpProfileForm.jsx";
 
 const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const [newTest, setNewTest] = useState({
@@ -32,6 +33,18 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
         'Extenzia RK',
         'Abdukcia',
         'Extenzia v Abdukcii',
+    ];
+
+    const jumpTests = [
+        { name: 'RSI', id_limb: 5 },
+        { name: 'GCT', id_limb: 5 },
+        { name: 'CMJ', id_limb: 5 },
+        { name: 'SJ', id_limb: 5 },
+        { name: 'H', id_limb: 5 },
+        { name: 'CMJ Right', id_limb: 3 },
+        { name: 'SJ Right', id_limb: 3 },
+        { name: 'CMJ Left', id_limb: 4 },
+        { name: 'SJ Left', id_limb: 4 },
     ];
 
 
@@ -105,9 +118,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 metrics: 'Stupne',
                 values: mobilityValues,
             });
-        }
-        else {
-                // Default reset for other categories
+        } else if (value === 'Skokový profil') {
+                const jumpProfileValues = jumpTests.flatMap((test) => [
+                    {id_limb: test.id_limb, value: '', attempt: 1, name: test.name},
+                    {id_limb: test.id_limb, value: '', attempt: 2, name: test.name},
+                ]);
+                setNewTest({
+                    ...newTest,
+                    category: value,
+                    name: '',
+                    metrics: 'Hodnota',
+                    values: jumpProfileValues,
+                });
+            } else {
                 setNewTest({
                     ...newTest,
                     category: value,
@@ -240,7 +263,16 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     ],
                 };
                 return saveTest(muscleData);
-            });
+            })} else if (newTest.category === 'Skokový profil') {
+                const promises = jumpTests.map((test) => {
+                    const testValues = newTest.values.filter((val) => val.name === test.name);
+                    const jumpData = {
+                        ...testDataToSave,
+                        name: test.name,
+                        values: testValues,
+                    };
+                    return saveTest(jumpData);
+                });
 
             Promise.all(promises)
                 .then(() => {
@@ -319,9 +351,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 />
             )}
 
+            {newTest.category === 'Skokový profil' &&
+                (<JumpProfileForm
+                    newTest={newTest}
+                    setNewTest={setNewTest}
+                    handleValueChange={handleValueChange}
+                />
+                )}
+
+
             {newTest.category !== 'Easy Force' &&
                 newTest.category !== 'Y Balance Test' &&
-                newTest.category !== 'Mobilita a flexibilita' && (
+                newTest.category !== 'Mobilita a flexibilita' &&
+                newTest.category !== 'Skokový profil' &&(
                     <GeneralAddTestForm
                         newTest={newTest}
                         handleInputChange={handleInputChange}
