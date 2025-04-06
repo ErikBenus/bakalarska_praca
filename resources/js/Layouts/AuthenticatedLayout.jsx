@@ -3,14 +3,113 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import React, {Component, useState} from 'react';
+import NavMenuClient from "@/Components/NavMenuClient.jsx";
+import NavMenuTrainer from "@/Components/NavMenuTrainer.jsx";
+import {usePermissions} from "@/Components/UsePermissions.jsx";
+
+function NavMenuTrainerMobile() {
+    const {can} = usePermissions();
+    if (can('see trainer dashboard')) {
+
+        return (
+            <div className="space-y-1 pb-3 pt-2">
+                <ResponsiveNavLink
+                    href={route('dashboard')}
+                    active={route().current('dashboard')}
+                >
+                    Prehľad
+                </ResponsiveNavLink>
+                <ResponsiveNavLink
+                    href={route('all-tests.index')}
+                    active={route().current('all-tests.*')}
+                >
+                    Štandardné testy
+                </ResponsiveNavLink>
+
+                <ResponsiveNavLink
+                    href={route('all-tests.index')}
+                    active={route().current('all-tests.*')}
+                >
+                    Zoznam klientov
+                </ResponsiveNavLink>
+
+                <ResponsiveNavLink
+                    href={route('all-tests.index')}
+                    active={route().current('all-tests.*')}
+                >
+                    História testovaní
+                </ResponsiveNavLink>
+
+                <ShowTrainersMobile/>
+            </div>
+        );
+    }
+    return null;
+}
+
+function NavMenuClientMobile() {
+    const {can} = usePermissions();
+    if (can('see client dashboard')) {
+
+        return (
+            <div className="space-y-1 pb-3 pt-2">
+                <ResponsiveNavLink
+                    href={route('dashboard')}
+                    active={route().current('dashboard')}
+                >
+                    Prehľad
+                </ResponsiveNavLink>
+                <ResponsiveNavLink
+                    href={route('all-tests.index')}
+                    active={route().current('all-tests.*')}
+                >
+                    Štandardné testy
+                </ResponsiveNavLink>
+
+                <ResponsiveNavLink
+                    href={route('all-tests.index')}
+                    active={route().current('all-tests.*')}
+                >
+                    História
+                </ResponsiveNavLink>
+
+                <ResponsiveNavLink
+                    href={route('all-tests.index')}
+                    active={route().current('all-tests.*')}
+                >
+                    Odporúčania
+                </ResponsiveNavLink>
+            </div>
+        );
+    }
+    return null;
+}
+
+function ShowTrainersMobile() {
+    const { can } = usePermissions();
+
+    if (can("use admin privileges")) {
+        return (
+                <NavLink
+                    href={route('trainers.index')}
+                    active={route().current('trainers.*')}
+                >
+                    Zoznam trénerov
+                </NavLink>
+
+        );}
+
+    return null;
+}
 
 export default function AuthenticatedLayout({ header, rightHeader, children }) {
     const user = usePage().props.auth.user;
 
-
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
+
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -24,20 +123,8 @@ export default function AuthenticatedLayout({ header, rightHeader, children }) {
                                 </Link>
                             </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Prehľad
-                                </NavLink>
-                                <NavLink
-                                    href={route('all-tests.index')}
-                                    active={route().current('all-tests.*')}
-                                >
-                                    Štandardné testy
-                                </NavLink>
-                            </div>
+                            <NavMenuClient/>
+                            <NavMenuTrainer/>
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
@@ -134,20 +221,8 @@ export default function AuthenticatedLayout({ header, rightHeader, children }) {
                         ' sm:hidden'
                     }
                 >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Prehľad
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            href={route('all-tests.index')}
-                            active={route().current('all-tests.*')}
-                        >
-                            Štandardné testy
-                        </ResponsiveNavLink>
-                    </div>
+                    <NavMenuTrainerMobile />
+                    <NavMenuClientMobile />
 
                     <div className="border-t border-gray-200 pb-1 pt-4">
                         <div className="px-4">

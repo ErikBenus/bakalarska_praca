@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AllTestsController;
 use App\Http\Controllers\ManageClientsController;
+use App\Http\Controllers\ManageTrainersController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/all-tests-easy-force', [AllTestsController::class, 'easyForce'])->name('all-tests.easy-force');
 
     Route::get('/all-clients', [ManageClientsController::class, 'index'])->name('clients.index');
+    Route::get('/all-trainers', [ManageTrainersController::class, 'index'])->name('trainers.index');
 
     Route::get('/user-permissions', function (Request $request) {
         return response()->json([

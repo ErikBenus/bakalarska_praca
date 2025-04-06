@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientsDataController;
 use App\Http\Controllers\CreateNewTestController;
 use App\Http\Controllers\ManageClientsController;
+use App\Http\Controllers\ManageTrainersController;
 use App\Http\Controllers\Tests\YBalanceTestController;
 use App\Models\Test;
 use App\Models\User;
@@ -32,6 +33,13 @@ Route::prefix('/api')->group(function () {
     });
 
     Route::post('/y-balance-test', [YBalanceTestController::class, 'store']);
+
+    Route::post('/all-trainers', [ManageTrainersController::class, 'store']);
+    Route::get('/all-trainers/{id}/edit', [ManageTrainersController::class, 'edit']);
+    Route::put('/all-trainers/{id}', [ManageTrainersController::class, 'update']);
+    Route::delete('/all-trainers/{id}', [ManageTrainersController::class, 'destroy']);
+    Route::post('/all-trainers/{id}/promote', [ManageTrainersController::class, 'promoteToAdmin']);
+
 
 //    Route::get('/y-balance-test', [YBalanceTestController::class, 'index']);
 //    Route::get('/y-balance-test/{testId}', [YBalanceTestController::class, 'show']);

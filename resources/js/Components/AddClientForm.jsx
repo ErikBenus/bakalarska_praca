@@ -43,7 +43,7 @@ const AddClientForm = ({ isOpen, onRequestClose, clientId, clientData }) => {
         })
             .then(response => {
                 toast.success(clientId ? 'Klient úspešne aktualizovaný!' : 'Klient úspešne pridaný!');
-                onRequestClose(); // Zatvoríme modálne okno po úspešnom uložení
+                onRequestClose();
                 window.location.reload();
             })
             .catch(error => {
