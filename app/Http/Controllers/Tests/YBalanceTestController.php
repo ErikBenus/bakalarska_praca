@@ -65,17 +65,11 @@ class YBalanceTestController extends Controller
             'client_id' => 'required|exists:users,id',
             'name' => 'required|string',
             'description' => 'nullable|string',
-            'values' => 'required|array',
-            'values.*.id_limb' => 'required|numeric',
-            'values.*.value' => 'required|numeric',
-            'values.*.attempt' => 'required|numeric',
-            'values.*.weight' => 'nullable|numeric',
         ]);
 
         try {
             DB::beginTransaction();
 
-            // Vytvorenie nového Y Balance Test záznamu
             $yBalanceTest = YBalanceTest::create([
                 'client_id' => $validated['client_id'],
                 'name' => $validated['name'],
@@ -83,22 +77,18 @@ class YBalanceTestController extends Controller
                 'updated_at' => now(),
             ]);
 
-            // Uloženie hodnôt pomocou ValueLimb::insert()
-            $valuesToInsert = [];
-            foreach ($validated['values'] as $value) {
-                if (!empty($value['id_limb']) && isset($value['value'])) {
-                    $valuesToInsert[] = [
-                        'test_id' => $yBalanceTest->id,
-                        'id_limb' => $value['id_limb'],
-                        'value' => $value['value'],
-                        'attempt' => $value['attempt'],
-                        'weight' => $value['weight'] ?? null,
-                    ];
+            if ($request->has('values') && is_array($request->values)) {
+                foreach ($request->values as $value) {
+                    if (!empty($value['id_limb']) && isset($value['value'])) {
+                        ValueLimb::create([
+                            'test_id' => $yBalanceTest->id,
+                            'id_limb' => $value['id_limb'],
+                            'value' => $value['value'],
+                            'attempt' => $value['attempt'],
+                            'weight' => $value['weight'] ?? null,
+                        ]);
+                    }
                 }
-            }
-
-            if (!empty($valuesToInsert)) {
-                ValueLimb::insert($valuesToInsert);
             }
 
 //            $rightLegValues = ValueLimb::where('test_id', $yBalanceTest->id)

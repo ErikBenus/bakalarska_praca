@@ -51,26 +51,26 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             } else if (value === 'Y Balance Test') {
                 const yBalanceValues = [
                     // Anterior
-                    { id_limb: '3', value: '', attempt: 1, muscle: 'Anterior' },
-                    { id_limb: '3', value: '', attempt: 2, muscle: 'Anterior' },
-                    { id_limb: '3', value: '', attempt: 3, muscle: 'Anterior' },
-                    { id_limb: '4', value: '', attempt: 1, muscle: 'Anterior' },
-                    { id_limb: '4', value: '', attempt: 2, muscle: 'Anterior' },
-                    { id_limb: '4', value: '', attempt: 3, muscle: 'Anterior' },
+                    { id_limb: '3', value: '', attempt: 1, weight: '', name: 'Anterior' },
+                    { id_limb: '3', value: '', attempt: 2, weight: '', name: 'Anterior' },
+                    { id_limb: '3', value: '', attempt: 3, weight: '', name: 'Anterior' },
+                    { id_limb: '4', value: '', attempt: 1, weight: '', name: 'Anterior' },
+                    { id_limb: '4', value: '', attempt: 2, weight: '', name: 'Anterior' },
+                    { id_limb: '4', value: '', attempt: 3, weight: '', name: 'Anterior' },
                     // Posteromedial
-                    { id_limb: '3', value: '', attempt: 1, muscle: 'Posteromedial' },
-                    { id_limb: '3', value: '', attempt: 2, muscle: 'Posteromedial' },
-                    { id_limb: '3', value: '', attempt: 3, muscle: 'Posteromedial' },
-                    { id_limb: '4', value: '', attempt: 1, muscle: 'Posteromedial' },
-                    { id_limb: '4', value: '', attempt: 2, muscle: 'Posteromedial' },
-                    { id_limb: '4', value: '', attempt: 3, muscle: 'Posteromedial' },
+                    { id_limb: '3', value: '', attempt: 1, weight: '', name: 'Posteromedial' },
+                    { id_limb: '3', value: '', attempt: 2, weight: '', name: 'Posteromedial' },
+                    { id_limb: '3', value: '', attempt: 3, weight: '', name: 'Posteromedial' },
+                    { id_limb: '4', value: '', attempt: 1, weight: '', name: 'Posteromedial' },
+                    { id_limb: '4', value: '', attempt: 2, weight: '', name: 'Posteromedial' },
+                    { id_limb: '4', value: '', attempt: 3, weight: '', name: 'Posteromedial' },
                     // Posterolateral
-                    { id_limb: '3', value: '', attempt: 1, muscle: 'Posterolateral' },
-                    { id_limb: '3', value: '', attempt: 2, muscle: 'Posterolateral' },
-                    { id_limb: '3', value: '', attempt: 3, muscle: 'Posterolateral' },
-                    { id_limb: '4', value: '', attempt: 1, muscle: 'Posterolateral' },
-                    { id_limb: '4', value: '', attempt: 2, muscle: 'Posterolateral' },
-                    { id_limb: '4', value: '', attempt: 3, muscle: 'Posterolateral' },
+                    { id_limb: '3', value: '', attempt: 1, weight: '', name: 'Posterolateral' },
+                    { id_limb: '3', value: '', attempt: 2, weight: '', name: 'Posterolateral' },
+                    { id_limb: '3', value: '', attempt: 3, weight: '', name: 'Posterolateral' },
+                    { id_limb: '4', value: '', attempt: 1, weight: '', name: 'Posterolateral' },
+                    { id_limb: '4', value: '', attempt: 2, weight: '', name: 'Posterolateral' },
+                    { id_limb: '4', value: '', attempt: 3, weight: '', name: 'Posterolateral' },
                 ];
                 setNewTest({
                     ...newTest,
@@ -85,7 +85,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     category: value,
                     name: '',
                     metrics: '',
-                    values: [{ id_limb: '', value: '', attempt: '', weight: '' }],
+                    values: [{ id_limb: '5', value: '', attempt: '', weight: '' }],
                 });
             }
         } else {
@@ -131,7 +131,9 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
         const saveTest = (data) => {
             const url = getApiUrlByCategory(data.category);
+
             const method = 'post';
+
 
             return axios({
                 method,
@@ -167,19 +169,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             const anteriorData = {
                 ...testDataToSave,
                 name: 'Anterior',
-                values: newTest.values.filter(val => val.muscle === 'Anterior')
+                values: newTest.values.slice(0, 6),
             };
 
             const posteromedialData = {
                 ...testDataToSave,
                 name: 'Posteromedial',
-                values: newTest.values.filter(val => val.muscle === 'Posteromedial')
+                values: newTest.values.slice(6, 12),
             };
 
             const posterolateralData = {
                 ...testDataToSave,
                 name: 'Posterolateral',
-                values: newTest.values.filter(val => val.muscle === 'Posterolateral')
+                values: newTest.values.slice(12, 18),
             };
 
             Promise.all([

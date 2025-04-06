@@ -1,6 +1,7 @@
 import React from 'react';
 
 const GeneralAddTestForm = ({ newTest, handleInputChange, handleValueChange, addLimbValue }) => {
+
     return (
         <>
             <input
@@ -56,11 +57,11 @@ const GeneralAddTestForm = ({ newTest, handleInputChange, handleValueChange, add
                         />
                         <select
                             name="id_limb"
-                            value={val.id_limb || ""}
+                            value={val.id_limb ?? "5"}
                             onChange={(e) => handleValueChange(index, e)}
                             className="border border-gray-300 rounded-md p-2"
                         >
-                            <option value="">-</option>
+                            <option value="5">Zvoľte končatinu (voliteľné)</option>
                             <option value="1">Pravá ruka</option>
                             <option value="2">Ľavá ruka</option>
                             <option value="3">Pravá noha</option>
