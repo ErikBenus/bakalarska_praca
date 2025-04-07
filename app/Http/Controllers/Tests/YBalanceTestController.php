@@ -13,10 +13,9 @@ use Illuminate\Support\Facades\DB;
 
 class YBalanceTestController extends Controller
 {
-    // Získanie všetkých testov pre Y Balance test pre konkrétneho klienta
     public function index(Request $request)
     {
-        $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov
+        $clientId = $request->query('client_id');
 
         try {
             $tests = Test::where('category', 'Y Balance Test')
@@ -81,7 +80,7 @@ class YBalanceTestController extends Controller
                 foreach ($request->values as $value) {
                     if (!empty($value['id_limb']) && isset($value['value'])) {
                         ValueLimb::create([
-                            'test_id' => $yBalanceTest->id,
+                            'y_balance_test_id' => $yBalanceTest->id,
                             'id_limb' => $value['id_limb'],
                             'value' => $value['value'],
                             'attempt' => $value['attempt'],

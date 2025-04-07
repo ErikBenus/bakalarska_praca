@@ -23,6 +23,6 @@ class YBalanceTest extends Model
 
     public function valueLimb()
     {
-        return $this->hasMany(ValueLimb::class, 'test_id');
+        return $this->hasMany(ValueLimb::class, 'y_balance_test_id');
     }
 }

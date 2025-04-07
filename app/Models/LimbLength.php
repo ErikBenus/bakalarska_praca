@@ -5,24 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MaxPowerTest extends Model
+class LimbLength extends Model
 {
     use HasFactory;
 
-    protected $table = 'max_power_test';
+    protected $table = 'limb_lengths';
 
     protected $fillable = [
         'client_id',
-        'exercise_name'
+        'limb_id',
+        'length',
     ];
 
-    public function user()
+    public function client()
     {
         return $this->belongsTo(User::class, 'client_id');
     }
 
-    public function valueLimb()
+    public function limb()
     {
-        return $this->hasMany(ValueLimb::class, 'max_power_test_id');
+        return $this->belongsTo(TestingLimb::class, 'limb_id');
     }
 }

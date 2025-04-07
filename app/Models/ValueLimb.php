@@ -17,12 +17,24 @@ class ValueLimb extends Model
         'value',
         'attempt',
         'avg_value',
-        'weight'
+        'weight',
+        'y_balance_test_id',
+        'max_power_test_id'
     ];
 
-    public function test()
+    public function custom_test()
     {
         return $this->belongsTo(Test::class, 'test_id');
+    }
+
+    public function yBalanceTests()
+    {
+        return $this->belongsTo(YBalanceTest::class, 'y_balance_test_id');
+    }
+
+    public function maxPowerTests()
+    {
+        return $this->belongsTo(MaxPowerTest::class, 'max_power_test_id');
     }
 
     public function limb()

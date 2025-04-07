@@ -8,6 +8,7 @@ import YBalanceTestForm from "@/Components/AddTest/YBalanceTestForm.jsx";
 import GeneralAddTestForm from "@/Components/AddTest/GeneralAddTestForm.jsx";
 import MobilityFlexibilityForm from "@/Components/AddTest/MobilityFlexibilityForm.jsx";
 import JumpProfileForm from "@/Components/AddTest/JumpProfileForm.jsx";
+import MaxPowerTestForm from "@/Components/AddTest/MaxPowerTestForm.jsx";
 
 const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const [newTest, setNewTest] = useState({
@@ -19,6 +20,12 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
         values: [
             { id_limb: '', value: '', attempt: '', weight: '' },
         ],
+    });
+
+    const [newMaxPowerTest, setNewMaxPowerTest] = useState({
+        exercise_name: '',
+        description: '',
+        values: [{ weight: '', mean_ms: '', average: '', attempt: 1, id_limb: '' }],
     });
 
     const muscles = [
@@ -130,6 +137,16 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     metrics: 'Hodnota',
                     values: jumpProfileValues,
                 });
+            } else if (value === 'Maximálna sila') {
+                setNewMaxPowerTest({
+                    exercise_name: '',
+                    description: '',
+                    values: [{ weight: '', mean_ms: '', average: '', attempt: '', id_limb: '5' }],
+                });
+                setNewTest({
+                    ...newTest,
+                    category: value,
+                });
             } else {
                 setNewTest({
                     ...newTest,
@@ -147,15 +164,21 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
 
     const handleValueChange = (index, e) => {
-        const { name, value } = e.target;
         const updatedValues = [...newTest.values];
+        updatedValues[index].value = e.target.value;
+        setNewTest({ ...newTest, values: updatedValues });
+    };
+
+
+    const handleValueMaxTestChange = (index, e) => {
+        const { name, value } = e.target;
+        const updatedValues = [...newMaxPowerTest.values];
         updatedValues[index] = {
             ...updatedValues[index],
             [name]: value,
         };
-        setNewTest({ ...newTest, values: updatedValues });
+        setNewMaxPowerTest({ ...newMaxPowerTest, values: updatedValues });
     };
-
 
 
     const addLimbValue = () => {
@@ -176,6 +199,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
             if (category === 'Y Balance Test') base = '/api/y-balance-test';
             if (category === 'Easy Force') base = '/api/easy-force';
+            if (category === 'Maximálna sila') base = '/api/max-power-tests';
 
             return id ? `${base}/${id}` : base;
         };
@@ -284,7 +308,26 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     toast.error('Chyba pri ukladaní testov!');
                     console.error(err);
                 });
-        }else {
+        } else if (newTest.category === 'Maximálna sila') {
+            const maxPowerData = {
+                client_id: newTest.client_id, // Používame client_id z newTest
+                exercise_name: newMaxPowerTest.exercise_name,
+                description: newMaxPowerTest.description,
+                values: newMaxPowerTest.values,
+                category: 'Maximálna sila',
+            };
+
+            saveTest(maxPowerData)
+                .then(() => {
+                    toast.success(testId ? 'Test bol upravený!' : 'Test bol pridaný!');
+                    onRequestClose();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    toast.error('Chyba pri ukladaní testu!');
+                    console.error(err);
+                });
+        } else {
             saveTest(testDataToSave)
                 .then(() => {
                     toast.success(testId ? 'Test bol upravený!' : 'Test bol pridaný!');
@@ -325,6 +368,14 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 <option value="Easy Force">Easy Force</option>
                 <option value="Nedefinová kategória">Nedefinová kategória</option>
             </select>
+            {newTest.category === 'Maximálna sila' && (
+                <MaxPowerTestForm
+                    newTest={newMaxPowerTest}
+                    setNewTest={setNewMaxPowerTest}
+                    handleValueMaxTestChange={handleValueMaxTestChange}
+                />
+            )}
+
             {newTest.category === 'Y Balance Test' && (
                 <YBalanceTestForm
                     newTest={newTest}
@@ -363,6 +414,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             {newTest.category !== 'Easy Force' &&
                 newTest.category !== 'Y Balance Test' &&
                 newTest.category !== 'Mobilita a flexibilita' &&
+                newTest.category !== 'Maximálna sila' &&
                 newTest.category !== 'Skokový profil' &&(
                     <GeneralAddTestForm
                         newTest={newTest}

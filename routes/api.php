@@ -4,6 +4,7 @@ use App\Http\Controllers\ClientsDataController;
 use App\Http\Controllers\CreateNewTestController;
 use App\Http\Controllers\ManageClientsController;
 use App\Http\Controllers\ManageTrainersController;
+use App\Http\Controllers\Tests\MaxPowerTestController;
 use App\Http\Controllers\Tests\YBalanceTestController;
 use App\Models\Test;
 use App\Models\User;
@@ -39,6 +40,8 @@ Route::prefix('/api')->group(function () {
     Route::put('/all-trainers/{id}', [ManageTrainersController::class, 'update']);
     Route::delete('/all-trainers/{id}', [ManageTrainersController::class, 'destroy']);
     Route::post('/all-trainers/{id}/promote', [ManageTrainersController::class, 'promoteToAdmin']);
+
+    Route::post('/max-power-tests', [MaxPowerTestController::class, 'store']);
 
 
 //    Route::get('/y-balance-test', [YBalanceTestController::class, 'index']);
