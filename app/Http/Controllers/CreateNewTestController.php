@@ -17,7 +17,7 @@ class CreateNewTestController extends Controller
         'Vybušná sila' => 'vybusna-sila',
         'Skokový profil' => 'skokovy-profil',
         'Mobilita a flexibilita' => 'mobilita-a-flexibilita',
-        'Špeciálne testy' => 'specialne-testy',
+        'Nedefinová kategória' => 'specialne-testy',
     ];
 
     public function index(Request $request, $categorySlug)

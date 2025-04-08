@@ -296,7 +296,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     ],
                 };
                 return saveTest(muscleData);
-            })} else if (newTest.category === 'Skokový profil') {
+            });
+
+            Promise.all(promises)
+                .then(() => {
+                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
+                    onRequestClose();
+                    window.location.reload();
+                })
+                .catch((err) => {
+                    toast.error('Chyba pri ukladaní testov!');
+                    console.error(err);
+                });
+        } else if (newTest.category === 'Skokový profil') {
                 const promises = jumpTests.map((test) => {
                     const testValues = newTest.values.filter((val) => val.name === test.name);
                     const jumpData = {

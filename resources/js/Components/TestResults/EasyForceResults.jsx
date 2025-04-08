@@ -86,23 +86,23 @@ const EasyForceResults = ({ clientId }) => {
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pokus</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Končatina</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hodnota</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Maximum</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rozdiel</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">% Rozdiel</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pokus</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Končatina</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Hodnota</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Maximum</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rozdiel</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">% Rozdiel</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {testValues[test.id].map(value => (
                                     <tr key={value.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.attempt || '-'}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.limb_name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.value}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculateMax(testValues[test.id], value.id_limb)}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculateMaxDifference(testValues[test.id])}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculatePercentageDifference(testValues[test.id])}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt || '-'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.limb_name}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.value}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{calculateMax(testValues[test.id], value.id_limb)}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{calculateMaxDifference(testValues[test.id])}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{calculatePercentageDifference(testValues[test.id])}</td>
                                     </tr>
                                 ))}
                                 </tbody>

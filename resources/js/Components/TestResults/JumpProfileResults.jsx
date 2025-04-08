@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
-import { ClipLoader } from 'react-spinners'; // Import spinnera
+import { ClipLoader } from 'react-spinners';
 
-const EasyForceResults = ({ clientId }) => {
+const ExplosivePowerResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
+    const [showLimbColumn, setShowLimbColumn] = useState(false);
 
     useEffect(() => {
-        axios.get(`/api/easy-force?client_id=${clientId}`)
+        axios.get(`/api/tests/skokovy-profil?client_id=${clientId}`)
             .then(response => {
-                console.log(`Dáta z /api/easy-force pre klienta ${clientId}:`, response.data);
                 setTests(response.data);
 
                 const promises = response.data.map(test =>
-                    axios.get(`/api/easy-force/${test.id}?client_id=${clientId}`)
+                    axios.get(`/api/tests/skokovy-profil/${test.id}?client_id=${clientId}`)
                         .then(response => {
                             setTestValues(prevValues => ({
                                 ...prevValues,
                                 [test.id]: response.data
                             }));
+                            if (response.data.some(value => value.limb_name !== '-')) {
+                                setShowLimbColumn(true);
+                            }
                         })
                         .catch(error => {
                             console.error(`Chyba pri načítaní hodnôt testu ${test.id} pre klienta ${clientId}:`, error);
@@ -35,42 +38,49 @@ const EasyForceResults = ({ clientId }) => {
                 console.error(`Chyba pri načítaní testov pre klienta ${clientId}:`, error);
                 setLoading(false);
             });
-    }, [clientId]); // clientId ako závislosť useEffect
+    }, [clientId]);
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('sk-SK');
+    const processTestData = () => {
+        if (!tests || !testValues) return { bothLegs: [], rightLeg: [], leftLeg: [] };
+
+        const bothLegs = [];
+        const rightLeg = [];
+        const leftLeg = [];
+
+        tests.forEach(test => {
+            const values = testValues[test.id];
+            if (values) {
+                const groupedValues = {};
+                values.forEach(value => {
+                    if (!groupedValues[value.name]) {
+                        groupedValues[value.name] = { name: test.name, attempts: {} };
+                    }
+                    groupedValues[value.name].attempts[value.attempt] = value.value;
+                });
+
+                Object.values(groupedValues).forEach(groupedValue => {
+                    const row = {
+                        name: groupedValue.name,
+                        attempt1: groupedValue.attempts[1] || 'N/A',
+                        attempt2: groupedValue.attempts[2] || 'N/A',
+                    };
+
+                    if (!values[0].limb_name || values[0].limb_name === '-') {
+                        bothLegs.push(row);
+                    } else if (Number(values[0].id_limb) === 3) {
+                        rightLeg.push(row);
+                    } else if (Number(values[0].id_limb) === 4) {
+                        leftLeg.push(row);
+                    }
+
+                });
+            }
+        });
+
+        return { bothLegs, rightLeg, leftLeg };
     };
 
-    const calculateMax = (values, limbId) => {
-        const limbValues = values.filter(v => v.id_limb === limbId);
-        if (limbValues.length === 0) {
-            return '-';
-        }
-        return Math.max(...limbValues.map(v => v.value));
-    };
-
-    const calculateMaxDifference = (values) => {
-        const maxLimb3 = calculateMax(values, 3);
-        const maxLimb4 = calculateMax(values, 4);
-
-        if (maxLimb3 === '-' || maxLimb4 === '-') {
-            return '-';
-        }
-
-        return maxLimb4 - maxLimb3;
-    };
-
-    const calculatePercentageDifference = (values) => {
-        const maxLimb3 = calculateMax(values, 3);
-        const maxLimb4 = calculateMax(values, 4);
-
-        if (maxLimb3 === '-' || maxLimb4 === '-') {
-            return '-';
-        }
-
-        return (100 - (maxLimb3 / maxLimb4 * 100)).toFixed(2) + '%';
-    };
+    const { bothLegs, rightLeg, leftLeg } = processTestData();
 
     return (
         <TestResultsBox>
@@ -79,40 +89,85 @@ const EasyForceResults = ({ clientId }) => {
                     <ClipLoader size={20} color={'#123abc'} />
                 </div>
             ) : (
-                tests.map(test => (
-                    <div key={test.id} className="mb-4">
-                        <h3 className="text-lg font-semibold">{test.name} - {formatDate(test.created_at)}</h3>
-                        {testValues[test.id] && (
+                <>
+                    {/* Obojnožné skoky */}
+                    {bothLegs.length > 0 && (
+                        <div>
+                            <h3 className="text-lg font-semibold mb-2">Skokový profil</h3>
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pokus</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Končatina</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hodnota</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Maximum</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rozdiel</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">% Rozdiel</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Názov skoku</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {testValues[test.id].map(value => (
-                                    <tr key={value.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.attempt || '-'}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.limb_name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.value}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculateMax(testValues[test.id], value.id_limb)}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculateMaxDifference(testValues[test.id])}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculatePercentageDifference(testValues[test.id])}</td>
+                                {bothLegs.map(value => (
+                                    <tr key={value.name}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.name}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt1}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt2}</td>
                                     </tr>
                                 ))}
                                 </tbody>
                             </table>
-                        )}
-                    </div>
-                ))
+                        </div>
+                    )}
+
+                    {/* Pravá noha */}
+                    {rightLeg.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Skokový profil - Pravá noha</h3>
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                <tr>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Názov skoku</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {rightLeg.map(value => (
+                                    <tr key={value.name}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.name}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt1}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt2}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    {/* Ľavá noha */}
+                    {leftLeg.length > 0 && (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold mb-2">Skokový profil - Ľavá noha</h3>
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                <tr>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Názov skoku</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {leftLeg.map(value => (
+                                    <tr key={value.name}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.name}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt1}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt2}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </>
             )}
         </TestResultsBox>
     );
 };
 
-export default EasyForceResults;
+export default ExplosivePowerResults;

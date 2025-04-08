@@ -9,12 +9,12 @@ const jumpTests = {
         { name: 'H', id_limb: 5 },
     ],
     pravaNoha: [
-        { name: 'CMJ Right', id_limb: 3 },
-        { name: 'SJ Right', id_limb: 3 },
+        { name: 'CMJ', id_limb: 3 },
+        { name: 'SJ', id_limb: 3 },
     ],
     lavaNoha: [
-        { name: 'CMJ Left', id_limb: 4 },
-        { name: 'SJ Left', id_limb: 4 },
+        { name: 'CMJ', id_limb: 4 },
+        { name: 'SJ', id_limb: 4 },
     ],
 };
 
