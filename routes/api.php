@@ -29,6 +29,9 @@ Route::prefix('/api')->group(function () {
     Route::get('/clients/{clientId}/data', [ClientsDataController::class, 'show']);
 
     Route::post('/tests', [CreateNewTestController::class, 'store']);
+    Route::get('/tests/{categorySlug}', [CreateNewTestController::class, 'index']);
+    Route::get('/tests/{categorySlug}/{testId}', [CreateNewTestController::class, 'show']);
+
     Route::post('/value-limb', function () {
         return response()->json([], 404);
     });

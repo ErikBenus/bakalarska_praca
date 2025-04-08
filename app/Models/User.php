@@ -60,7 +60,7 @@ class User extends Authenticatable
         return $this->hasOne(ClientsData::class, 'client_id');
     }
 
-    public function custom_tests()
+    public function test()
     {
         return $this->hasMany(Test::class, 'client_id');
     }

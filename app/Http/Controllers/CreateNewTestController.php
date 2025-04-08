@@ -3,12 +3,77 @@
 namespace App\Http\Controllers;
 
 use App\Models\Test;
+use App\Models\TestingLimb;
 use App\Models\ValueLimb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CreateNewTestController extends Controller
 {
+    private $categorySlugs = [
+        'Aeróbna kapacita' => 'aerobna-kapacita',
+        'Rychlostné schopnosti' => 'rychlostne-schopnosti',
+        'Svalová vytrvalosť' => 'svalova-vytrvalost',
+        'Vybušná sila' => 'vybusna-sila',
+        'Skokový profil' => 'skokovy-profil',
+        'Mobilita a flexibilita' => 'mobilita-a-flexibilita',
+        'Špeciálne testy' => 'specialne-testy',
+    ];
+
+    public function index(Request $request, $categorySlug)
+    {
+        $clientId = $request->query('client_id');
+        $category = array_search($categorySlug, $this->categorySlugs);
+
+        if ($category === false) {
+            return response()->json(['error' => 'Neplatná kategória testu'], 400);
+        }
+
+        try {
+            $tests = Test::where('category', $category)
+                ->where('client_id', $clientId)
+                ->get();
+
+            return response()->json($tests);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Server error'], 500);
+        }
+    }
+
+    public function show(Request $request, $categorySlug, $testId)
+    {
+        $clientId = $request->query('client_id');
+        $category = array_search($categorySlug, $this->categorySlugs);
+
+        if ($category === false) {
+            return response()->json(['error' => 'Neplatná kategória testu'], 400);
+        }
+
+        $values = ValueLimb::where('test_id', $testId)
+            ->whereHas('test', function ($query) use ($clientId, $category) {
+                $query->where('client_id', $clientId)
+                    ->where('category', $category);
+            })
+            ->with('limb')
+            ->get();
+
+        return response()->json($values->map(function ($value) {
+            $limbName = TestingLimb::where('id', $value->id_limb)->value('name') ?? '-';
+            return [
+                'id' => $value->id,
+                'test_id' => $value->test_id,
+                'id_limb' => $value->id_limb,
+                'limb_name' => $limbName,
+                'value' => $value->value,
+                'attempt' => $value->attempt,
+                'avg_value' => $value->avg_value,
+                'weight' => $value->weight,
+                'created_at' => $value->created_at,
+                'updated_at' => $value->updated_at,
+            ];
+        }));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

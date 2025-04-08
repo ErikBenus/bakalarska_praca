@@ -22,10 +22,11 @@ class ValueLimb extends Model
         'max_power_test_id'
     ];
 
-    public function custom_test()
+    public function test()
     {
         return $this->belongsTo(Test::class, 'test_id');
     }
+
 
     public function yBalanceTests()
     {
