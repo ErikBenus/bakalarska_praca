@@ -164,9 +164,18 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
 
     const handleValueChange = (index, e) => {
-        const updatedValues = [...newTest.values];
-        updatedValues[index].value = e.target.value;
-        setNewTest({ ...newTest, values: updatedValues });
+        const { name, value } = e.target;
+        setNewTest(prevTest => {
+            const updatedValues = [...prevTest.values];
+            updatedValues[index] = {
+                ...updatedValues[index],
+                [name]: value
+            };
+            return {
+                ...prevTest,
+                values: updatedValues
+            };
+        });
     };
 
 

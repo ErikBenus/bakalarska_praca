@@ -14,6 +14,8 @@ import ExplosivePowerResults from "@/Components/TestResults/ExplosivePowerResult
 import JumpProfileResults from "@/Components/TestResults/JumpProfileResults.jsx";
 import MobilityFlexibilityResults from "@/Components/TestResults/MobilityFlexibilityResults.jsx";
 import SpecialTestResults from "@/Components/TestResults/SpecialTestResults.jsx";
+import SectionRenderer from "@/Components/SectionRenderer.jsx";
+import SectionButtons from "@/Components/TestResults/SectionButtons.jsx";
 
 export default function Dashboard() {
 
@@ -36,94 +38,6 @@ export default function Dashboard() {
         'Skokový profil': JumpProfileResults,
         'Mobilita a flexibilita': MobilityFlexibilityResults,
         'Špeciálne testy': SpecialTestResults,
-    };
-
-    // const renderSelectedComponent = () => {
-    //     switch (activeSection) {
-    //         case 'Easy Force':
-    //             return <ResultsTestContainer component={EasyForceResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Maximálna sila':
-    //             return <ResultsTestContainer component={MaxPowerResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Y Balance Test':
-    //             return <ResultsTestContainer component={YBalanceTestResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Aeróbna kapacita':
-    //             return <ResultsTestContainer component={AerobicCapacityResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Rychlostné schopnosti':
-    //             return <ResultsTestContainer component={SpeedAbilityResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Svalová vytrvalosť':
-    //             return <ResultsTestContainer component={MuscleEnduranceResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Vybušná sila':
-    //             return <ResultsTestContainer component={ExplosivePowerResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Skokový profil':
-    //             return <ResultsTestContainer component={JumpProfileResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Mobilita a flexibilita':
-    //             return <ResultsTestContainer component={MobilityFlexibilityResults} parameters={{ clientId: auth.user.id }} />;
-    //         case 'Špeciálne testy':
-    //             return <ResultsTestContainer component={SpecialTestResults} parameters={{ clientId: auth.user.id }} />;
-    //         default:
-    //             return null;
-    //     }
-    // };
-
-    const generateButtons = () => {
-        const sectionNames = Object.keys(sectionComponents);
-
-        const firstRow = sectionNames.slice(0, 5).map((sectionName, index) => {
-            let className = `px-4 py-2 mx-1 ${activeSection === sectionName ? 'bg-blue-500 text-white' : 'bg-gray-200'}`;
-
-            if (index === 0) {
-                className += ' rounded-l-md ml-0';
-            }
-            if (index === 4) {
-                className += ' rounded-r-md mr-0';
-            }
-
-            return (
-                <button
-                    key={sectionName}
-                    className={className}
-                    onClick={() => handleSectionChange(sectionName)}
-                >
-                    {sectionName}
-                </button>
-            );
-        });
-
-        const secondRow = sectionNames.slice(5, 10).map((sectionName, index) => {
-            let className = `px-4 py-2 mx-1 ${activeSection === sectionName ? 'bg-blue-500 text-white' : 'bg-gray-200'}`;
-
-            if (index === 0) {
-                className += ' rounded-l-md ml-0';
-            }
-            if (index === 4) {
-                className += ' rounded-r-md mr-0';
-            }
-
-            return (
-                <button
-                    key={sectionName}
-                    className={className}
-                    onClick={() => handleSectionChange(sectionName)}
-                >
-                    {sectionName}
-                </button>
-            );
-        });
-
-        return (
-            <div className="my-2"> {/* Pridali sme my-2 */}
-                <div className="flex justify-center mb-1">{firstRow}</div> {/* Pridali sme mb-1 */}
-                <div className="flex justify-center">{secondRow}</div>
-            </div>
-        );
-    };
-
-    const renderSelectedComponent = () => {
-        const SelectedComponent = sectionComponents[activeSection];
-        if (SelectedComponent) {
-            return <ResultsTestContainer component={SelectedComponent} parameters={{ clientId: auth.user.id }} />;
-        }
-        return null;
     };
 
     if (can('see trainer dashboard')) {
@@ -178,12 +92,20 @@ export default function Dashboard() {
 
                                 <p className="mb-4">Vyberte si kategóriu pre zobrazenie testov:</p>
                                 <div className="flex justify-center mb-4">
-                                    {generateButtons()}
+                                    <SectionButtons
+                                        sections={sectionComponents}
+                                        activeSection={activeSection}
+                                        onSectionChange={handleSectionChange}
+                                    />
                                 </div>
                             </div>
                         </div>
                         <div className="mt-6 bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                            {renderSelectedComponent()}
+                            <SectionRenderer
+                                sections={sectionComponents}
+                                activeSection={activeSection}
+                                parameters={{ clientId: auth.user.id }}
+                            />
                         </div>
                     </div>
                 </div>

@@ -6,14 +6,43 @@ import ResultsTestContainer from "@/Components/ResultsTestContainer.jsx";
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import ClientHeader from "@/Components/ClientHeader.jsx";
 import AddTestForm from "@/Components/AddTest/CreateTestModal.jsx";
+import SectionRenderer from "@/Components/SectionRenderer.jsx";
+import SectionButtons from "@/Components/TestResults/SectionButtons.jsx";
+import MaxPowerResults from "@/Components/TestResults/MaxPowerResults.jsx";
+import YBalanceTestResults from "@/Components/TestResults/YBalanceTestResults.jsx";
+import AerobicCapacityResults from "@/Components/TestResults/AerobicCapacityResults.jsx";
+import SpeedAbilityResults from "@/Components/TestResults/SpeedAbilityResults.jsx";
+import MuscleEnduranceResults from "@/Components/TestResults/MuscleEnduranceResults.jsx";
+import ExplosivePowerResults from "@/Components/TestResults/ExplosivePowerResults.jsx";
+import JumpProfileResults from "@/Components/TestResults/JumpProfileResults.jsx";
+import MobilityFlexibilityResults from "@/Components/TestResults/MobilityFlexibilityResults.jsx";
+import SpecialTestResults from "@/Components/TestResults/SpecialTestResults.jsx";
 
 
 export default function ClientDetails({ client, tests, clientId }) {
     const [clientData, setClientData] = useState(null);
     const [showAddTestForm, setShowAddTestForm] = useState(false);
+    const [activeSection, setActiveSection] = useState(null);
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('sk-SK');
+    };
+
+    const handleSectionChange = (section) => {
+        setActiveSection(section);
+    };
+
+    const sectionComponents = {
+        'Easy Force': EasyForceResults,
+        'Maximálna sila': MaxPowerResults,
+        'Y Balance Test': YBalanceTestResults,
+        'Aeróbna kapacita': AerobicCapacityResults,
+        'Rychlostné schopnosti': SpeedAbilityResults,
+        'Svalová vytrvalosť': MuscleEnduranceResults,
+        'Vybušná sila': ExplosivePowerResults,
+        'Skokový profil': JumpProfileResults,
+        'Mobilita a flexibilita': MobilityFlexibilityResults,
+        'Špeciálne testy': SpecialTestResults,
     };
 
     const calculateAge = (dateOfBirthString, DateOfTesting) => {
@@ -130,18 +159,25 @@ export default function ClientDetails({ client, tests, clientId }) {
                         </div>
                     </div>
                     <h3 className="text-lg font-semibold mt-6 mb-4">Zoznam testov</h3>
-                    <ResultsTestContainer
-                        title="Easy Force"
-                        component={EasyForceResults}
-                        parameters={{clientId: client.id}}
-                    />
+                    <div className="flex justify-center mb-4">
+                        <SectionButtons
+                            sections={sectionComponents}
+                            activeSection={activeSection}
+                            onSectionChange={handleSectionChange}
+                        />
+                    </div>
                 </div>
+                <SectionRenderer
+                    sections={sectionComponents}
+                    activeSection={activeSection}
+                    parameters={{clientId: client.id}}
+                />
             </div>
             {showAddTestForm && (
                 <AddTestForm
-                isOpen={showAddTestForm}
-                onRequestClose={closeModal}
-                testData={{
+                    isOpen={showAddTestForm}
+                    onRequestClose={closeModal}
+                    testData={{
                     client_id: client.id,
                     name: '',
                     category: '',
