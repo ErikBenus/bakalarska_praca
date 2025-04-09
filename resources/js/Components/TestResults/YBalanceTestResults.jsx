@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import { ClipLoader } from 'react-spinners';
+import SortableTable from '@/Components/SortableTable';
+import { sortData } from '@/Utils/SortData';
 
 const YBalanceTestResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
         axios.get(`/api/y-balance-test?client_id=${clientId}`)
@@ -47,7 +52,7 @@ const YBalanceTestResults = ({ clientId }) => {
             if (values) {
                 const groupedValues = {};
                 values.forEach(value => {
-                    const key = `${test.name}`; // Používame test.name pre Y Balance Test
+                    const key = `${test.name}`;
                     if (!groupedValues[key]) {
                         groupedValues[key] = {
                             name: key,
@@ -93,6 +98,51 @@ const YBalanceTestResults = ({ clientId }) => {
 
     const processedTestData = processTestData();
 
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const columns = [
+        { key: 'leg', label: 'Noha' },
+        { key: 'attempt1', label: '1. pokus' },
+        { key: 'attempt2', label: '2. pokus' },
+        { key: 'attempt3', label: '3. pokus' },
+        { key: 'absoluteDistance', label: 'Absolútna vzdialenosť' },
+        { key: 'absoluteDifference', label: 'Absolútny rozdiel' },
+        { key: 'relativeDistance', label: 'Relatívna vzdialenosť (%)' },
+        { key: 'relativeDifference', label: 'Relatívny rozdiel (%)' },
+    ];
+
+    const generateTableData = (data) => {
+        return [
+            {
+                leg: 'Pravá noha',
+                attempt1: data.rightLeg[0],
+                attempt2: data.rightLeg[1],
+                attempt3: data.rightLeg[2],
+                absoluteDistance: data.absoluteDistance,
+                absoluteDifference: data.absoluteDifference,
+                relativeDistance: data.relativeDistance,
+                relativeDifference: data.relativeDifference,
+            },
+            {
+                leg: 'Ľavá noha',
+                attempt1: data.leftLeg[0],
+                attempt2: data.leftLeg[1],
+                attempt3: data.leftLeg[2],
+                absoluteDistance: data.absoluteDistance,
+                absoluteDifference: data.absoluteDifference,
+                relativeDistance: data.relativeDistance,
+                relativeDifference: data.relativeDifference,
+            },
+        ];
+    };
+
     return (
         <TestResultsBox>
             {loading ? (
@@ -104,42 +154,17 @@ const YBalanceTestResults = ({ clientId }) => {
                     {processedTestData.map(data => (
                         <div key={data.name} className="mb-4">
                             <h3 className="text-lg font-semibold mb-2">{data.name}</h3>
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                <tr>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Noha</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">3. pokus</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Absolútna vzdialenosť</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Absolútny rozdiel</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Relatívna vzdialenosť (%)</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Relatívny rozdiel (%)</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">Pravá noha</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.rightLeg[0]}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.rightLeg[1]}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.rightLeg[2]}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDistance}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDifference}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDistance}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDifference}</td>
-                                </tr>
-                                <tr>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">Ľavá noha</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.leftLeg[0]}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.leftLeg[1]}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.leftLeg[2]}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDistance}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDifference}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDistance}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDifference}</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <SortableTable
+                                data={sortData(generateTableData(data), sortColumn, sortDirection)}
+                                columns={columns}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                onSort={handleSort}
+                                hoveredRowId={hoveredRowId}
+                                onHover={setHoveredRowId}
+                                getRowKey={(row) => row.leg}
+                                rowClassName={(row) => row.leg === hoveredRowId ? 'bg-gray-100' : ''}
+                            />
                         </div>
                     ))}
                 </div>

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
+import SortableTable from '@/Components/SortableTable';
 import { ClipLoader } from 'react-spinners';
 
 const AerobicCapacityResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
+    const [hoveredRowId, setHoveredRowId] = useState(null);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortDirection, setSortDirection] = useState('asc');
     const [showLimbColumn, setShowLimbColumn] = useState(false);
 
     useEffect(() => {
@@ -21,24 +25,63 @@ const AerobicCapacityResults = ({ clientId }) => {
                                 ...prevValues,
                                 [test.id]: response.data
                             }));
+
                             if (response.data.some(value => value.limb_name !== '-')) {
                                 setShowLimbColumn(true);
                             }
                         })
                         .catch(error => {
-                            console.error(`Chyba pri načítaní hodnôt testu ${test.id} pre klienta ${clientId}:`, error);
+                            console.error(`Chyba pri načítaní hodnôt testu ${test.id}:`, error);
                         })
                 );
 
-                Promise.all(promises).then(() => {
-                    setLoading(false);
-                });
+                Promise.all(promises).then(() => setLoading(false));
             })
             .catch(error => {
-                console.error(`Chyba pri načítaní testov pre klienta ${clientId}:`, error);
+                console.error(`Chyba pri načítaní testov:`, error);
                 setLoading(false);
             });
     }, [clientId]);
+
+    const sortData = (values, column, direction) => {
+        if (!column) return values;
+
+        return [...values].sort((a, b) => {
+            let valueA = a[column];
+            let valueB = b[column];
+
+            if (column === 'value') {
+                valueA = parseFloat(valueA);
+                valueB = parseFloat(valueB);
+            }
+
+            if (direction === 'asc') {
+                return valueA > valueB ? 1 : -1;
+            } else {
+                return valueA < valueB ? 1 : -1;
+            }
+        });
+    };
+
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const baseColumns = [
+        { key: 'test_name', label: 'Názov testu' },
+        { key: 'value', label: 'Hodnota' },
+    ];
+
+    if (showLimbColumn) {
+        baseColumns.push({ key: 'limb_name', label: 'Končatina' });
+    }
+
+    baseColumns.push({ key: 'metrics', label: 'Metriky' });
 
     return (
         <TestResultsBox>
@@ -47,42 +90,28 @@ const AerobicCapacityResults = ({ clientId }) => {
                     <ClipLoader size={20} color={'#123abc'} />
                 </div>
             ) : (
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                    <tr>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Názov testu
-                        </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Hodnota
-                        </th>
-                        {showLimbColumn && (
-                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Končatina
-                            </th>
-                        )}
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Metriky
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {tests.map(test => (
-                        testValues[test.id] && testValues[test.id].map(value => (
-                            <tr key={value.id}>
-                                <td className="px-6 py-4 whitespace-nowrap text-center">{test.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-center">{value.value || 'N/A'}</td>
-                                {showLimbColumn && (
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                                        {value.limb_name !== '-' ? value.limb_name : ''}
-                                    </td>
-                                )}
-                                <td className="px-6 py-4 whitespace-nowrap text-center">{test.metrics}</td>
-                            </tr>
-                        ))
-                    ))}
-                    </tbody>
-                </table>
+                tests.map(test => {
+                    const values = testValues[test.id]?.map(v => ({
+                        ...v,
+                        test_name: test.name,
+                        metrics: test.metrics,
+                    })) || [];
+
+                    return (
+                        <div key={test.id} className="mb-4">
+                            <SortableTable
+                                data={sortData(values, sortColumn, sortDirection)}
+                                columns={baseColumns}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                onSort={handleSort}
+                                hoveredRowId={hoveredRowId}
+                                onHover={setHoveredRowId}
+                                getRowKey={(row) => row.id}
+                            />
+                        </div>
+                    );
+                })
             )}
         </TestResultsBox>
     );

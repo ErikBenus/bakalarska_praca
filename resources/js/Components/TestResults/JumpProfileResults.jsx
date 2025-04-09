@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import { ClipLoader } from 'react-spinners';
+import SortableTable from '@/Components/SortableTable';
+import { sortData } from '@/Utils/SortData';
 
-const ExplosivePowerResults = ({ clientId }) => {
+const JumpProfileResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
-    const [showLimbColumn, setShowLimbColumn] = useState(false);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [hoveredRowId, setHoveredRowId] = useState(null); // Stav pre hovered riadok
 
     useEffect(() => {
         axios.get(`/api/tests/skokovy-profil?client_id=${clientId}`)
@@ -21,12 +25,9 @@ const ExplosivePowerResults = ({ clientId }) => {
                                 ...prevValues,
                                 [test.id]: response.data
                             }));
-                            if (response.data.some(value => value.limb_name !== '-')) {
-                                setShowLimbColumn(true);
-                            }
                         })
                         .catch(error => {
-                            console.error(`Chyba pri načítaní hodnôt testu ${test.id} pre klienta ${clientId}:`, error);
+                            console.error(`Chyba pri načítaní hodnôt testu ${test.id}:`, error);
                         })
                 );
 
@@ -72,7 +73,6 @@ const ExplosivePowerResults = ({ clientId }) => {
                     } else if (Number(values[0].id_limb) === 4) {
                         leftLeg.push(row);
                     }
-
                 });
             }
         });
@@ -81,6 +81,21 @@ const ExplosivePowerResults = ({ clientId }) => {
     };
 
     const { bothLegs, rightLeg, leftLeg } = processTestData();
+
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const columns = [
+        { key: 'name', label: 'Názov skoku' },
+        { key: 'attempt1', label: '1. pokus' },
+        { key: 'attempt2', label: '2. pokus' },
+    ];
 
     return (
         <TestResultsBox>
@@ -94,24 +109,16 @@ const ExplosivePowerResults = ({ clientId }) => {
                     {bothLegs.length > 0 && (
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Skokový profil</h3>
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                <tr>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Názov skoku</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {bothLegs.map(value => (
-                                    <tr key={value.name}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt1}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt2}</td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                            <SortableTable
+                                data={sortData(bothLegs, sortColumn, sortDirection)}
+                                columns={columns}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                onSort={handleSort}
+                                getRowKey={(row) => row.name}
+                                hoveredRowId={hoveredRowId}
+                                onHover={setHoveredRowId} // Nastavujeme stav pre hover
+                            />
                         </div>
                     )}
 
@@ -119,24 +126,16 @@ const ExplosivePowerResults = ({ clientId }) => {
                     {rightLeg.length > 0 && (
                         <div className="mt-4">
                             <h3 className="text-lg font-semibold mb-2">Skokový profil - Pravá noha</h3>
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                <tr>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Názov skoku</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {rightLeg.map(value => (
-                                    <tr key={value.name}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt1}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt2}</td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                            <SortableTable
+                                data={sortData(rightLeg, sortColumn, sortDirection)}
+                                columns={columns}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                onSort={handleSort}
+                                getRowKey={(row) => row.name}
+                                hoveredRowId={hoveredRowId}
+                                onHover={setHoveredRowId} // Nastavujeme stav pre hover
+                            />
                         </div>
                     )}
 
@@ -144,24 +143,16 @@ const ExplosivePowerResults = ({ clientId }) => {
                     {leftLeg.length > 0 && (
                         <div className="mt-4">
                             <h3 className="text-lg font-semibold mb-2">Skokový profil - Ľavá noha</h3>
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                <tr>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Názov skoku</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {leftLeg.map(value => (
-                                    <tr key={value.name}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt1}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt2}</td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                            <SortableTable
+                                data={sortData(leftLeg, sortColumn, sortDirection)}
+                                columns={columns}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                onSort={handleSort}
+                                getRowKey={(row) => row.name}
+                                hoveredRowId={hoveredRowId}
+                                onHover={setHoveredRowId} // Nastavujeme stav pre hover
+                            />
                         </div>
                     )}
                 </>
@@ -170,4 +161,4 @@ const ExplosivePowerResults = ({ clientId }) => {
     );
 };
 
-export default ExplosivePowerResults;
+export default JumpProfileResults;

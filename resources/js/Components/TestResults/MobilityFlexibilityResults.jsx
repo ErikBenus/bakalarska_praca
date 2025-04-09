@@ -1,52 +1,56 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import TestResultsBox from "@/Components/TestResultsBox.jsx";
-import {ClipLoader} from "react-spinners";
-
+import { ClipLoader } from "react-spinners";
+import SortableTable from '@/Components/SortableTable';
+import { sortData } from '@/Utils/SortData';
 
 const MobilityFlexibilityResults = ({ clientId }) => {
-const [tests, setTests] = useState([]);
-const [testValues, setTestValues] = useState({});
-const [loading, setLoading] = useState(true);
-const [showLimbColumn, setShowLimbColumn] = useState(false);
+    const [tests, setTests] = useState([]);
+    const [testValues, setTestValues] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [showLimbColumn, setShowLimbColumn] = useState(false);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [hoveredRowId, setHoveredRowId] = useState(null);
 
-useEffect(() => {
-    axios.get(`/api/tests/mobilita-a-flexibilita?client_id=${clientId}`)
-        .then(response => {
-            setTests(response.data);
+    useEffect(() => {
+        axios.get(`/api/tests/mobilita-a-flexibilita?client_id=${clientId}`)
+            .then(response => {
+                setTests(response.data);
 
-            const promises = response.data.map(test =>
-                axios.get(`/api/tests/mobilita-a-flexibilita/${test.id}?client_id=${clientId}`)
-                    .then(response => {
-                        setTestValues(prevValues => ({
-                            ...prevValues,
-                            [test.id]: response.data
-                        }));
-                        if (response.data.some(value => value.limb_name !== '-')) {
-                            setShowLimbColumn(true);
-                        }
-                    })
-                    .catch(error => {
-                        console.error(`Chyba pri načítaní hodnôt testu ${test.id} pre klienta ${clientId}:`, error);
-                    })
-            );
+                const promises = response.data.map(test =>
+                    axios.get(`/api/tests/mobilita-a-flexibilita/${test.id}?client_id=${clientId}`)
+                        .then(response => {
+                            setTestValues(prevValues => ({
+                                ...prevValues,
+                                [test.id]: response.data
+                            }));
+                            if (response.data.some(value => value.limb_name !== '-')) {
+                                setShowLimbColumn(true);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Chyba pri načítaní hodnôt testu ${test.id} pre klienta ${clientId}:`, error);
+                        })
+                );
 
-            Promise.all(promises).then(() => {
+                Promise.all(promises).then(() => {
+                    setLoading(false);
+                });
+            })
+            .catch(error => {
+                console.error(`Chyba pri načítaní testov pre klienta ${clientId}:`, error);
                 setLoading(false);
             });
-        })
-        .catch(error => {
-            console.error(`Chyba pri načítaní testov pre klienta ${clientId}:`, error);
-            setLoading(false);
-        });
-}, [clientId]);
+    }, [clientId]);
 
     const calculateDifference = (leftValue, rightValue) => {
         return Math.abs((leftValue || 0) - (rightValue || 0));
     };
 
     const calculateAsymmetry = (leftValue, rightValue) => {
-        return (calculateDifference(leftValue, rightValue))/Math.abs(Math.max(rightValue,leftValue))*100;
+        return (calculateDifference(leftValue, rightValue)) / Math.abs(Math.max(rightValue, leftValue)) * 100;
     };
 
     const processTestData = () => {
@@ -75,6 +79,23 @@ useEffect(() => {
 
     const processedTestData = processTestData();
 
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const columns = [
+        { key: 'name', label: 'Názov testu' },
+        { key: 'right', label: 'Pravá strana' },
+        { key: 'left', label: 'Ľavá strana' },
+        { key: 'difference', label: 'Rozdiel' },
+        { key: 'asymmetry', label: 'Asymetria' },
+    ];
+
     return (
         <TestResultsBox>
             {loading ? (
@@ -82,40 +103,20 @@ useEffect(() => {
                     <ClipLoader size={20} color={'#123abc'} />
                 </div>
             ) : (
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                    <tr>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Názov testu
-                        </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Pravá strana
-                        </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Ľavá strana
-                        </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Rozdiel
-                        </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Asymetria
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {processedTestData.map((data, index) => (
-                        <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{data.name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{data.right}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{data.left}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{data.difference}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-center">{data.asymmetry}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                <SortableTable
+                    data={sortData(processedTestData, sortColumn, sortDirection)}
+                    columns={columns}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    hoveredRowId={hoveredRowId}
+                    onHover={setHoveredRowId}
+                    getRowKey={(row) => row.name}
+                    rowClassName={(row) => row.name === hoveredRowId ? 'bg-gray-100' : ''}
+                />
             )}
         </TestResultsBox>
     );
 };
-export default MobilityFlexibilityResults
+
+export default MobilityFlexibilityResults;

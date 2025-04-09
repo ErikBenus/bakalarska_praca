@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import { ClipLoader } from 'react-spinners';
+import SortableTable from '@/Components/SortableTable';
+import { sortData } from '@/Utils/SortData';
 
-const MuscleEnduranceResults = ({ clientId }) => {
+const MaxPowerResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [showLimbColumn, setShowLimbColumn] = useState(false);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
         axios.get(`/api/max-power-tests?client_id=${clientId}`)
@@ -73,8 +78,23 @@ const MuscleEnduranceResults = ({ clientId }) => {
         return processedData;
     };
 
-
     const processedTestData = processTestData();
+
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const columns = [
+        { key: 'attempt', label: 'Pokus' },
+        { key: 'weight', label: 'Dvíhaná váha' },
+        { key: 'average', label: 'Average m/s' },
+        { key: 'mean_ms', label: 'Mean m/s' },
+    ];
 
     return (
         <TestResultsBox>
@@ -91,32 +111,17 @@ const MuscleEnduranceResults = ({ clientId }) => {
                                     ? `${group.name} - ${group.values[0].limb_name}`
                                     : group.name}
                             </h3>
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                <tr>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Pokus</th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Dvíhaná
-                                        váha
-                                    </th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Average
-                                        m/s
-                                    </th>
-                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Mean
-                                        m/s
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {group.values.map(value => (
-                                    <tr key={value.attempt}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.attempt}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.weight}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.average}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-center">{value.mean_ms}</td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                            <SortableTable
+                                data={sortData(group.values, sortColumn, sortDirection)}
+                                columns={columns}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                onSort={handleSort}
+                                hoveredRowId={hoveredRowId}
+                                onHover={setHoveredRowId}
+                                getRowKey={(row) => row.attempt}
+                                rowClassName={(row) => row.attempt === hoveredRowId ? 'bg-gray-100' : ''}
+                            />
                         </div>
                     ))}
                 </div>
@@ -125,4 +130,4 @@ const MuscleEnduranceResults = ({ clientId }) => {
     );
 };
 
-export default MuscleEnduranceResults;
+export default MaxPowerResults;

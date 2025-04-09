@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import { ClipLoader } from 'react-spinners';
+import SortableTable from '@/Components/SortableTable';
+import { sortData } from '@/Utils/SortData';
 
 const MuscleEnduranceResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [showLimbColumn, setShowLimbColumn] = useState(false);
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
         axios.get(`/api/tests/svalova-vytrvalost?client_id=${clientId}`)
@@ -40,6 +45,46 @@ const MuscleEnduranceResults = ({ clientId }) => {
             });
     }, [clientId]);
 
+    const processTestData = () => {
+        if (!tests || !testValues) return [];
+
+        const processedData = [];
+
+        tests.forEach(test => {
+            if (testValues[test.id]) {
+                testValues[test.id].forEach(value => {
+                    processedData.push({
+                        testName: test.name,
+                        value: value.value || 'N/A',
+                        limbName: value.limb_name !== '-' ? value.limb_name : '',
+                        metrics: test.metrics,
+                        id: value.id,
+                    });
+                });
+            }
+        });
+
+        return processedData;
+    };
+
+    const processedTestData = processTestData();
+
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+    };
+
+    const columns = [
+        { key: 'testName', label: 'Názov testu' },
+        { key: 'value', label: 'Hodnota' },
+        ...(showLimbColumn ? [{ key: 'limbName', label: 'Končatina' }] : []),
+        { key: 'metrics', label: 'Metriky' },
+    ];
+
     return (
         <TestResultsBox>
             {loading ? (
@@ -47,42 +92,17 @@ const MuscleEnduranceResults = ({ clientId }) => {
                     <ClipLoader size={20} color={'#123abc'} />
                 </div>
             ) : (
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                    <tr>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Názov testu
-                        </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Hodnota
-                        </th>
-                        {showLimbColumn && (
-                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Končatina
-                            </th>
-                        )}
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Metriky
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {tests.map(test => (
-                        testValues[test.id] && testValues[test.id].map(value => (
-                            <tr key={value.id}>
-                                <td className="px-6 py-4 whitespace-nowrap text-center">{test.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-center">{value.value || 'N/A'}</td>
-                                {showLimbColumn && (
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                                        {value.limb_name !== '-' ? value.limb_name : ''}
-                                    </td>
-                                )}
-                                <td className="px-6 py-4 whitespace-nowrap text-center">{test.metrics}</td>
-                            </tr>
-                        ))
-                    ))}
-                    </tbody>
-                </table>
+                <SortableTable
+                    data={sortData(processedTestData, sortColumn, sortDirection)}
+                    columns={columns}
+                    sortColumn={sortColumn}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    hoveredRowId={hoveredRowId}
+                    onHover={setHoveredRowId}
+                    getRowKey={(row) => row.id}
+                    rowClassName={(row) => row.id === hoveredRowId ? 'bg-gray-100' : ''}
+                />
             )}
         </TestResultsBox>
     );
