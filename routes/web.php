@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/clients/{clientId}', [ManageClientsController::class, 'show']);
 
+    Route::get('/history-of-all-tests', [AllTestsController::class, 'showAllTestsPage'])->name('history.all.tests');
+
 });
 
 require __DIR__.'/api.php';

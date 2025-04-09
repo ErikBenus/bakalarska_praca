@@ -7,7 +7,6 @@ import { sortData } from '@/Utils/SortData';
 
 const EasyForceResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
-    const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [hoveredRowId, setHoveredRowId] = useState(null);
     const [sortColumn, setSortColumn] = useState(null);
@@ -16,27 +15,15 @@ const EasyForceResults = ({ clientId }) => {
     useEffect(() => {
         axios.get(`/api/easy-force?client_id=${clientId}`)
             .then(response => {
-                setTests(response.data);
-
-                const promises = response.data.map(test =>
-                    axios.get(`/api/easy-force/${test.id}?client_id=${clientId}`)
-                        .then(response => {
-                            setTestValues(prevValues => ({
-                                ...prevValues,
-                                [test.id]: response.data
-                            }));
-                        })
-                        .catch(error => {
-                            console.error(`Chyba pri načítaní hodnôt testu ${test.id}:`, error);
-                        })
-                );
-
-                Promise.all(promises).then(() => {
-                    setLoading(false);
-                });
+                const processedTests = response.data.map(item => ({
+                    ...item.test,
+                    values: item.values,
+                }));
+                setTests(processedTests);
+                setLoading(false);
             })
             .catch(error => {
-                console.error(`Chyba pri načítaní testov:`, error);
+                console.error('Chyba pri načítaní aktuálnych testov:', error);
                 setLoading(false);
             });
     }, [clientId]);
@@ -88,9 +75,9 @@ const EasyForceResults = ({ clientId }) => {
                 tests.map(test => (
                     <div key={test.id} className="mb-4">
                         <h3 className="text-base font-semibold">{test.name} - {formatDate(test.created_at)}</h3>
-                        {testValues[test.id] && (
+                        {test.values && (
                             <SortableTable
-                                data={sortData(testValues[test.id], sortColumn, sortDirection)}
+                                data={sortData(test.values, sortColumn, sortDirection)}
                                 columns={columns}
                                 sortColumn={sortColumn}
                                 sortDirection={sortDirection}
@@ -110,9 +97,9 @@ const EasyForceResults = ({ clientId }) => {
                                     } else if (type === 'row') {
                                         return (
                                             <>
-                                                <td className="px-3 py-2 text-center">{calculateMax(testValues[test.id], row.id_limb)}</td>
-                                                <td className="px-3 py-2 text-center">{calculateMaxDifference(testValues[test.id])}</td>
-                                                <td className="px-3 py-2 text-center">{calculatePercentageDifference(testValues[test.id])}</td>
+                                                <td className="px-3 py-2 text-center">{calculateMax(test.values, row.id_limb)}</td>
+                                                <td className="px-3 py-2 text-center">{calculateMaxDifference(test.values)}</td>
+                                                <td className="px-3 py-2 text-center">{calculatePercentageDifference(test.values)}</td>
                                             </>
                                         );
                                     }

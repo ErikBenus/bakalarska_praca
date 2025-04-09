@@ -13,8 +13,65 @@ use Illuminate\Support\Facades\DB;
 class EasyForceController extends Controller
 {
 
-
     public function index(Request $request)
+    {
+        $clientId = $request->query('client_id');
+
+        try {
+            // Nájdi najnovší dátum testovania pre daného klienta
+            $latestDate = Test::where('client_id', $clientId)
+                ->where('category', 'Easy Force')
+                ->max('created_at');
+
+            if (!$latestDate) {
+                return response()->json([], 200); // Vráti prázdny zoznam, ak neboli nájdené žiadne testy
+            }
+
+            // Nájdi všetky testy pre daného klienta s najnovším dátumom
+            $tests = Test::where('client_id', $clientId)
+                ->where('category', 'Easy Force')
+                ->whereDate('created_at', '=', date('Y-m-d', strtotime($latestDate)))
+                ->get();
+
+            // Načítaj hodnoty pre každý test
+            $results = [];
+            foreach ($tests as $test) {
+                $values = ValueLimb::where('test_id', $test->id)
+                    ->whereHas('test', function ($query) use ($clientId) {
+                        $query->where('client_id', $clientId);
+                    })
+                    ->with('limb')
+                    ->get();
+
+                $formattedValues = $values->map(function ($value) {
+                    $limbName = TestingLimb::where('id', $value->id_limb)->value('name');
+                    return [
+                        'id' => $value->id,
+                        'test_id' => $value->test_id,
+                        'id_limb' => $value->id_limb,
+                        'limb_name' => $limbName,
+                        'value' => $value->value,
+                        'attempt' => $value->attempt,
+                        'avg_value' => $value->avg_value,
+                        'weight' => $value->weight,
+                        'created_at' => $value->created_at,
+                        'updated_at' => $value->updated_at,
+                    ];
+                });
+
+                $results[] = [
+                    'test' => $test,
+                    'values' => $formattedValues,
+                ];
+            }
+
+            return response()->json($results, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function indexAll(Request $request)
     {
         $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AllTestsController;
 use App\Http\Controllers\ClientsDataController;
 use App\Http\Controllers\CreateNewTestController;
 use App\Http\Controllers\ManageClientsController;
@@ -23,6 +24,7 @@ Route::prefix('/api')->group(function () {
     Route::delete('/all-clients/{id}', [ManageClientsController::class, 'destroy']);
 
     Route::get('/easy-force', [EasyForceController::class, 'index']);
+    Route::get('/easy-force/all', [EasyForceController::class, 'indexAll']);
     Route::get('/easy-force/{testId}', [EasyForceController::class, 'show']);
     Route::post('/easy-force', [EasyForceController::class, 'store']);
 
@@ -47,8 +49,10 @@ Route::prefix('/api')->group(function () {
     Route::post('/all-trainers/{id}/promote', [ManageTrainersController::class, 'promoteToAdmin']);
 
     Route::get('/max-power-tests', [MaxPowerTestController::class, 'index']);
+    Route::get('/max-power-tests', [MaxPowerTestController::class, 'index']);
     Route::get('/max-power-tests/{id}', [MaxPowerTestController::class, 'show']);
     Route::post('/max-power-tests', [MaxPowerTestController::class, 'store']);
 
+    Route::get('/client/{clientId}/all-tests', [AllTestsController::class, 'showHistory']);
 });
 

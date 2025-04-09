@@ -20,10 +20,10 @@ export default function NavMenuClient() {
                     Štandardné testy
                 </NavLink>
                 <NavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('history.all.tests')}
+                    active={route().current('history.all.tests')}
                 >
-                    História
+                    História Testovaní
                 </NavLink>
                 <NavLink
                     href={route('all-tests.index')}
