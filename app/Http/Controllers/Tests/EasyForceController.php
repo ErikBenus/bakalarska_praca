@@ -29,6 +29,7 @@ class EasyForceController extends Controller
         }
     }
 
+
     public function show($testId, Request $request)
     {
         $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov

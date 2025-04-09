@@ -37,6 +37,8 @@ Route::prefix('/api')->group(function () {
     });
 
     Route::post('/y-balance-test', [YBalanceTestController::class, 'store']);
+    Route::get('/y-balance-test', [YBalanceTestController::class, 'index']);
+    Route::get('/y-balance-test/{id}', [YBalanceTestController::class, 'show']);
 
     Route::post('/all-trainers', [ManageTrainersController::class, 'store']);
     Route::get('/all-trainers/{id}/edit', [ManageTrainersController::class, 'edit']);
@@ -44,11 +46,9 @@ Route::prefix('/api')->group(function () {
     Route::delete('/all-trainers/{id}', [ManageTrainersController::class, 'destroy']);
     Route::post('/all-trainers/{id}/promote', [ManageTrainersController::class, 'promoteToAdmin']);
 
+    Route::get('/max-power-tests', [MaxPowerTestController::class, 'index']);
+    Route::get('/max-power-tests/{id}', [MaxPowerTestController::class, 'show']);
     Route::post('/max-power-tests', [MaxPowerTestController::class, 'store']);
 
-
-//    Route::get('/y-balance-test', [YBalanceTestController::class, 'index']);
-//    Route::get('/y-balance-test/{testId}', [YBalanceTestController::class, 'show']);
-//    Route::put('/y-balance-test/{testId}', [YBalanceTestController::class, 'update']);
 });
 

@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
-import { ClipLoader } from 'react-spinners'; // Import spinnera
+import { ClipLoader } from 'react-spinners';
 
-const EasyForceResults = ({ clientId }) => {
+const YBalanceTestResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`/api/easy-force?client_id=${clientId}`)
+        axios.get(`/api/y-balance-test?client_id=${clientId}`)
             .then(response => {
-                console.log(`Dáta z /api/easy-force pre klienta ${clientId}:`, response.data);
                 setTests(response.data);
 
                 const promises = response.data.map(test =>
-                    axios.get(`/api/easy-force/${test.id}?client_id=${clientId}`)
+                    axios.get(`/api/y-balance-test/${test.id}?client_id=${clientId}`)
                         .then(response => {
+                            const values = response.data.values;
                             setTestValues(prevValues => ({
                                 ...prevValues,
-                                [test.id]: response.data
+                                [test.id]: values,
                             }));
                         })
                         .catch(error => {
@@ -35,42 +35,63 @@ const EasyForceResults = ({ clientId }) => {
                 console.error(`Chyba pri načítaní testov pre klienta ${clientId}:`, error);
                 setLoading(false);
             });
-    }, [clientId]); // clientId ako závislosť useEffect
+    }, [clientId]);
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('sk-SK');
+    const processTestData = () => {
+        if (!tests || !testValues) return [];
+
+        const processedData = [];
+
+        tests.forEach(test => {
+            const values = testValues[test.id];
+            if (values) {
+                const groupedValues = {};
+                values.forEach(value => {
+                    const key = `${test.name}`; // Používame test.name pre Y Balance Test
+                    if (!groupedValues[key]) {
+                        groupedValues[key] = {
+                            name: key,
+                            values: [],
+                        };
+                    }
+                    groupedValues[key].values.push({
+                        attempt: value.attempt,
+                        value: value.value,
+                        limb_name: value.limb_name,
+                    });
+                });
+
+                Object.values(groupedValues).forEach(group => {
+                    const rightLegValues = group.values.filter(v => v.limb_name === 'Pravá noha').map(v => v.value);
+                    const leftLegValues = group.values.filter(v => v.limb_name === 'Ľavá noha').map(v => v.value);
+
+                    if (rightLegValues.length >= 3 && leftLegValues.length >= 3) {
+                        const rightLegAvg = rightLegValues.reduce((a, b) => a + b, 0) / rightLegValues.length;
+                        const leftLegAvg = leftLegValues.reduce((a, b) => a + b, 0) / leftLegValues.length;
+
+                        const absoluteDistance = Math.abs(rightLegAvg - leftLegAvg);
+                        const absoluteDifference = rightLegAvg - leftLegAvg;
+                        const relativeDistance = (absoluteDistance / Math.max(rightLegAvg, leftLegAvg)) * 100;
+                        const relativeDifference = (absoluteDifference / Math.max(rightLegAvg, leftLegAvg)) * 100;
+
+                        processedData.push({
+                            name: group.name,
+                            rightLeg: rightLegValues,
+                            leftLeg: leftLegValues,
+                            absoluteDistance: absoluteDistance.toFixed(2),
+                            absoluteDifference: absoluteDifference.toFixed(2),
+                            relativeDistance: relativeDistance.toFixed(2),
+                            relativeDifference: relativeDifference.toFixed(2),
+                        });
+                    }
+                });
+            }
+        });
+
+        return processedData;
     };
 
-    const calculateMax = (values, limbId) => {
-        const limbValues = values.filter(v => v.id_limb === limbId);
-        if (limbValues.length === 0) {
-            return '-';
-        }
-        return Math.max(...limbValues.map(v => v.value));
-    };
-
-    const calculateMaxDifference = (values) => {
-        const maxLimb3 = calculateMax(values, 3);
-        const maxLimb4 = calculateMax(values, 4);
-
-        if (maxLimb3 === '-' || maxLimb4 === '-') {
-            return '-';
-        }
-
-        return maxLimb4 - maxLimb3;
-    };
-
-    const calculatePercentageDifference = (values) => {
-        const maxLimb3 = calculateMax(values, 3);
-        const maxLimb4 = calculateMax(values, 4);
-
-        if (maxLimb3 === '-' || maxLimb4 === '-') {
-            return '-';
-        }
-
-        return (100 - (maxLimb3 / maxLimb4 * 100)).toFixed(2) + '%';
-    };
+    const processedTestData = processTestData();
 
     return (
         <TestResultsBox>
@@ -79,40 +100,52 @@ const EasyForceResults = ({ clientId }) => {
                     <ClipLoader size={20} color={'#123abc'} />
                 </div>
             ) : (
-                tests.map(test => (
-                    <div key={test.id} className="mb-4">
-                        <h3 className="text-lg font-semibold">{test.name} - {formatDate(test.created_at)}</h3>
-                        {testValues[test.id] && (
+                <div>
+                    {processedTestData.map(data => (
+                        <div key={data.name} className="mb-4">
+                            <h3 className="text-lg font-semibold mb-2">{data.name}</h3>
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pokus</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Končatina</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hodnota</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Maximum</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rozdiel</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">% Rozdiel</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Noha</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">1. pokus</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">2. pokus</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">3. pokus</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Absolútna vzdialenosť</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Absolútny rozdiel</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Relatívna vzdialenosť (%)</th>
+                                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Relatívny rozdiel (%)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {testValues[test.id].map(value => (
-                                    <tr key={value.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.attempt || '-'}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.limb_name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{value.value}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculateMax(testValues[test.id], value.id_limb)}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculateMaxDifference(testValues[test.id])}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{calculatePercentageDifference(testValues[test.id])}</td>
-                                    </tr>
-                                ))}
+                                <tr>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">Pravá noha</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.rightLeg[0]}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.rightLeg[1]}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.rightLeg[2]}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDistance}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDifference}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDistance}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDifference}</td>
+                                </tr>
+                                <tr>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">Ľavá noha</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.leftLeg[0]}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.leftLeg[1]}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.leftLeg[2]}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDistance}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.absoluteDifference}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDistance}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">{data.relativeDifference}</td>
+                                </tr>
                                 </tbody>
                             </table>
-                        )}
-                    </div>
-                ))
+                        </div>
+                    ))}
+                </div>
             )}
         </TestResultsBox>
     );
 };
 
-export default EasyForceResults;
+export default YBalanceTestResults;

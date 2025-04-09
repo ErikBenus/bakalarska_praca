@@ -17,45 +17,61 @@ class YBalanceTestController extends Controller
     {
         $clientId = $request->query('client_id');
 
-        try {
-            $tests = Test::where('category', 'Y Balance Test')
-                ->where('client_id', $clientId)
-                ->get();
+        if (!$clientId) {
+            return response()->json(['error' => 'Client ID is required'], 400);
+        }
 
-            return response()->json($tests);
+        try {
+            $yBalanceTests = YBalanceTest::where('client_id', $clientId)->get();
+
+            return response()->json($yBalanceTests, 200);
         } catch (\Exception $e) {
-            \Log::error('Chyba v YBalanceTestController@index: ' . $e->getMessage());
+            Log::error('Chyba YBalanceTestController@index: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }
 
-    public function show($testId, Request $request)
+    public function show($id, Request $request)
     {
         $clientId = $request->query('client_id');
 
-        $values = ValueLimb::where('test_id', $testId)
-            ->whereHas('test', function ($query) use ($clientId) {
-                $query->where('client_id', $clientId);
-            })
-            ->with('limb')
-            ->get();
+        if (!$clientId) {
+            return response()->json(['error' => 'Client ID is required'], 400);
+        }
 
-        return response()->json($values->map(function ($value) {
-            $limbName = TestingLimb::where('id', $value->id_limb)->value('name');
-            return [
-                'id' => $value->id,
-                'test_id' => $value->test_id,
-                'id_limb' => $value->id_limb,
-                'limb_name' => $limbName,
-                'value' => $value->value,
-                'attempt' => $value->attempt,
-                'avg_value' => $value->avg_value,
-                'weight' => $value->weight,
-                'created_at' => $value->created_at,
-                'updated_at' => $value->updated_at,
-            ];
-        }));
+        try {
+            $yBalanceTest = YBalanceTest::where('id', $id)->where('client_id', $clientId)->firstOrFail();
+
+            $valueLimbs = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)->get();
+
+            $valuesWithLimbNames = $valueLimbs->map(function ($value) {
+                $limbName = TestingLimb::where('id', $value->id_limb)->value('name') ?? '-';
+                return [
+                    'id' => $value->id,
+                    'y_balance_test_id' => $value->y_balance_test_id,
+                    'id_limb' => $value->id_limb,
+                    'limb_name' => $limbName,
+                    'value' => $value->value,
+                    'attempt' => $value->attempt,
+                    'avg_value' => $value->avg_value,
+                    'weight' => $value->weight,
+                    'created_at' => $value->created_at,
+                    'updated_at' => $value->updated_at,
+                ];
+            });
+
+            return response()->json([
+                'test' => $yBalanceTest,
+                'values' => $valuesWithLimbNames,
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Test not found'], 404);
+        } catch (\Exception $e) {
+            Log::error('Chyba YBalanceTestController@show: ' . $e->getMessage());
+            return response()->json(['error' => 'Server error'], 500);
+        }
     }
+
 
     public function store(Request $request)
     {
@@ -90,23 +106,22 @@ class YBalanceTestController extends Controller
                 }
             }
 
-//            $rightLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
-//                ->where('id_limb', 3) // Pravá noha
-//                ->pluck('value')
-//                ->toArray();
-//
-//            $leftLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
-//                ->where('id_limb', 4) // Ľavá noha
-//                ->pluck('value')
-//                ->toArray();
-//
-//            $rightLegAverage = count($rightLegValues) > 0 ? array_sum($rightLegValues) / count($rightLegValues) : 0;
-//            $leftLegAverage = count($leftLegValues) > 0 ? array_sum($leftLegValues) / count($leftLegValues) : 0;
-//
-//            $absoluteValue = abs($rightLegAverage - $leftLegAverage);
-//
-//            // Aktualizácia absolute_value v YBalanceTest
-//            YBalanceTest::where('id', $yBalanceTest->id)->update(['absolute_value' => $absoluteValue]);
+            $rightLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
+                ->where('id_limb', 3) // Pravá noha
+                ->pluck('value')
+                ->toArray();
+
+            $leftLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
+                ->where('id_limb', 4) // Ľavá noha
+                ->pluck('value')
+                ->toArray();
+
+            $rightLegAverage = count($rightLegValues) > 0 ? array_sum($rightLegValues) / count($rightLegValues) : 0;
+            $leftLegAverage = count($leftLegValues) > 0 ? array_sum($leftLegValues) / count($leftLegValues) : 0;
+
+            $absoluteValue = abs($rightLegAverage - $leftLegAverage);
+
+            YBalanceTest::where('id', $yBalanceTest->id)->update(['absolute_value' => $absoluteValue]);
 
             DB::commit();
 
@@ -123,46 +138,4 @@ class YBalanceTestController extends Controller
     }
 
 
-    // Aktualizácia existujúceho Y Balance testu
-//    public function update($testId, Request $request)
-//    {
-//        $validator = Validator::make($request->all(), [
-//            'name' => 'required|string',
-//            'description' => 'nullable|string',
-//            'values' => 'required|array',
-//        ]);
-//
-//        if ($validator->fails()) {
-//            return response()->json(['errors' => $validator->errors()], 422);
-//        }
-//
-//        try {
-//            // Získanie testu podľa ID
-//            $test = Test::findOrFail($testId);
-//
-//            // Aktualizovanie testu
-//            $test->name = $request->input('name');
-//            $test->description = $request->input('description');
-//            $test->updated_at = now();
-//            $test->save();
-//
-//            // Aktualizovanie hodnôt v tabuľke ValueLimb
-//            foreach ($request->input('values') as $value) {
-//                ValueLimb::updateOrCreate(
-//                    ['test_id' => $test->id, 'id_limb' => $value['id_limb'], 'attempt' => $value['attempt']],
-//                    [
-//                        'value' => $value['value'],
-//                        'weight' => $value['weight'] ?? null,
-//                        'avg_value' => $value['avg_value'] ?? null,
-//                        'updated_at' => now(),
-//                    ]
-//                );
-//            }
-//
-//            return response()->json(['message' => 'Y Balance Test aktualizovaný úspešne', 'test' => $test]);
-//        } catch (\Exception $e) {
-//            \Log::error('Chyba v YBalanceTestController@update: ' . $e->getMessage());
-//            return response()->json(['error' => 'Server error'], 500);
-//        }
-//    }
 }

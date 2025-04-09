@@ -193,7 +193,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const addLimbValue = () => {
         setNewTest({
             ...newTest,
-            values: [...newTest.values, { id_limb: '', value: '', attempt: '', weight: '' }],
+            values: [...newTest.values, { id_limb: '5', value: '', attempt: '', weight: '' }],
         });
     };
 
