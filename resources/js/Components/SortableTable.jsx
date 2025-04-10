@@ -22,7 +22,7 @@ const SortableTable = ({
                         className="px-3 py-2 text-center font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                     >
                         {col.label}
-                        {col.sortable && ( // Pridali sme podmienku pre sortable
+                        {col.sortable && (
                             <span className="ml-1">
                                     {sortColumn === col.key
                                         ? sortDirection === 'asc'
