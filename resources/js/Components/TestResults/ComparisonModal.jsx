@@ -9,26 +9,30 @@ const ComparisonModal = ({ testResults, onClose }) => {
 
     const handleCompare = () => {
         const comparedData = [];
-        const dates = [...new Set(testResults.map(item => item.createdAt))];
         const tests = [...new Set(testResults.map(item => item.testName))];
 
         tests.forEach(testName => {
             const testData = testResults.filter(item => item.testName === testName);
 
-            if (testData.length === 2) {
-                const rozdiel = testData[1].value - testData[0].value;
-                const smer = rozdiel > 0 ? '↑ ' : rozdiel < 0 ? '↓ ' : '';
-
-                comparedData.push({
+            if (testData.length > 1 && testData.length <= 5) {
+                const row = {
                     kategoria: testData[0].category,
                     nazovTestu: testData[0].testName,
-                    hodnota1: testData[0].value,
-                    hodnota2: testData[1].value,
-                    rozdiel: smer + Math.abs(rozdiel), // Spojíme smer a rozdiel
                     koncatina: testData[0].limbName,
-                    prebehlo1: testData[0].createdAt,
-                    prebehlo2: testData[1].createdAt,
-                });
+                };
+
+                for (let i = 0; i < testData.length; i++) {
+                    row[`hodnota${i + 1}`] = testData[i].value;
+                    row[`prebehlo${i + 1}`] = testData[i].createdAt;
+                }
+
+                for (let i = 1; i < testData.length; i++) {
+                    const rozdiel = testData[i].value - testData[i - 1].value;
+                    const smer = rozdiel > 0 ? '↑ ' : rozdiel < 0 ? '↓ ' : '';
+                    row[`rozdiel${i}`] = smer + Math.abs(rozdiel);
+                }
+
+                comparedData.push(row);
             }
         });
 
@@ -38,12 +42,18 @@ const ComparisonModal = ({ testResults, onClose }) => {
     const columns = [
         { key: 'kategoria', label: 'Kategória' },
         { key: 'nazovTestu', label: 'Názov testu' },
-        { key: 'hodnota1', label: 'Hodnota 1' },
-        { key: 'hodnota2', label: 'Hodnota 2' },
-        { key: 'rozdiel', label: 'Rozdiel' },
-        { key: 'koncatina', label: 'Končatina' },
-        { key: 'prebehlo1', label: 'Prebehlo 1' },
-        { key: 'prebehlo2', label: 'Prebehlo 2' },
+        ...Array.from({ length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('hodnota')).length)) }, (_, i) => ({
+            key: `hodnota${i + 1}`,
+            label: `Hodnota ${i + 1}`,
+        })),
+        ...Array.from({ length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('rozdiel')).length)) }, (_, i) => ({
+            key: `rozdiel${i + 1}`,
+            label: `Rozdiel ${i + 1}`,
+        })),
+        ...Array.from({ length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('prebehlo')).length)) }, (_, i) => ({
+            key: `prebehlo${i + 1}`,
+            label: `Prebehlo ${i + 1}`,
+        })),
     ];
 
     const handleSort = (column) => {
