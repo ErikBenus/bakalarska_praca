@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 
@@ -6,18 +6,32 @@ Chart.register(...registerables);
 
 const ComparisonChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
     const [chartData, setChartData] = useState(null);
+    const chartColors = useRef([]);
 
     useEffect(() => {
         if (data && labels) {
+            if (chartColors.current.length === 0) {
+                chartColors.current = data.map(() => ({
+                    backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`,
+                    borderColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 1)`,
+                }));
+            }
+
+            // Upravené generovanie dát pre graf
+            const datasets = data.map((dataset, index) => ({
+                label: `Nameraná hodnota ${index + 1}`,
+                data: dataset,
+                backgroundColor: chartColors.current[index].backgroundColor,
+                borderColor: chartColors.current[index].borderColor,
+                borderWidth: 1,
+            }));
+
+            // Upravené generovanie labelov pre os X
+            const xAxisLabels = labels[0]; // Použijeme dátumy ako labely
+
             const generatedChartData = {
-                labels: labels[0],
-                datasets: data.map((dataset, index) => ({
-                    label: "Nameraná hodnota",
-                    data: dataset,
-                    backgroundColor: `rgba(54, 162, 235, 0.5)`,
-                    borderColor: `rgba(54, 162, 235, 1)`,
-                    borderWidth: 1,
-                })),
+                labels: xAxisLabels,
+                datasets: datasets,
             };
             setChartData(generatedChartData);
         }

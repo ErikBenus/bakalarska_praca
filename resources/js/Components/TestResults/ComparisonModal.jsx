@@ -23,9 +23,15 @@ const ComparisonModal = ({ testResults, onClose }) => {
                     koncatina: testData[0].limbName,
                 };
 
+                const chartData = [];
+
                 for (let i = 0; i < testData.length; i++) {
                     row[`hodnota${i + 1}`] = testData[i].value;
                     row[`prebehlo${i + 1}`] = testData[i].createdAt;
+                    chartData.push({
+                        hodnota: testData[i].value,
+                        datum: testData[i].createdAt,
+                    });
                 }
 
                 for (let i = 1; i < testData.length; i++) {
