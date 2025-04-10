@@ -22,13 +22,15 @@ const SortableTable = ({
                         className="px-3 py-2 text-center font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                     >
                         {col.label}
-                        <span className="ml-1">
-                                {sortColumn === col.key
-                                    ? sortDirection === 'asc'
-                                        ? '▲'
-                                        : '▼'
-                                    : '↕'}
-                            </span>
+                        {col.sortable && ( // Pridali sme podmienku pre sortable
+                            <span className="ml-1">
+                                    {sortColumn === col.key
+                                        ? sortDirection === 'asc'
+                                            ? '▲'
+                                            : '▼'
+                                        : '↕'}
+                                </span>
+                        )}
                     </th>
                 ))}
                 {renderExtraCells && renderExtraCells('header')}
@@ -44,7 +46,7 @@ const SortableTable = ({
                 >
                     {columns.map(col => (
                         <td key={col.key} className="px-3 py-2 text-center whitespace-nowrap">
-                            {row[col.key] || '-'}
+                            {col.render ? col.render(row) : row[col.key] || '-'}
                         </td>
                     ))}
                     {renderExtraCells && renderExtraCells('row', row)}

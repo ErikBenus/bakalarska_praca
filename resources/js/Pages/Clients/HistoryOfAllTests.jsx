@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import SortableTable from '@/Components/SortableTable';
 import { sortData } from '@/Utils/SortData';
+import ComparisonModal from '@/Components/TestResults/ComparisonModal.jsx'
 
 const CategoryFilter = ({ categories, onFilterChange }) => {
     const [selectedCategories, setSelectedCategories] = useState(categories);
@@ -44,6 +45,20 @@ export default function HistoryOfAllTests() {
     const [sortColumn, setSortColumn] = useState(null);
     const [sortDirection, setSortDirection] = useState('asc');
     const [hoveredRowId, setHoveredRowId] = useState(null);
+    const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const openComparisonModal = () => {
+        if (selectedRows.length >= 2) {
+            setIsComparisonModalOpen(true);
+        } else {
+            alert('Vyberte aspoň 2 testy na porovnanie.');
+        }
+    };
+
+    const closeComparisonModal = () => {
+        setIsComparisonModalOpen(false);
+    };
 
     const formatDate = (dateString) => new Date(dateString).toLocaleDateString('sk-SK');
 
@@ -102,6 +117,7 @@ export default function HistoryOfAllTests() {
     };
 
     const columns = [
+        { key: 'checkbox', label: '', render: (row) => <input type="checkbox" checked={selectedRows.includes(row.id)} onChange={() => handleCheckboxChange(row.id)} />, sortable: false },
         { key: 'category', label: 'Kategória' },
         { key: 'testName', label: 'Názov testu' },
         { key: 'value', label: 'Hodnota' },
@@ -131,6 +147,14 @@ export default function HistoryOfAllTests() {
         }
     };
 
+    const handleCheckboxChange = (rowId) => {
+        if (selectedRows.includes(rowId)) {
+            setSelectedRows(selectedRows.filter(id => id !== rowId));
+        } else {
+            setSelectedRows([...selectedRows, rowId]);
+        }
+    };
+
     if (can('see client dashboard')) {
         return (
             <AuthenticatedLayout
@@ -154,6 +178,13 @@ export default function HistoryOfAllTests() {
                                     categories={allCategories}
                                     onFilterChange={setFilteredCategories}
                                 />
+                                <button
+                                    onClick={openComparisonModal}
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+                                    disabled={selectedRows.length < 2}
+                                >
+                                    Porovnať testy
+                                </button>
                                 {loading ? (
                                     <p>Načítavanie...</p>
                                 ) : (
@@ -166,6 +197,12 @@ export default function HistoryOfAllTests() {
                                         hoveredRowId={hoveredRowId}
                                         onHover={setHoveredRowId}
                                         getRowKey={(row) => row.id}
+                                    />
+                                )}
+                                {isComparisonModalOpen && (
+                                    <ComparisonModal
+                                        testResults={processedTestData.filter(item => selectedRows.includes(item.id))}
+                                        onClose={closeComparisonModal}
                                     />
                                 )}
                             </div>
