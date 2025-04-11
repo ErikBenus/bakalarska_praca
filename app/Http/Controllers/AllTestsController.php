@@ -97,6 +97,7 @@ class AllTestsController extends Controller
                 $clients = User::role($clientRole->name)->get();
 
                 foreach ($clients as $client) {
+                    // Načítanie MaxPowerTests a ich ValueLimbs
                     $maxPowerTests = MaxPowerTest::where('client_id', $client->id)->get();
                     foreach ($maxPowerTests as $maxPowerTest) {
                         $valueLimbs = ValueLimb::where('max_power_test_id', $maxPowerTest->id)->get();
@@ -108,6 +109,11 @@ class AllTestsController extends Controller
                             'test_type' => 'max_power_test',
                             'test' => $maxPowerTest,
                             'values' => $valuesWithLimbNames,
+                            'client' => [
+                                'first_name' => $client->first_name,
+                                'last_name' => $client->last_name,
+                            ],
+                            'client_id' => $client->id,
                         ];
                     }
 
@@ -123,6 +129,11 @@ class AllTestsController extends Controller
                             'test_type' => 'y_balance_test',
                             'test' => $yBalanceTest,
                             'values' => $valuesWithLimbNames,
+                            'client' => [
+                                'first_name' => $client->first_name,
+                                'last_name' => $client->last_name,
+                            ],
+                            'client_id' => $client->id,
                         ];
                     }
 
@@ -142,6 +153,11 @@ class AllTestsController extends Controller
                                 'test_type' => 'test',
                                 'test' => $test,
                                 'values' => $valuesWithLimbNames,
+                                'client' => [
+                                    'first_name' => $client->first_name,
+                                    'last_name' => $client->last_name,
+                                ],
+                                'client_id' => $client->id,
                             ];
                         }
                     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LimbLength;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\ClientsData;
 
@@ -21,6 +22,13 @@ class ClientsDataController extends Controller
 
         // Pridanie dĺžok končatín do odpovede
         $clientData->limb_lengths = $limbLengths;
+
+        $user = User::find($clientId);
+        if ($user) {
+            $clientData->birth_date = $user->birth_date;
+            $clientData->first_name = $user->first_name;
+            $clientData->last_name = $user->last_name;
+        }
 
         return response()->json($clientData);
     }

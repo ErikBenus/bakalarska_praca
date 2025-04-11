@@ -56,7 +56,14 @@ class YBalanceTestController extends Controller
 
             $valueLimbs = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)->get();
 
-            $limbLengths = LimbLength::where('client_id', $clientId)->get()->keyBy('limb_id');
+            // Získajte dátum vytvorenia testu
+            $testDate = $yBalanceTest->created_at->toDateString();
+
+            // Vyhľadajte dĺžky končatín s rovnakým dátumom
+            $limbLengths = LimbLength::where('client_id', $clientId)
+                ->whereDate('updated_at', '=', $testDate)
+                ->get()
+                ->keyBy('limb_id');
 
             $valuesWithLimbNames = $valueLimbs->map(function ($value) use ($limbLengths) {
                 $limbName = TestingLimb::where('id', $value->id_limb)->value('name') ?? '-';

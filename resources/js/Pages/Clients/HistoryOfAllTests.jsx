@@ -6,6 +6,7 @@ import axios from 'axios';
 import SortableTable from '@/Components/SortableTable';
 import { sortData } from '@/Utils/SortData';
 import ComparisonModal from '@/Components/TestResults/ComparisonModal.jsx'
+import ClientDataModal from '@/Components/ClientDataModal.jsx';
 
 const CategoryFilter = ({ categories, onFilterChange }) => {
     const [selectedCategories, setSelectedCategories] = useState(categories);
@@ -47,6 +48,9 @@ export default function HistoryOfAllTests() {
     const [hoveredRowId, setHoveredRowId] = useState(null);
     const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [isClientDataModalOpen, setIsClientDataModalOpen] = useState(false);
+    const [selectedClientId, setSelectedClientId] = useState(null);
+    const [clientData, setClientData] = useState(null);
 
     const openComparisonModal = () => {
         if (selectedRows.length >= 2) {
@@ -56,8 +60,25 @@ export default function HistoryOfAllTests() {
         }
     };
 
+    const handleClientIconClick = async (clientId) => {
+        setSelectedClientId(clientId);
+        setIsClientDataModalOpen(true);
+        try {
+            const response = await axios.get(`/api/clients/${clientId}/data`);
+            setClientData(response.data);
+        } catch (error) {
+            console.error("Error fetching client data:", error);
+            setClientData(null);
+        }
+    };
+
     const closeComparisonModal = () => {
         setIsComparisonModalOpen(false);
+    };
+
+    const closeClientDataModal = () => {
+        setIsClientDataModalOpen(false);
+        setClientData(null);
     };
 
     const formatDate = (dateString) => new Date(dateString).toLocaleDateString('sk-SK');
@@ -112,6 +133,8 @@ export default function HistoryOfAllTests() {
                     id: value.id,
                     createdAt: formatDate(value.created_at),
                     category: category,
+                    clientName: item.client ? `${item.client.first_name || ''} ${item.client.last_name || ''}`.trim() : 'N/A', // Načítanie mena klienta z item.client
+                    clientId: item.client_id,
                 });
             });
         });
@@ -121,12 +144,21 @@ export default function HistoryOfAllTests() {
 
     const columns = [
         { key: 'checkbox', label: '', render: (row) => <input type="checkbox" checked={selectedRows.includes(row.id)} onChange={() => handleCheckboxChange(row.id)} />, sortable: false },
+        ...(can('see trainer dashboard') ? [{ key: 'clientName', label: 'Meno a priezvisko', render: (row) => row.clientName }] : []),
         { key: 'category', label: 'Kategória' },
         { key: 'testName', label: 'Názov testu' },
         { key: 'value', label: 'Hodnota' },
         { key: 'limbName', label: 'Končatina' },
         { key: 'metrics', label: 'Metriky' },
         { key: 'createdAt', label: 'Prebehlo' },
+        {
+            key: 'clientIcon',
+            label: '',
+            render: (row) => can('see trainer dashboard') && (
+                <span onClick={() => handleClientIconClick(row.clientId)} className="cursor-pointer">👤</span>
+            ),
+            sortable: false,
+        },
     ];
 
     const allCategories = [...new Set(testResults.map(item => {
@@ -205,6 +237,12 @@ export default function HistoryOfAllTests() {
                                     <ComparisonModal
                                         testResults={processedTestData.filter(item => selectedRows.includes(item.id))}
                                         onClose={closeComparisonModal}
+                                    />
+                                )}
+                                {isClientDataModalOpen && (
+                                    <ClientDataModal
+                                        clientData={clientData}
+                                        onClose={closeClientDataModal}
                                     />
                                 )}
                             </div>

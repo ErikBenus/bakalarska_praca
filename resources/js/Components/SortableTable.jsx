@@ -9,7 +9,7 @@ const SortableTable = ({
                            hoveredRowId,
                            onHover,
                            getRowKey,
-                           renderExtraCells
+                           renderExtraCells,
                        }) => {
     return (
         <table className="min-w-full divide-y divide-gray-200 text-xs">
