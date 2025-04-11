@@ -21,10 +21,9 @@ const YBalanceTestResults = ({ clientId }) => {
                 const promises = response.data.map(test =>
                     axios.get(`/api/y-balance-test/${test.id}?client_id=${clientId}`)
                         .then(response => {
-                            const values = response.data.values;
                             setTestValues(prevValues => ({
                                 ...prevValues,
-                                [test.id]: values,
+                                [test.id]: response.data, // Ukladáme celú response.data
                             }));
                         })
                         .catch(error => {
@@ -47,48 +46,22 @@ const YBalanceTestResults = ({ clientId }) => {
 
         const processedData = [];
 
+
         tests.forEach(test => {
-            const values = testValues[test.id];
+            const values = testValues[test.id]?.values;
             if (values) {
-                const groupedValues = {};
-                values.forEach(value => {
-                    const key = `${test.name}`;
-                    if (!groupedValues[key]) {
-                        groupedValues[key] = {
-                            name: key,
-                            values: [],
-                        };
-                    }
-                    groupedValues[key].values.push({
-                        attempt: value.attempt,
-                        value: value.value,
-                        limb_name: value.limb_name,
-                    });
-                });
-
-                Object.values(groupedValues).forEach(group => {
-                    const rightLegValues = group.values.filter(v => v.limb_name === 'Pravá noha').map(v => v.value);
-                    const leftLegValues = group.values.filter(v => v.limb_name === 'Ľavá noha').map(v => v.value);
-
-                    if (rightLegValues.length >= 3 && leftLegValues.length >= 3) {
-                        const rightLegAvg = rightLegValues.reduce((a, b) => a + b, 0) / rightLegValues.length;
-                        const leftLegAvg = leftLegValues.reduce((a, b) => a + b, 0) / leftLegValues.length;
-
-                        const absoluteDistance = Math.abs(rightLegAvg - leftLegAvg);
-                        const absoluteDifference = rightLegAvg - leftLegAvg;
-                        const relativeDistance = (absoluteDistance / Math.max(rightLegAvg, leftLegAvg)) * 100;
-                        const relativeDifference = (absoluteDifference / Math.max(rightLegAvg, leftLegAvg)) * 100;
-
-                        processedData.push({
-                            name: group.name,
-                            rightLeg: rightLegValues,
-                            leftLeg: leftLegValues,
-                            absoluteDistance: absoluteDistance.toFixed(2),
-                            absoluteDifference: absoluteDifference.toFixed(2),
-                            relativeDistance: relativeDistance.toFixed(2),
-                            relativeDifference: relativeDifference.toFixed(2),
-                        });
-                    }
+                processedData.push({
+                    testId: test.id,
+                    name: test.name,
+                    rightLeg: values.filter(v => v.limb_name === 'Pravá noha').map(v => v.value),
+                    leftLeg: values.filter(v => v.limb_name === 'Ľavá noha').map(v => v.value),
+                    absoluteDistanceRight: testValues[test.id].absoluteDistanceRight,
+                    absoluteDistanceLeft: testValues[test.id].absoluteDistanceLeft,
+                    absoluteDifference: testValues[test.id].absoluteDifference,
+                    relativeDistance: testValues[test.id].relativeDistance,
+                    relativeDifference: testValues[test.id].relativeDifference,
+                    relativeDistanceRight: testValues[test.id].relativeDistanceRight,
+                    relativeDistanceLeft: testValues[test.id].relativeDistanceLeft,
                 });
             }
         });
@@ -115,7 +88,7 @@ const YBalanceTestResults = ({ clientId }) => {
         { key: 'absoluteDistance', label: 'Absolútna vzdialenosť' },
         { key: 'absoluteDifference', label: 'Absolútny rozdiel' },
         { key: 'relativeDistance', label: 'Relatívna vzdialenosť (%)' },
-        { key: 'relativeDifference', label: 'Relatívny rozdiel (%)' },
+        { key: 'relativeDifference', label: 'Relatívny rozdiel' },
     ];
 
     const generateTableData = (data) => {
@@ -125,9 +98,9 @@ const YBalanceTestResults = ({ clientId }) => {
                 attempt1: data.rightLeg[0],
                 attempt2: data.rightLeg[1],
                 attempt3: data.rightLeg[2],
-                absoluteDistance: data.absoluteDistance,
+                absoluteDistance: data.absoluteDistanceRight,
                 absoluteDifference: data.absoluteDifference,
-                relativeDistance: data.relativeDistance,
+                relativeDistance: data.relativeDistanceRight,
                 relativeDifference: data.relativeDifference,
             },
             {
@@ -135,9 +108,9 @@ const YBalanceTestResults = ({ clientId }) => {
                 attempt1: data.leftLeg[0],
                 attempt2: data.leftLeg[1],
                 attempt3: data.leftLeg[2],
-                absoluteDistance: data.absoluteDistance,
+                absoluteDistance: data.absoluteDistanceLeft,
                 absoluteDifference: data.absoluteDifference,
-                relativeDistance: data.relativeDistance,
+                relativeDistance: data.relativeDistanceLeft,
                 relativeDifference: data.relativeDifference,
             },
         ];

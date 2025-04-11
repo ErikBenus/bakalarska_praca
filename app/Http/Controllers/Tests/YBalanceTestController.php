@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tests;
 
 use App\Http\Controllers\Controller;
+use App\Models\LimbLength;
 use App\Models\Test;
 use App\Models\TestingLimb;
 use App\Models\ValueLimb;
@@ -22,7 +23,18 @@ class YBalanceTestController extends Controller
         }
 
         try {
-            $yBalanceTests = YBalanceTest::where('client_id', $clientId)->get();
+            // Nájdi najnovší dátum testovania pre daného klienta
+            $latestDate = YBalanceTest::where('client_id', $clientId)
+                ->max('created_at');
+
+            if (!$latestDate) {
+                return response()->json([], 200); // Vráti prázdny zoznam, ak neboli nájdené žiadne testy
+            }
+
+            // Nájdi všetky testy pre daného klienta s najnovším dátumom
+            $yBalanceTests = YBalanceTest::where('client_id', $clientId)
+                ->whereDate('created_at', '=', date('Y-m-d', strtotime($latestDate)))
+                ->get();
 
             return response()->json($yBalanceTests, 200);
         } catch (\Exception $e) {
@@ -44,8 +56,11 @@ class YBalanceTestController extends Controller
 
             $valueLimbs = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)->get();
 
-            $valuesWithLimbNames = $valueLimbs->map(function ($value) {
+            $limbLengths = LimbLength::where('client_id', $clientId)->get()->keyBy('limb_id');
+
+            $valuesWithLimbNames = $valueLimbs->map(function ($value) use ($limbLengths) {
                 $limbName = TestingLimb::where('id', $value->id_limb)->value('name') ?? '-';
+                $limbLength = $limbLengths[$value->id_limb]->length ?? 0;
                 return [
                     'id' => $value->id,
                     'y_balance_test_id' => $value->y_balance_test_id,
@@ -55,14 +70,42 @@ class YBalanceTestController extends Controller
                     'attempt' => $value->attempt,
                     'avg_value' => $value->avg_value,
                     'weight' => $value->weight,
+                    'limb_length' => $limbLength,
                     'created_at' => $value->created_at,
                     'updated_at' => $value->updated_at,
                 ];
             });
 
+            $rightLegValues = $valuesWithLimbNames->where('limb_name', 'Pravá noha')->pluck('value')->toArray();
+            $leftLegValues = $valuesWithLimbNames->where('limb_name', 'Ľavá noha')->pluck('value')->toArray();
+
+            $rightLegAvg = count($rightLegValues) > 0 ? array_sum($rightLegValues) / count($rightLegValues) : 0;
+            $leftLegAvg = count($leftLegValues) > 0 ? array_sum($leftLegValues) / count($leftLegValues) : 0;
+
+            $absoluteDistanceRight = round($rightLegAvg, 2);
+            $absoluteDistanceLeft = round($leftLegAvg, 2);
+
+            $absoluteDifference = round(abs($absoluteDistanceRight - $absoluteDistanceLeft), 2);
+
+            $rightLegLength = $limbLengths[3]->length ?? 1;
+            $leftLegLength = $limbLengths[4]->length ?? 1;
+
+            $relativeDistanceRight = round(($rightLegAvg / $rightLegLength) * 100, 2);
+            $relativeDistanceLeft = round(($leftLegAvg / $leftLegLength) * 100, 2);
+
+            $relativeDistance = round(max($relativeDistanceRight, $relativeDistanceLeft), 2);
+            $relativeDifference = round(abs($relativeDistanceRight - $relativeDistanceLeft), 2);
+
             return response()->json([
                 'test' => $yBalanceTest,
                 'values' => $valuesWithLimbNames,
+                'absoluteDistanceRight' => $absoluteDistanceRight,
+                'absoluteDistanceLeft' => $absoluteDistanceLeft,
+                'absoluteDifference' => $absoluteDifference,
+                'relativeDistance' => $relativeDistance,
+                'relativeDifference' => $relativeDifference,
+                'relativeDistanceRight' => $relativeDistanceRight,
+                'relativeDistanceLeft' => $relativeDistanceLeft,
             ], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Test not found'], 404);
@@ -71,7 +114,6 @@ class YBalanceTestController extends Controller
             return response()->json(['error' => 'Server error'], 500);
         }
     }
-
 
     public function store(Request $request)
     {
@@ -106,12 +148,13 @@ class YBalanceTestController extends Controller
                 }
             }
 
-            $rightLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
+            // Oprava stĺpca na y_balance_test_id
+            $rightLegValues = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)
                 ->where('id_limb', 3) // Pravá noha
                 ->pluck('value')
                 ->toArray();
 
-            $leftLegValues = ValueLimb::where('test_id', $yBalanceTest->id)
+            $leftLegValues = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)
                 ->where('id_limb', 4) // Ľavá noha
                 ->pluck('value')
                 ->toArray();
@@ -119,7 +162,7 @@ class YBalanceTestController extends Controller
             $rightLegAverage = count($rightLegValues) > 0 ? array_sum($rightLegValues) / count($rightLegValues) : 0;
             $leftLegAverage = count($leftLegValues) > 0 ? array_sum($leftLegValues) / count($leftLegValues) : 0;
 
-            $absoluteValue = abs($rightLegAverage - $leftLegAverage);
+            $absoluteValue = round(abs($rightLegAverage - $leftLegAverage), 2);
 
             YBalanceTest::where('id', $yBalanceTest->id)->update(['absolute_value' => $absoluteValue]);
 
