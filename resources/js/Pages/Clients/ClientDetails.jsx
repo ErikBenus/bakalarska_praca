@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
@@ -17,7 +17,7 @@ import ExplosivePowerResults from "@/Components/TestResults/ExplosivePowerResult
 import JumpProfileResults from "@/Components/TestResults/JumpProfileResults.jsx";
 import MobilityFlexibilityResults from "@/Components/TestResults/MobilityFlexibilityResults.jsx";
 import SpecialTestResults from "@/Components/TestResults/SpecialTestResults.jsx";
-
+import axios from "axios";
 
 export default function ClientDetails({ client, tests, clientId }) {
     const [clientData, setClientData] = useState(null);
@@ -46,7 +46,7 @@ export default function ClientDetails({ client, tests, clientId }) {
     };
 
     const calculateAge = (dateOfBirthString, DateOfTesting) => {
-        const testingDate = new Date(DateOfTesting)
+        const testingDate = new Date(DateOfTesting);
         const birthDate = new Date(dateOfBirthString);
         let age = testingDate.getFullYear() - birthDate.getFullYear();
         const month = testingDate.getMonth() - birthDate.getMonth();
@@ -63,7 +63,6 @@ export default function ClientDetails({ client, tests, clientId }) {
     };
     const closeModal = () => setShowAddTestForm(false);
 
-
     useEffect(() => {
         axios.get(`/api/clients/${clientId}/data`)
             .then(response => {
@@ -77,7 +76,7 @@ export default function ClientDetails({ client, tests, clientId }) {
     if (!client) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Klient nenájdený</h2>}
-            rightHeader={<CreateTestingButton/>}>
+                                 rightHeader={<CreateTestingButton />}>
                 <Head title="Klient nenájdený" />
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -92,70 +91,89 @@ export default function ClientDetails({ client, tests, clientId }) {
         <AuthenticatedLayout
             header={
                 <ClientHeader client={client} onCreateTestClick={openModal} />
-        }
-            rightHeader={<CreateTestingButton/>}>
+            }
+            rightHeader={<CreateTestingButton />}>
             <Head title={`${client.first_name} ${client.last_name}`} />
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 className="text-lg font-semibold mb-4">Informácie o klientovi</h3>
                     <div className="space-y-4">
-                        <p>Email: {client.email}</p>
-                        {client.phone_number && (
-                            <p>Tel. číslo: {client.phone_number}</p>)}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <h4 className="font-semibold mb-2">Kontaktné údaje</h4>
+                                <p>Email: {client.email}</p>
+                                {client.phone_number && (
+                                    <p>Tel. číslo: {client.phone_number}</p>
+                                )}
+                                <h4 className="font-semibold mb-2 mt-4">Šport</h4>
+                                <p>{clientData && clientData.sport ? clientData.sport : 'Nevenuje sa špecificky žiadnému'}</p>
+                                <h4 className="font-semibold mb-2 mt-4">Dátum vytvorenia účtu</h4>
+                                <p>{formatDate(client.created_at)}</p>
+                            </div>
 
-                        <div>
-                            {clientData && typeof clientData === 'object' ? (
-                                Object.entries(clientData)
-                                    .filter(([key, value]) => value !== null && key !== 'id' && key !== 'client_id' && key !== 'updated_at')
-                                    .map(([key, value]) => {
-                                        const readableKeys = {
-                                            sport: 'Šport',
-                                            weight: 'Váha (kg)',
-                                            height: 'Výška (cm)',
-                                            body_fat_percent: '% tuku',
-                                            muscle_mass: 'Svalová hmota',
-                                            bmi: 'BMI',
-                                            created_at: 'Dátum vytvorenia',
-                                        };
-
-                                        return (
-                                            <div key={key} className="flex items-center mb-2">
-                                                <strong className="mr-2">{readableKeys[key] || key}:</strong>
-                                                <span>{key === 'created_at' ? new Date(value).toLocaleDateString('sk-SK') : String(value)}</span>
-                                            </div>
-                                        );
-                                    })
-                            ) : (
-                                <p>Žiadne dáta</p>
-                            )}
-
-                            {client && (
-                                <>
-                                    <div className="flex items-center mb-2">
-                                        <strong className="mr-2">Pohlavie:</strong>
-                                        <span>{client.gender}</span>
-                                    </div>
+                            <div>
+                                <h4 className="font-semibold mb-2">Biometrické údaje</h4>
+                                <div className="space-y-2">
+                                    <p>Pohlavie: {client.gender}</p>
                                     {client.dominant_hand && (
-                                        <div className="flex items-center mb-2">
-                                            <strong className="mr-2">Dominantná ruka:</strong>
-                                            <span>{client.dominant_hand}</span>
-                                        </div>
+                                        <p>Dominantná ruka: {client.dominant_hand}</p>
                                     )}
                                     {client.dominant_leg && (
-                                        <div className="flex items-center mb-2">
-                                            <strong className="mr-2">Dominantná noha:</strong>
-                                            <span>{client.dominant_leg}</span>
-                                        </div>
+                                        <p>Dominantná noha: {client.dominant_leg}</p>
                                     )}
                                     {client.birth_date && (
-                                        <div className="flex items-center mb-2">
-                                            <strong className="mr-2">Vek:</strong>
-                                            <span>{calculateAge(client.birth_date, client.created_at)}</span>
-                                        </div>
+                                        <p>Vek: {calculateAge(client.birth_date, client.created_at)}</p>
                                     )}
-                                </>
-                            )}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold mb-2">Aktuálne biometrické údaje</h4>
+                                {clientData && typeof clientData === 'object' ? (
+                                    <div className="space-y-2">
+                                        {Object.entries(clientData)
+                                            .filter(([key, value]) => value !== null && key !== 'id' && key !== 'client_id' && key !== 'updated_at'
+                                                && key !== 'limb_lengths' && key !== 'created_at' && key !== 'sport')
+                                            .map(([key, value]) => {
+                                                const readableKeys = {
+                                                    weight: 'Váha (kg)',
+                                                    height: 'Výška (cm)',
+                                                    body_fat_percent: '% tuku',
+                                                    muscle_mass: 'Svalová hmota',
+                                                    bmi: 'BMI',
+                                                };
+
+                                                return (
+                                                    <p key={key}>
+                                                        {readableKeys[key] || key}: {String(value)}
+                                                    </p>
+                                                );
+                                            })}
+
+                                        {clientData.limb_lengths && clientData.limb_lengths.length > 0 && (
+                                            <div>
+                                                <ul>
+                                                    {clientData.limb_lengths.map(limb => (
+                                                        <li key={limb.id} className="flex items-center">
+                                                            <div className="mr-2">
+                                                                {limb.limb_id === 1 ? 'Pravá ruka:' :
+                                                                    limb.limb_id === 2 ? 'Ľavá ruka:' :
+                                                                        limb.limb_id === 3 ? 'Pravá noha:' :
+                                                                            limb.limb_id === 4 ? 'Ľavá noha:' :
+                                                                                `Končatina ${limb.limb_id}`}
+                                                            </div>
+                                                            <span>{limb.length} cm</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p>Žiadne dáta</p>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <h3 className="text-lg font-semibold mt-6 mb-4">Zoznam testov</h3>
@@ -170,7 +188,7 @@ export default function ClientDetails({ client, tests, clientId }) {
                 <SectionRenderer
                     sections={sectionComponents}
                     activeSection={activeSection}
-                    parameters={{clientId: client.id}}
+                    parameters={{ clientId: client.id }}
                 />
             </div>
             {showAddTestForm && (
@@ -178,14 +196,14 @@ export default function ClientDetails({ client, tests, clientId }) {
                     isOpen={showAddTestForm}
                     onRequestClose={closeModal}
                     testData={{
-                    client_id: client.id,
-                    name: '',
-                    category: '',
-                    metrics: '',
-                    description: '',
-                    values: [],
-                }}
-            />)}
+                        client_id: client.id,
+                        name: '',
+                        category: '',
+                        metrics: '',
+                        description: '',
+                        values: [],
+                    }}
+                />)}
         </AuthenticatedLayout>
     );
 }

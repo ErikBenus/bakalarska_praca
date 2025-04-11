@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientsData;
+use App\Models\LimbLength;
 use App\Models\Test;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -43,6 +44,11 @@ class ManageClientsController extends Controller
             'body_fat_percent' => 'nullable|numeric',
             'muscle_mass' => 'nullable|numeric',
             'bmi' => 'nullable|numeric',
+            'right_arm_length' => 'nullable|numeric',
+            'left_arm_length' => 'nullable|numeric',
+            'right_leg_length' => 'nullable|numeric',
+            'left_leg_length' => 'nullable|numeric',
+
         ]);
 
         try {
@@ -58,6 +64,7 @@ class ManageClientsController extends Controller
                 'gender' => $request->gender,
                 'dominant_hand' => $request->dominant_hand,
                 'dominant_leg' => $request->dominant_leg,
+
             ]);
 
 
@@ -74,6 +81,35 @@ class ManageClientsController extends Controller
                 'muscle_mass' => $request->muscle_mass,
                 'bmi' => $request->bmi,
             ]);
+
+            if ($request->right_arm_length !== null) {
+                LimbLength::create([
+                    'client_id' => $user->id,
+                    'limb_id' => 1, // Pravá ruka
+                    'length' => $request->right_arm_length,
+                ]);
+            }
+            if ($request->left_arm_length !== null) {
+                LimbLength::create([
+                    'client_id' => $user->id,
+                    'limb_id' => 2, // Ľavá ruka
+                    'length' => $request->left_arm_length,
+                ]);
+            }
+            if ($request->right_leg_length !== null) {
+                LimbLength::create([
+                    'client_id' => $user->id,
+                    'limb_id' => 3, // Pravá noha
+                    'length' => $request->right_leg_length,
+                ]);
+            }
+            if ($request->left_leg_length !== null) {
+                LimbLength::create([
+                    'client_id' => $user->id,
+                    'limb_id' => 4, // Ľavá noha
+                    'length' => $request->left_leg_length,
+                ]);
+            }
 
             DB::commit();
 
@@ -115,6 +151,10 @@ class ManageClientsController extends Controller
             'body_fat_percent' => 'nullable|numeric',
             'muscle_mass' => 'nullable|numeric',
             'bmi' => 'nullable|numeric',
+            'right_arm_length' => 'nullable|numeric',
+            'left_arm_length' => 'nullable|numeric',
+            'right_leg_length' => 'nullable|numeric',
+            'left_leg_length' => 'nullable|numeric',
         ]);
 
         try {
@@ -149,6 +189,42 @@ class ManageClientsController extends Controller
                     'bmi' => $request->bmi,
                 ]
             );
+
+            if ($request->right_arm_length !== null) {
+                LimbLength::updateOrCreate(
+                    ['client_id' => $user->id, 'limb_id' => 1], // Pravá ruka
+                    ['length' => $request->right_arm_length]
+                );
+            } else {
+                LimbLength::where(['client_id' => $user->id, 'limb_id' => 1])->delete();
+            }
+
+            if ($request->left_arm_length !== null) {
+                LimbLength::updateOrCreate(
+                    ['client_id' => $user->id, 'limb_id' => 2], // Ľavá ruka
+                    ['length' => $request->left_arm_length]
+                );
+            } else {
+                LimbLength::where(['client_id' => $user->id, 'limb_id' => 2])->delete();
+            }
+
+            if ($request->right_leg_length !== null) {
+                LimbLength::updateOrCreate(
+                    ['client_id' => $user->id, 'limb_id' => 3], // Pravá noha
+                    ['length' => $request->right_leg_length]
+                );
+            } else {
+                LimbLength::where(['client_id' => $user->id, 'limb_id' => 3])->delete();
+            }
+
+            if ($request->left_leg_length !== null) {
+                LimbLength::updateOrCreate(
+                    ['client_id' => $user->id, 'limb_id' => 4], // Ľavá noha
+                    ['length' => $request->left_leg_length]
+                );
+            } else {
+                LimbLength::where(['client_id' => $user->id, 'limb_id' => 4])->delete();
+            }
 
             DB::commit();
 

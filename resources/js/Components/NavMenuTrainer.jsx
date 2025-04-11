@@ -37,14 +37,14 @@ export default function NavMenuTrainer() {
                     Štandardné testy
                 </NavLink>
                 <NavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('clients.index')}
+                    active={route().current('clients.index')}
                 >
                     Zoznam klientov
                 </NavLink>
                 <NavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('history.all.tests')}
+                    active={route().current('history.all.tests')}
                 >
                     História testovaní
                 </NavLink>

@@ -54,5 +54,6 @@ Route::prefix('/api')->group(function () {
     Route::post('/max-power-tests', [MaxPowerTestController::class, 'store']);
 
     Route::get('/client/{clientId}/all-tests', [AllTestsController::class, 'showHistory']);
+    Route::get('/trainer/all-clients-tests', [AllTestsController::class, 'showAllClientsTests']);
 });
 

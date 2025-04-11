@@ -64,20 +64,23 @@ export default function HistoryOfAllTests() {
 
 
     useEffect(() => {
-        if (can('see client dashboard')) {
             const fetchTestResults = async () => {
                 try {
-                    const response = await axios.get(`/api/client/${auth.user.id}/all-tests`);
+                    let response;
+                    if (can('see trainer dashboard')) {
+                        response = await axios.get('/api/trainer/all-clients-tests');
+                    } else if (can('see client dashboard')) {
+                        response = await axios.get(`/api/client/${auth.user.id}/all-tests`);
+                    }
                     setTestResults(response.data);
                     setLoading(false);
                 } catch (error) {
-                    console.error("Error fetching all test results:", error);
+                    console.error("Error fetching test results:", error);
                     setLoading(false);
                 }
             };
 
             fetchTestResults();
-        }
     }, [auth.user.id, can]);
 
     const processTestData = () => {
@@ -155,7 +158,6 @@ export default function HistoryOfAllTests() {
         }
     };
 
-    if (can('see client dashboard')) {
         return (
             <AuthenticatedLayout
                 user={auth.user}
@@ -172,7 +174,7 @@ export default function HistoryOfAllTests() {
                         <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                             <div className="p-6 text-gray-900">
                                 <h2 className="text-2xl font-semibold mb-4">
-                                    Zoznam všetkých vašich testov
+                                    Zoznam všetkých testovaní
                                 </h2>
                                 <CategoryFilter
                                     categories={allCategories}
@@ -211,5 +213,5 @@ export default function HistoryOfAllTests() {
                 </div>
             </AuthenticatedLayout>
         );
-    }
+
 }
