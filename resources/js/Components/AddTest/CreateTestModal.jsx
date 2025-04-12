@@ -9,6 +9,8 @@ import GeneralAddTestForm from "@/Components/AddTest/GeneralAddTestForm.jsx";
 import MobilityFlexibilityForm from "@/Components/AddTest/MobilityFlexibilityForm.jsx";
 import JumpProfileForm from "@/Components/AddTest/JumpProfileForm.jsx";
 import MaxPowerTestForm from "@/Components/AddTest/MaxPowerTestForm.jsx";
+import {Transition} from "@headlessui/react";
+import PrimaryButton from "@/Components/PrimaryButton.jsx";
 
 const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const [newTest, setNewTest] = useState({
@@ -21,6 +23,10 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             { id_limb: '', value: '', attempt: '', weight: '' },
         ],
     });
+
+    const [isSaving, setIsSaving] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
+
 
     const [newMaxPowerTest, setNewMaxPowerTest] = useState({
         exercise_name: '',
@@ -202,6 +208,24 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
         setNewMaxPowerTest({ ...newMaxPowerTest, values: updatedValues });
     };
 
+    const handleSaveSuccess = () => {
+        setIsSaving(false);
+        setIsSaved(true);
+        toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
+        onRequestClose();
+        window.location.reload();
+
+        setTimeout(() => {
+            setIsSaved(false);
+        }, 3000);
+    };
+
+    const handleSaveError = (err) => {
+        setIsSaving(false);
+        toast.error('Chyba pri ukladaní testov!');
+        console.error(err);
+    };
+
 
     const addLimbValue = () => {
         setNewTest({
@@ -211,6 +235,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     };
 
     const handleSave = () => {
+        setIsSaving(true);
         let testDataToSave = {
             ...newTest,
             metrics: newTest.category === 'Easy Force' ? 'N' : newTest.metrics
@@ -228,15 +253,27 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
         const saveTest = (data) => {
             const url = getApiUrlByCategory(data.category);
-
             const method = 'post';
-
-
             return axios({
                 method,
                 url,
                 data,
             });
+        };
+
+        const handleSaveSuccess = () => {
+            setIsSaving(false);
+            setIsSaved(true);
+            toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
+            onRequestClose();
+            window.location.reload();
+            setTimeout(() => setIsSaved(false), 3000);
+        };
+
+        const handleSaveError = (err) => {
+            setIsSaving(false);
+            toast.error('Chyba pri ukladaní testov!');
+            console.error(err);
         };
 
         if (newTest.category === 'Easy Force') {
@@ -253,15 +290,8 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             };
 
             Promise.all([saveTest(quadricepsData), saveTest(hamstringData)])
-                .then(() => {
-                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
-                    onRequestClose();
-                    window.location.reload();
-                })
-                .catch((err) => {
-                    toast.error('Chyba pri ukladaní testov!');
-                    console.error(err);
-                });
+                .then(handleSaveSuccess)
+                .catch(handleSaveError);
         } else if (newTest.category === 'Y Balance Test') {
             const anteriorData = {
                 ...testDataToSave,
@@ -286,15 +316,8 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 saveTest(posteromedialData),
                 saveTest(posterolateralData)
             ])
-                .then(() => {
-                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
-                    onRequestClose();
-                    window.location.reload();
-                })
-                .catch((err) => {
-                    toast.error('Chyba pri ukladaní testov!');
-                    console.error(err);
-                });
+                .then(handleSaveSuccess)
+                .catch(handleSaveError);
         } else if (newTest.category === 'Mobilita a flexibilita') {
             const promises = muscles.map((muscleName) => {
                 const rightValueObj = newTest.values.find(val => val && val.id_limb === '3' && val.muscle === muscleName);
@@ -318,39 +341,25 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             }).filter(promise => promise);
 
             Promise.all(promises)
-                .then(() => {
-                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
-                    onRequestClose();
-                    window.location.reload();
-                })
-                .catch((err) => {
-                    toast.error('Chyba pri ukladaní testov!');
-                    console.error(err);
-                });
+                .then(handleSaveSuccess)
+                .catch(handleSaveError);
         } else if (newTest.category === 'Skokový profil') {
-                const promises = jumpTests.map((test) => {
-                    const testValues = newTest.values.filter((val) => val.name === test.name);
-                    const jumpData = {
-                        ...testDataToSave,
-                        name: test.name,
-                        values: testValues,
-                    };
-                    return saveTest(jumpData);
-                });
+            const promises = jumpTests.map((test) => {
+                const testValues = newTest.values.filter((val) => val.name === test.name);
+                const jumpData = {
+                    ...testDataToSave,
+                    name: test.name,
+                    values: testValues,
+                };
+                return saveTest(jumpData);
+            });
 
             Promise.all(promises)
-                .then(() => {
-                    toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
-                    onRequestClose();
-                    window.location.reload();
-                })
-                .catch((err) => {
-                    toast.error('Chyba pri ukladaní testov!');
-                    console.error(err);
-                });
+                .then(handleSaveSuccess)
+                .catch(handleSaveError);
         } else if (newTest.category === 'Maximálna sila') {
             const maxPowerData = {
-                client_id: newTest.client_id, // Používame client_id z newTest
+                client_id: newTest.client_id,
                 exercise_name: newMaxPowerTest.exercise_name,
                 description: newMaxPowerTest.description,
                 values: newMaxPowerTest.values,
@@ -358,28 +367,15 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             };
 
             saveTest(maxPowerData)
-                .then(() => {
-                    toast.success(testId ? 'Test bol upravený!' : 'Test bol pridaný!');
-                    onRequestClose();
-                    window.location.reload();
-                })
-                .catch((err) => {
-                    toast.error('Chyba pri ukladaní testu!');
-                    console.error(err);
-                });
+                .then(handleSaveSuccess)
+                .catch(handleSaveError);
         } else {
             saveTest(testDataToSave)
-                .then(() => {
-                    toast.success(testId ? 'Test bol upravený!' : 'Test bol pridaný!');
-                    onRequestClose();
-                    window.location.reload();
-                })
-                .catch((err) => {
-                    toast.error('Chyba pri ukladaní testu!');
-                    console.error(err);
-                });
+                .then(handleSaveSuccess)
+                .catch(handleSaveError);
         }
     };
+
 
     return (
         <Modal
@@ -464,13 +460,22 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     />
                 )}
 
-            <div className="flex justify-end space-x-2">
-                <button
-                    className="px-4 py-2 bg-green-600 text-white font-medium rounded-md shadow-sm hover:bg-green-700"
-                    onClick={handleSave}
+            <div className="flex justify-start space-x-2">
+                <PrimaryButton disabled={isSaving} onClick={handleSave}>
+                    {isSaving ? 'Ukladám test...' : 'Uložiť'}
+                </PrimaryButton>
+
+                <Transition
+                    show={isSaved}
+                    enter="transition ease-in-out"
+                    enterFrom="opacity-0"
+                    leave="transition ease-in-out"
+                    leaveTo="opacity-0"
                 >
-                    Uložiť
-                </button>
+                    <p className="text-sm text-gray-600">
+                        Uložené.
+                    </p>
+                </Transition>
                 <button
                     className="px-4 py-2 bg-gray-300 text-black font-medium rounded-md shadow-sm hover:bg-gray-400"
                     onClick={onRequestClose}

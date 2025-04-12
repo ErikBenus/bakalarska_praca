@@ -50,7 +50,7 @@ const MobilityFlexibilityResults = ({ clientId }) => {
     };
 
     const calculateAsymmetry = (leftValue, rightValue) => {
-        return (calculateDifference(leftValue, rightValue)) / Math.abs(Math.max(rightValue, leftValue)) * 100;
+        return ((calculateDifference(leftValue, rightValue)) / Math.abs(Math.max(rightValue, leftValue)) * 100).toFixed(2);
     };
 
     const processTestData = () => {
