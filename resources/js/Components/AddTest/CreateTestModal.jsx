@@ -114,17 +114,13 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     values: yBalanceValues,
                 });
             } else if (value === 'Mobilita a flexibilita') {
-            const mobilityValues = muscles.flatMap((name) => [
-                { id_limb: '3', value: '0'},
-                { id_limb: '4', value: '0'},
-            ]);
-            setNewTest({
-                ...newTest,
-                category: value,
-                name: '',
-                metrics: 'Stupne',
-                values: mobilityValues,
-            });
+                setNewTest({
+                    ...newTest,
+                    category: value,
+                    name: '',
+                    metrics: 'Stupne',
+                    values: [], // Inicializácia prázdneho poľa values
+                });
         } else if (value === 'Skokový profil') {
                 const jumpProfileValues = jumpTests.flatMap((test) => [
                     {id_limb: test.id_limb, value: '', attempt: 1, name: test.name},
@@ -174,6 +170,23 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             return {
                 ...prevTest,
                 values: updatedValues
+            };
+        });
+    };
+
+    const handleValueChangeMobilityFlexibility = (index, e) => {
+        const { name, value, id_limb, muscle } = e.target || {};
+        setNewTest(prevTest => {
+            const updatedValues = [...prevTest.values];
+            updatedValues[index] = {
+                ...updatedValues[index],
+                [name]: value,
+                id_limb: id_limb || '',
+                muscle: muscle || '',
+            };
+            return {
+                ...prevTest,
+                values: updatedValues,
             };
         });
     };
@@ -283,20 +296,26 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     console.error(err);
                 });
         } else if (newTest.category === 'Mobilita a flexibilita') {
-            const promises = muscles.map((muscleName, index) => {
-                const rightValue = newTest.values[index * 2]?.value || '0';
-                const leftValue = newTest.values[index * 2 + 1]?.value || '0';
+            const promises = muscles.map((muscleName) => {
+                const rightValueObj = newTest.values.find(val => val && val.id_limb === '3' && val.muscle === muscleName);
+                const leftValueObj = newTest.values.find(val => val && val.id_limb === '4' && val.muscle === muscleName);
 
-                const muscleData = {
-                    ...testDataToSave,
-                    name: muscleName,
-                    values: [
-                        { id_limb: '3', value: rightValue },
-                        { id_limb: '4', value: leftValue },
-                    ],
-                };
-                return saveTest(muscleData);
-            });
+                const rightValue = rightValueObj?.value || '';
+                const leftValue = leftValueObj?.value || '';
+
+                if (rightValue || leftValue) {
+                    const muscleData = {
+                        ...testDataToSave,
+                        name: muscleName,
+                        values: [
+                            { id_limb: '3', value: rightValue },
+                            { id_limb: '4', value: leftValue },
+                        ],
+                    };
+                    return saveTest(muscleData);
+                }
+                return null;
+            }).filter(promise => promise);
 
             Promise.all(promises)
                 .then(() => {
@@ -419,7 +438,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 <MobilityFlexibilityForm
                     newTest={newTest}
                     setNewTest={setNewTest}
-                    handleValueChange={handleValueChange}
+                    handleValueChange={handleValueChangeMobilityFlexibility}
                 />
             )}
 

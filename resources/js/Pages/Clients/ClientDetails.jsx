@@ -134,7 +134,8 @@ export default function ClientDetails({ client, tests, clientId }) {
                                     <div className="space-y-2">
                                         {Object.entries(clientData)
                                             .filter(([key, value]) => value !== null && key !== 'id' && key !== 'client_id' && key !== 'updated_at'
-                                                && key !== 'limb_lengths' && key !== 'created_at' && key !== 'sport')
+                                                && key !== 'limb_lengths' && key !== 'created_at' && key !== 'sport'
+                                                && key !== 'first_name' && key !== 'last_name' && key !== 'birth_date')
                                             .map(([key, value]) => {
                                                 const readableKeys = {
                                                     weight: 'Váha (kg)',

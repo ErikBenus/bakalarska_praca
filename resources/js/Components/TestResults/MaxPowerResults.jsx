@@ -4,6 +4,7 @@ import TestResultsBox from '@/Components/TestResultsBox';
 import { ClipLoader } from 'react-spinners';
 import SortableTable from '@/Components/SortableTable';
 import { sortData } from '@/Utils/SortData';
+import MaxPowerChart from "@/Components/GraphicCharts/MaxPowerChart.jsx";
 
 const MaxPowerResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
@@ -53,7 +54,9 @@ const MaxPowerResults = ({ clientId }) => {
             if (values) {
                 const groupedValues = {};
                 values.forEach(value => {
-                    const key = `${test.exercise_name}${value.limb_name ? ` - ${value.limb_name}` : ''}`;
+                    const key = (value.limb_name === '-' || value.limb_id === 5)
+                        ? test.exercise_name
+                        : `${test.exercise_name}${value.limb_name ? ` - ${value.limb_name}` : ''}`;
                     if (!groupedValues[key]) {
                         groupedValues[key] = {
                             name: key,
@@ -121,6 +124,13 @@ const MaxPowerResults = ({ clientId }) => {
                                 onHover={setHoveredRowId}
                                 getRowKey={(row) => row.attempt}
                                 rowClassName={(row) => row.attempt === hoveredRowId ? 'bg-gray-100' : ''}
+                            />
+                            <MaxPowerChart
+                                data={[group.values.map(value => value.mean_ms)]}
+                                labels={[group.values.map(value => value.weight)]}
+                                title={group.name}
+                                xAxisLabel="Hmotnosť (kg)"
+                                yAxisLabel="Mean m/s"
                             />
                         </div>
                     ))}
