@@ -187,5 +187,75 @@ class YBalanceTestController extends Controller
         }
     }
 
+    public function getCompositeDistance(Request $request)
+    {
+        $clientId = $request->input('client_id');
+
+        // Nájdeme najnovší dátum testu pre daného klienta
+        $latestDate = YBalanceTest::where('client_id', $clientId)->max('created_at');
+
+        // Nájdeme testy s najnovším dátumom a konkrétnymi názvami
+        $tests = YBalanceTest::where('client_id', $clientId)
+            ->where('created_at', $latestDate)
+            ->whereIn('name', ['Anterior', 'Posterolateral', 'Posteromedial'])
+            ->get();
+
+        if ($tests->count() !== 3) {
+            return response()->json(['error' => 'Nedostatok dát pre výpočet.'], 400);
+        }
+
+        $allRightValues = [];
+        $allLeftValues = [];
+
+        foreach ($tests as $test) {
+            $valueLimbs = ValueLimb::where('y_balance_test_id', $test->id)->get();
+
+            $testDate = $test->created_at->toDateString();
+
+            $limbLengths = LimbLength::where('client_id', $clientId)
+                ->whereDate('updated_at', '=', $testDate)
+                ->get()
+                ->keyBy('limb_id');
+
+            $valuesWithLimbNames = $valueLimbs->map(function ($value) use ($limbLengths) {
+                $limbName = TestingLimb::where('id', $value->id_limb)->value('name') ?? '-';
+                $limbLength = $limbLengths[$value->id_limb]->length ?? 0;
+                return [
+                    'id' => $value->id,
+                    'y_balance_test_id' => $value->y_balance_test_id,
+                    'id_limb' => $value->id_limb,
+                    'limb_name' => $limbName,
+                    'value' => $value->value,
+                    'attempt' => $value->attempt,
+                    'avg_value' => $value->avg_value,
+                    'weight' => $value->weight,
+                    'limb_length' => $limbLength,
+                    'created_at' => $value->created_at,
+                    'updated_at' => $value->updated_at,
+                ];
+            });
+
+            $rightLegValues = $valuesWithLimbNames->where('limb_name', 'Pravá noha')->pluck('value')->toArray();
+            $leftLegValues = $valuesWithLimbNames->where('limb_name', 'Ľavá noha')->pluck('value')->toArray();
+
+            $allRightValues = array_merge($allRightValues, $rightLegValues);
+            $allLeftValues = array_merge($allLeftValues, $leftLegValues);
+        }
+
+        if (count($allRightValues) === 0 || count($allLeftValues) === 0) {
+            return response()->json(['error' => 'Nedostatok dát pre výpočet.'], 400);
+        }
+
+        $rightAverage = array_sum($allRightValues) / 9;
+        $leftAverage = array_sum($allLeftValues) / 9;
+
+        $rightLegLength = $limbLengths[3]->length ?? 1;
+        $leftLegLength = $limbLengths[4]->length ?? 1;
+
+        return response()->json([
+            'right' => round(($rightAverage / $rightLegLength) * 100, 2),
+            'left' => round(($leftAverage / $leftLegLength) * 100, 2)
+        ]);
+    }
 
 }
