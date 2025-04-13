@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AllTestsController;
+use App\Http\Controllers\ConclusionController;
 use App\Http\Controllers\ManageClientsController;
 use App\Http\Controllers\ManageTrainersController;
 use App\Http\Controllers\ProfileController;
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/clients/{clientId}', [ManageClientsController::class, 'show']);
 
     Route::get('/history-of-all-tests', [AllTestsController::class, 'showAllTestsPage'])->name('history.all.tests');
+    Route::get('/clients/{clientId}/conclusions', [ConclusionController::class, 'clientView'])->name('conclusions.client.view');
 
 });
 

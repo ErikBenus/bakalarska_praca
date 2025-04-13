@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\AllTestsController;
 use App\Http\Controllers\ClientsDataController;
+use App\Http\Controllers\ConclusionController;
 use App\Http\Controllers\CreateNewTestController;
 use App\Http\Controllers\ManageClientsController;
 use App\Http\Controllers\ManageTrainersController;
 use App\Http\Controllers\Tests\MaxPowerTestController;
 use App\Http\Controllers\Tests\YBalanceTestController;
+use App\Http\Controllers\TrainerDashboardController;
 use App\Models\Test;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,11 +52,19 @@ Route::prefix('/api')->group(function () {
     Route::post('/all-trainers/{id}/promote', [ManageTrainersController::class, 'promoteToAdmin']);
 
     Route::get('/max-power-tests', [MaxPowerTestController::class, 'index']);
-    Route::get('/max-power-tests', [MaxPowerTestController::class, 'index']);
     Route::get('/max-power-tests/{id}', [MaxPowerTestController::class, 'show']);
     Route::post('/max-power-tests', [MaxPowerTestController::class, 'store']);
 
     Route::get('/client/{clientId}/all-tests', [AllTestsController::class, 'showHistory']);
     Route::get('/trainer/all-clients-tests', [AllTestsController::class, 'showAllClientsTests']);
+
+    Route::get('/conclusions', [ConclusionController::class, 'index']);
+    Route::post('/conclusions', [ConclusionController::class, 'store']);
+    Route::get('/conclusions/{id}', [ConclusionController::class, 'show']);
+    Route::put('/conclusions/{id}', [ConclusionController::class, 'update']);
+    Route::delete('/conclusions/{id}', [ConclusionController::class, 'destroy']);
+    Route::get('/clients', [ConclusionController::class, 'clientsOnly']);
+
+    Route::get('/trainer/dashboard', [TrainerDashboardController::class, 'index']);
 });
 

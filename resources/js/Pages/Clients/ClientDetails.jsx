@@ -73,6 +73,16 @@ export default function ClientDetails({ client, tests, clientId }) {
             });
     }, [clientId]);
 
+    const handleSave = () => {
+        axios.get(`/api/clients/${clientId}/data`)
+            .then(response => {
+                setClientData(response.data);
+            })
+            .catch(error => {
+                console.error("Chyba pri načítaní dát klienta:", error);
+            });
+    };
+
     if (!client) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Klient nenájdený</h2>}
@@ -90,7 +100,12 @@ export default function ClientDetails({ client, tests, clientId }) {
     return (
         <AuthenticatedLayout
             header={
-                <ClientHeader client={client} onCreateTestClick={openModal} />
+                <ClientHeader
+                    client={client}
+                    onCreateTestClick={openModal}
+                    clientId={clientId}
+                    onSave={handleSave}
+                />
             }
             rightHeader={<CreateTestingButton />}>
             <Head title={`${client.first_name} ${client.last_name}`} />
@@ -176,6 +191,14 @@ export default function ClientDetails({ client, tests, clientId }) {
                                 )}
                             </div>
                         </div>
+                    </div>
+                    <div className="mt-4 inline-flex">
+                        <Link
+                            href={route('conclusions.client.view', {clientId: client.id})}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        >
+                            Zobraziť odporúčania
+                        </Link>
                     </div>
                     <h3 className="text-lg font-semibold mt-6 mb-4">Zoznam testov</h3>
                     <div className="flex justify-center mb-4">

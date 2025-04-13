@@ -1,8 +1,10 @@
 import NavLink from '@/Components/NavLink';
 import {usePermissions} from "@/Components/UsePermissions.jsx";
+import {usePage} from "@inertiajs/react";
 
 export default function NavMenuClient() {
     const {can} = usePermissions();
+    const user = usePage().props.auth.user;
     if (can('see client dashboard')) {
 
         return (
@@ -26,8 +28,8 @@ export default function NavMenuClient() {
                     História Testovaní
                 </NavLink>
                 <NavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('conclusions.client.view', { clientId: user.id })}
+                    active={route().current('conclusions.client.view')}
                 >
                     Odporúčania
                 </NavLink>

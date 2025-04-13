@@ -3,7 +3,6 @@ import {Head, Link, usePage} from '@inertiajs/react';
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import {usePermissions} from "@/Components/UsePermissions.jsx";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
-import ResultsTestContainer from "@/Components/ResultsTestContainer.jsx";
 import MaxPowerResults from "@/Components/TestResults/MaxPowerResults.jsx";
 import React, {useState} from "react";
 import YBalanceTestResults from "@/Components/TestResults/YBalanceTestResults.jsx";
@@ -16,6 +15,7 @@ import MobilityFlexibilityResults from "@/Components/TestResults/MobilityFlexibi
 import SpecialTestResults from "@/Components/TestResults/SpecialTestResults.jsx";
 import SectionRenderer from "@/Components/SectionRenderer.jsx";
 import SectionButtons from "@/Components/TestResults/SectionButtons.jsx";
+import TrainerDashboard from "@/Pages/Trainers/TrainerDashboard.jsx";
 
 export default function Dashboard() {
 
@@ -41,32 +41,7 @@ export default function Dashboard() {
     };
 
     if (can('see trainer dashboard')) {
-        return (
-            <AuthenticatedLayout
-                user={auth.user}
-
-                header={
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        Prehľad
-                    </h2>
-                }
-                rightHeader={
-                    <CreateTestingButton user={auth.user}/>
-                }
-            >
-                <Head title="Prehľad"/>
-
-                <div className="py-12">
-                    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                            <div className="p-6 text-gray-900">
-                                Ste prihlásený!
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </AuthenticatedLayout>
-        );
+        return <TrainerDashboard />;
     }
 
     if (can('see client dashboard')) {

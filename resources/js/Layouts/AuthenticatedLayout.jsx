@@ -10,6 +10,7 @@ import {usePermissions} from "@/Components/UsePermissions.jsx";
 
 function NavMenuTrainerMobile() {
     const {can} = usePermissions();
+
     if (can('see trainer dashboard')) {
 
         return (
@@ -50,6 +51,7 @@ function NavMenuTrainerMobile() {
 
 function NavMenuClientMobile() {
     const {can} = usePermissions();
+    const user = usePage().props.auth.user;
     if (can('see client dashboard')) {
 
         return (
@@ -75,8 +77,8 @@ function NavMenuClientMobile() {
                 </ResponsiveNavLink>
 
                 <ResponsiveNavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('conclusions.client.view', { clientId: user.id })}
+                    active={route().current('conclusions.client.view')}
                 >
                     Odporúčania
                 </ResponsiveNavLink>
