@@ -129,6 +129,7 @@ export default function HistoryOfAllTests() {
                     testName: testName,
                     value: value.value || 'N/A',
                     limbName: value.limb_name,
+                    weight: value.weight || 0,
                     metrics: item.test.metrics,
                     id: value.id,
                     createdAt: formatDate(value.created_at),
@@ -149,6 +150,7 @@ export default function HistoryOfAllTests() {
         { key: 'testName', label: 'Názov testu' },
         { key: 'value', label: 'Hodnota' },
         { key: 'limbName', label: 'Končatina' },
+        { key: 'weight', label: 'Váha' },
         { key: 'metrics', label: 'Metriky' },
         { key: 'createdAt', label: 'Prebehlo' },
         {
