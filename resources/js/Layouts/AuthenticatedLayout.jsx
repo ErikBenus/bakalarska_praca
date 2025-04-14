@@ -3,7 +3,7 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import React, {Component, useState} from 'react';
+import React, {useState} from 'react';
 import NavMenuClient from "@/Components/NavMenuClient.jsx";
 import NavMenuTrainer from "@/Components/NavMenuTrainer.jsx";
 import {usePermissions} from "@/Components/UsePermissions.jsx";

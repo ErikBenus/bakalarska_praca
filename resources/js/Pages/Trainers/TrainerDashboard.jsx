@@ -3,6 +3,12 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import { Head, usePage } from "@inertiajs/react";
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import axios from "axios";
+import * as response from "autoprefixer";
+
+response.data.clientCount = undefined;
+response.data.testCount = undefined;
+response.data.latestClients = undefined;
+response.data.latestTests = undefined;
 
 export default function TrainerDashboard() {
     const { auth } = usePage().props;
@@ -12,7 +18,6 @@ export default function TrainerDashboard() {
     const [latestTests, setLatestTests] = useState([]);
 
     useEffect(() => {
-        // Načítanie štatistík a dát z API
         axios.get('/api/trainer/dashboard')
             .then(response => {
                 setClientCount(response.data.clientCount);

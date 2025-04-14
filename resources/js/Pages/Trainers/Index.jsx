@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { Head} from '@inertiajs/react';
+import { useState } from 'react';
 import axios from 'axios';
 import AddTrainerForm from '@/Components/AddTrainerForm.jsx';
 import { usePermissions } from "@/Components/UsePermissions.jsx";

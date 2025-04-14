@@ -23,15 +23,13 @@ class MaxPowerTestController extends Controller
         }
 
         try {
-            // Nájdi najnovší dátum testovania pre daného klienta
             $latestDate = MaxPowerTest::where('client_id', $clientId)
                 ->max('created_at');
 
             if (!$latestDate) {
-                return response()->json([], 200); // Vráti prázdny zoznam, ak neboli nájdené žiadne testy
+                return response()->json([], 200);
             }
 
-            // Nájdi všetky testy pre daného klienta s najnovším dátumom
             $maxPowerTests = MaxPowerTest::where('client_id', $clientId)
                 ->whereDate('created_at', '=', date('Y-m-d', strtotime($latestDate)))
                 ->get();

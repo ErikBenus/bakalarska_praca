@@ -30,7 +30,6 @@ class AllTestsController extends Controller
         try {
             $allTests = [];
 
-            // Načítanie MaxPowerTests a ich ValueLimbs
             $maxPowerTests = MaxPowerTest::where('client_id', $clientId)->get();
             foreach ($maxPowerTests as $maxPowerTest) {
                 $valueLimbs = ValueLimb::where('max_power_test_id', $maxPowerTest->id)->get();
@@ -45,7 +44,6 @@ class AllTestsController extends Controller
                 ];
             }
 
-            // Načítanie YBalanceTests a ich ValueLimbs
             $yBalanceTests = YBalanceTest::where('client_id', $clientId)->get();
             foreach ($yBalanceTests as $yBalanceTest) {
                 $valueLimbs = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)->get();
@@ -60,7 +58,6 @@ class AllTestsController extends Controller
                 ];
             }
 
-            // Načítanie Testov a ich ValueLimbs pre všetky kategórie
             foreach ($this->categorySlugs as $category => $slug) {
                 $tests = Test::where('client_id', $clientId)
                     ->where('category', $category)
@@ -82,7 +79,6 @@ class AllTestsController extends Controller
 
             return response()->json($allTests, 200);
         } catch (\Exception $e) {
-            Log::error('Chyba AllTestsController@showHistory: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -137,7 +133,6 @@ class AllTestsController extends Controller
                         ];
                     }
 
-                    // Načítanie Testov a ich ValueLimbs pre všetky kategórie
                     foreach ($this->categorySlugs as $category => $slug) {
                         $tests = Test::where('client_id', $client->id)
                             ->where('category', $category)
@@ -166,7 +161,6 @@ class AllTestsController extends Controller
 
             return response()->json($allTests, 200);
         } catch (\Exception $e) {
-            Log::error('Chyba AllTestsController@showAllClientsTests: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }

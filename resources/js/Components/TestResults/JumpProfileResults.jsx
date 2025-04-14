@@ -117,7 +117,7 @@ const JumpProfileResults = ({ clientId }) => {
                                 onSort={handleSort}
                                 getRowKey={(row) => row.name}
                                 hoveredRowId={hoveredRowId}
-                                onHover={setHoveredRowId} // Nastavujeme stav pre hover
+                                onHover={setHoveredRowId}
                             />
                         </div>
                     )}
@@ -134,7 +134,7 @@ const JumpProfileResults = ({ clientId }) => {
                                 onSort={handleSort}
                                 getRowKey={(row) => row.name}
                                 hoveredRowId={hoveredRowId}
-                                onHover={setHoveredRowId} // Nastavujeme stav pre hover
+                                onHover={setHoveredRowId}
                             />
                         </div>
                     )}
@@ -151,7 +151,7 @@ const JumpProfileResults = ({ clientId }) => {
                                 onSort={handleSort}
                                 getRowKey={(row) => row.name}
                                 hoveredRowId={hoveredRowId}
-                                onHover={setHoveredRowId} // Nastavujeme stav pre hover
+                                onHover={setHoveredRowId}
                             />
                         </div>
                     )}

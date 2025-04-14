@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
-import ResultsTestContainer from "@/Components/ResultsTestContainer.jsx";
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import ClientHeader from "@/Components/ClientHeader.jsx";
 import AddTestForm from "@/Components/AddTest/CreateTestModal.jsx";
@@ -19,7 +18,7 @@ import MobilityFlexibilityResults from "@/Components/TestResults/MobilityFlexibi
 import SpecialTestResults from "@/Components/TestResults/SpecialTestResults.jsx";
 import axios from "axios";
 
-export default function ClientDetails({ client, tests, clientId }) {
+export default function ClientDetails({ client, clientId }) {
     const [clientData, setClientData] = useState(null);
     const [showAddTestForm, setShowAddTestForm] = useState(false);
     const [activeSection, setActiveSection] = useState(null);

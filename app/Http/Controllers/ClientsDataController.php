@@ -17,10 +17,8 @@ class ClientsDataController extends Controller
             return response()->json(['message' => 'Žiadne dáta pre klienta'], 404);
         }
 
-        // Načítanie dĺžok končatín
         $limbLengths = LimbLength::where('client_id', $clientId)->get();
 
-        // Pridanie dĺžok končatín do odpovede
         $clientData->limb_lengths = $limbLengths;
 
         $user = User::find($clientId);

@@ -1,6 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import {Head, Link, usePage} from '@inertiajs/react';
-import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
+import {Head, usePage} from '@inertiajs/react';
 import {usePermissions} from "@/Components/UsePermissions.jsx";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
 import MaxPowerResults from "@/Components/TestResults/MaxPowerResults.jsx";

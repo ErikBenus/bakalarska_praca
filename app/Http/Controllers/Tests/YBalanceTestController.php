@@ -23,22 +23,19 @@ class YBalanceTestController extends Controller
         }
 
         try {
-            // Nájdi najnovší dátum testovania pre daného klienta
             $latestDate = YBalanceTest::where('client_id', $clientId)
                 ->max('created_at');
 
             if (!$latestDate) {
-                return response()->json([], 200); // Vráti prázdny zoznam, ak neboli nájdené žiadne testy
+                return response()->json([], 200);
             }
 
-            // Nájdi všetky testy pre daného klienta s najnovším dátumom
             $yBalanceTests = YBalanceTest::where('client_id', $clientId)
                 ->whereDate('created_at', '=', date('Y-m-d', strtotime($latestDate)))
                 ->get();
 
             return response()->json($yBalanceTests, 200);
         } catch (\Exception $e) {
-            Log::error('Chyba YBalanceTestController@index: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -117,7 +114,6 @@ class YBalanceTestController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Test not found'], 404);
         } catch (\Exception $e) {
-            Log::error('Chyba YBalanceTestController@show: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -178,11 +174,9 @@ class YBalanceTestController extends Controller
             return response()->json(['message' => 'Y Balance Test vytvorený úspešne', 'test' => $yBalanceTest]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
-            \Log::error('Chyba validácie YBalanceTestController@store: ' . $e->getMessage());
             return response()->json(['error' => 'Chyba validácie', 'messages' => $e->errors()], 422);
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Chyba YBalanceTestController@store: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -191,10 +185,8 @@ class YBalanceTestController extends Controller
     {
         $clientId = $request->input('client_id');
 
-        // Nájdeme najnovší dátum testu pre daného klienta
         $latestDate = YBalanceTest::where('client_id', $clientId)->max('created_at');
 
-        // Nájdeme testy s najnovším dátumom a konkrétnymi názvami
         $tests = YBalanceTest::where('client_id', $clientId)
             ->where('created_at', $latestDate)
             ->whereIn('name', ['Anterior', 'Posterolateral', 'Posteromedial'])

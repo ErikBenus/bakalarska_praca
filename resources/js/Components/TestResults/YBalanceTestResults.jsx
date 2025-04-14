@@ -13,7 +13,6 @@ const YBalanceTestResults = ({ clientId }) => {
     const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
-        // Načítanie testov a hodnôt
         axios.get(`/api/y-balance-test?client_id=${clientId}`)
             .then(response => {
                 setTests(response.data);

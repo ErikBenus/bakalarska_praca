@@ -208,25 +208,6 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
         setNewMaxPowerTest({ ...newMaxPowerTest, values: updatedValues });
     };
 
-    const handleSaveSuccess = () => {
-        setIsSaving(false);
-        setIsSaved(true);
-        toast.success(testId ? 'Testy boli upravené!' : 'Testy boli pridané!');
-        onRequestClose();
-        window.location.reload();
-
-        setTimeout(() => {
-            setIsSaved(false);
-        }, 3000);
-    };
-
-    const handleSaveError = (err) => {
-        setIsSaving(false);
-        toast.error('Chyba pri ukladaní testov!');
-        console.error(err);
-    };
-
-
     const addLimbValue = () => {
         setNewTest({
             ...newTest,

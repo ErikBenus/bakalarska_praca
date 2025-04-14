@@ -14,7 +14,7 @@ const muscles = [
     'Extenzia v Abdukcii',
 ];
 
-const MobilityFlexibilityForm = ({ newTest, handleValueChange }) => {
+const MobilityFlexibilityForm = ({handleValueChange }) => {
     const [selectedMuscle, setSelectedMuscle] = useState('');
     const [muscleValues, setMuscleValues] = useState([]);
 

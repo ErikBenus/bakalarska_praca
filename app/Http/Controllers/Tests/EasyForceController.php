@@ -18,22 +18,19 @@ class EasyForceController extends Controller
         $clientId = $request->query('client_id');
 
         try {
-            // Nájdi najnovší dátum testovania pre daného klienta
             $latestDate = Test::where('client_id', $clientId)
                 ->where('category', 'Easy Force')
                 ->max('created_at');
 
             if (!$latestDate) {
-                return response()->json([], 200); // Vráti prázdny zoznam, ak neboli nájdené žiadne testy
+                return response()->json([], 200);
             }
 
-            // Nájdi všetky testy pre daného klienta s najnovším dátumom
             $tests = Test::where('client_id', $clientId)
                 ->where('category', 'Easy Force')
                 ->whereDate('created_at', '=', date('Y-m-d', strtotime($latestDate)))
                 ->get();
 
-            // Načítaj hodnoty pre každý test
             $results = [];
             foreach ($tests as $test) {
                 $values = ValueLimb::where('test_id', $test->id)
@@ -73,7 +70,7 @@ class EasyForceController extends Controller
 
     public function indexAll(Request $request)
     {
-        $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov
+        $clientId = $request->query('client_id');
 
         try {
             $tests = Test::where('category', 'Easy Force')
@@ -89,7 +86,7 @@ class EasyForceController extends Controller
 
     public function show($testId, Request $request)
     {
-        $clientId = $request->query('client_id'); // Načítanie clientId z query parametrov
+        $clientId = $request->query('client_id');
 
         $values = ValueLimb::where('test_id', $testId)
             ->whereHas('test', function ($query) use ($clientId) {

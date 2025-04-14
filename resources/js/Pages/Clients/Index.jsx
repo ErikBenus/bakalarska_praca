@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 import axios from 'axios';
 import AddClientForm from '@/Components/AddClientForm.jsx';
 import {usePermissions} from "@/Components/UsePermissions.jsx";
@@ -24,6 +24,7 @@ export default function ClientsIndex({ clients }) {
         axios.get(`/api/all-clients/${id}/edit`)
             .then(response => {
                 const user = response.data;
+                user.clients_data = undefined;
                 const mergedData = {
                     ...user,
                     ...user.clients_data
