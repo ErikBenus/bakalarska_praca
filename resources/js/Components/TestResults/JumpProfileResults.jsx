@@ -9,9 +9,6 @@ const JumpProfileResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
-    const [hoveredRowId, setHoveredRowId] = useState(null); // Stav pre hovered riadok
 
     useEffect(() => {
         axios.get(`/api/tests/skokovy-profil?client_id=${clientId}`)
@@ -82,14 +79,6 @@ const JumpProfileResults = ({ clientId }) => {
 
     const { bothLegs, rightLeg, leftLeg } = processTestData();
 
-    const handleSort = (column) => {
-        if (sortColumn === column) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortColumn(column);
-            setSortDirection('asc');
-        }
-    };
 
     const columns = [
         { key: 'name', label: 'Názov skoku' },
@@ -110,14 +99,9 @@ const JumpProfileResults = ({ clientId }) => {
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Skokový profil</h3>
                             <SortableTable
-                                data={sortData(bothLegs, sortColumn, sortDirection)}
+                                data={sortData(bothLegs)}
                                 columns={columns}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
                                 getRowKey={(row) => row.name}
-                                hoveredRowId={hoveredRowId}
-                                onHover={setHoveredRowId}
                             />
                         </div>
                     )}
@@ -127,14 +111,9 @@ const JumpProfileResults = ({ clientId }) => {
                         <div className="mt-4">
                             <h3 className="text-lg font-semibold mb-2">Skokový profil - Pravá noha</h3>
                             <SortableTable
-                                data={sortData(rightLeg, sortColumn, sortDirection)}
+                                data={sortData(rightLeg)}
                                 columns={columns}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
                                 getRowKey={(row) => row.name}
-                                hoveredRowId={hoveredRowId}
-                                onHover={setHoveredRowId}
                             />
                         </div>
                     )}
@@ -144,14 +123,9 @@ const JumpProfileResults = ({ clientId }) => {
                         <div className="mt-4">
                             <h3 className="text-lg font-semibold mb-2">Skokový profil - Ľavá noha</h3>
                             <SortableTable
-                                data={sortData(leftLeg, sortColumn, sortDirection)}
+                                data={sortData(leftLeg)}
                                 columns={columns}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
                                 getRowKey={(row) => row.name}
-                                hoveredRowId={hoveredRowId}
-                                onHover={setHoveredRowId}
                             />
                         </div>
                     )}

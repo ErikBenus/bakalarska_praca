@@ -11,8 +11,6 @@ const MaxPowerResults = ({ clientId }) => {
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [showLimbColumn, setShowLimbColumn] = useState(false);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
     const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
@@ -83,15 +81,6 @@ const MaxPowerResults = ({ clientId }) => {
 
     const processedTestData = processTestData();
 
-    const handleSort = (column) => {
-        if (sortColumn === column) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortColumn(column);
-            setSortDirection('asc');
-        }
-    };
-
     const columns = [
         { key: 'attempt', label: 'Pokus' },
         { key: 'weight', label: 'Dvíhaná váha' },
@@ -115,11 +104,8 @@ const MaxPowerResults = ({ clientId }) => {
                                     : group.name}
                             </h3>
                             <SortableTable
-                                data={sortData(group.values, sortColumn, sortDirection)}
+                                data={sortData(group.values)}
                                 columns={columns}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
                                 hoveredRowId={hoveredRowId}
                                 onHover={setHoveredRowId}
                                 getRowKey={(row) => row.attempt}

@@ -10,8 +10,6 @@ const MobilityFlexibilityResults = ({ clientId }) => {
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [showLimbColumn, setShowLimbColumn] = useState(false);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
     const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
@@ -79,15 +77,6 @@ const MobilityFlexibilityResults = ({ clientId }) => {
 
     const processedTestData = processTestData();
 
-    const handleSort = (column) => {
-        if (sortColumn === column) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortColumn(column);
-            setSortDirection('asc');
-        }
-    };
-
     const columns = [
         { key: 'name', label: 'Názov testu' },
         { key: 'right', label: 'Pravá strana' },
@@ -104,11 +93,8 @@ const MobilityFlexibilityResults = ({ clientId }) => {
                 </div>
             ) : (
                 <SortableTable
-                    data={sortData(processedTestData, sortColumn, sortDirection)}
+                    data={sortData(processedTestData)}
                     columns={columns}
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
                     hoveredRowId={hoveredRowId}
                     onHover={setHoveredRowId}
                     getRowKey={(row) => row.name}

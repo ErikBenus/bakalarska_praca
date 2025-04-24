@@ -10,8 +10,6 @@ const MuscleEnduranceResults = ({ clientId }) => {
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [showLimbColumn, setShowLimbColumn] = useState(false);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
     const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
@@ -70,15 +68,6 @@ const MuscleEnduranceResults = ({ clientId }) => {
 
     const processedTestData = processTestData();
 
-    const handleSort = (column) => {
-        if (sortColumn === column) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortColumn(column);
-            setSortDirection('asc');
-        }
-    };
-
     const columns = [
         { key: 'testName', label: 'Názov testu' },
         { key: 'attempt', label: 'Pokus' },
@@ -95,11 +84,8 @@ const MuscleEnduranceResults = ({ clientId }) => {
                 </div>
             ) : (
                 <SortableTable
-                    data={sortData(processedTestData, sortColumn, sortDirection)}
+                    data={sortData(processedTestData)}
                     columns={columns}
-                    sortColumn={sortColumn}
-                    sortDirection={sortDirection}
-                    onSort={handleSort}
                     hoveredRowId={hoveredRowId}
                     onHover={setHoveredRowId}
                     getRowKey={(row) => row.id}

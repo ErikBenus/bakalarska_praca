@@ -10,7 +10,6 @@ const YBalanceTestResults = ({ clientId }) => {
     const [compositeDistance, setCompositeDistance] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [hoveredRowId, setHoveredRowId] = useState(null);
 
     useEffect(() => {
         axios.get(`/api/y-balance-test?client_id=${clientId}`)
@@ -144,9 +143,6 @@ const YBalanceTestResults = ({ clientId }) => {
                                 data={generateTableData(data)}
                                 columns={columns}
                                 getRowKey={(row) => row.leg}
-                                hoveredRowId={hoveredRowId}
-                                onHover={setHoveredRowId}
-                                rowClassName={(row) => row.leg === hoveredRowId ? 'bg-gray-100' : ''}
                             />
                         </div>
                     ))}
@@ -160,9 +156,6 @@ const YBalanceTestResults = ({ clientId }) => {
                                     data={generateCompositeTableData(compositeDistance)}
                                     columns={compositeColumns}
                                     getRowKey={(row) => row.leg}
-                                    hoveredRowId={hoveredRowId}
-                                    onHover={setHoveredRowId}
-                                    rowClassName={(row) => row.leg === hoveredRowId ? 'bg-gray-100' : ''}
                                 />
                             </div>
                         </div>

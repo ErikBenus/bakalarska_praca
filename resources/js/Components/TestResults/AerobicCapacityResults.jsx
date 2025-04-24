@@ -3,15 +3,12 @@ import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import SortableTable from '@/Components/SortableTable';
 import { ClipLoader } from 'react-spinners';
-import { sortData } from '@/Utils/SortData';
 
 const AerobicCapacityResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [hoveredRowId, setHoveredRowId] = useState(null);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
     const [showLimbColumn, setShowLimbColumn] = useState(false);
 
     useEffect(() => {
@@ -44,25 +41,16 @@ const AerobicCapacityResults = ({ clientId }) => {
             });
     }, [clientId]);
 
-    const handleSort = (column) => {
-        if (sortColumn === column) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortColumn(column);
-            setSortDirection('asc');
-        }
-    };
-
     const baseColumns = [
-        { key: 'test_name', label: 'Názov testu' },
-        { key: 'value', label: 'Hodnota' },
+        { key: 'test_name', label: 'Názov testu'},
+        { key: 'value', label: 'Hodnota'},
     ];
 
     if (showLimbColumn) {
-        baseColumns.push({ key: 'limb_name', label: 'Končatina' });
+        baseColumns.push({ key: 'limb_name', label: 'Končatina'});
     }
 
-    baseColumns.push({ key: 'metrics', label: 'Metriky' });
+    baseColumns.push({ key: 'metrics', label: 'Metriky'});
 
     return (
         <TestResultsBox>
@@ -81,11 +69,8 @@ const AerobicCapacityResults = ({ clientId }) => {
                     return (
                         <div key={test.id} className="mb-4">
                             <SortableTable
-                                data={sortData(values, sortColumn, sortDirection)}
+                                data={values}
                                 columns={baseColumns}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
                                 hoveredRowId={hoveredRowId}
                                 onHover={setHoveredRowId}
                                 getRowKey={(row) => row.id}

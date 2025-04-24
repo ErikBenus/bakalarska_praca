@@ -9,8 +9,6 @@ const ExplosivePowerResults = ({ clientId }) => {
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
     const [hoveredRowId, setHoveredRowId] = useState(null);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
     const [showLimbColumn, setShowLimbColumn] = useState(false);
 
     useEffect(() => {
@@ -43,15 +41,6 @@ const ExplosivePowerResults = ({ clientId }) => {
             });
     }, [clientId]);
 
-    const handleSort = (column) => {
-        if (sortColumn === column) {
-            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortColumn(column);
-            setSortDirection('asc');
-        }
-    };
-
     const baseColumns = [
         { key: 'test_name', label: 'Názov testu' },
         { key: 'value', label: 'Hodnota' },
@@ -80,11 +69,8 @@ const ExplosivePowerResults = ({ clientId }) => {
                     return (
                         <div key={test.id} className="mb-4">
                             <SortableTable
-                                data={sortData(values, sortColumn, sortDirection)}
+                                data={sortData(values)}
                                 columns={baseColumns}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
                                 hoveredRowId={hoveredRowId}
                                 onHover={setHoveredRowId}
                                 getRowKey={(row) => row.id}

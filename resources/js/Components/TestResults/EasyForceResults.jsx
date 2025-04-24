@@ -9,8 +9,6 @@ const EasyForceResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [hoveredRowId, setHoveredRowId] = useState(null);
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortDirection, setSortDirection] = useState('asc');
 
     useEffect(() => {
         axios.get(`/api/easy-force?client_id=${clientId}`)
@@ -77,11 +75,8 @@ const EasyForceResults = ({ clientId }) => {
                         <h3 className="text-base font-semibold">{test.name} - {formatDate(test.created_at)}</h3>
                         {test.values && (
                             <SortableTable
-                                data={sortData(test.values, sortColumn, sortDirection)}
+                                data={sortData(test.values)}
                                 columns={columns}
-                                sortColumn={sortColumn}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
                                 hoveredRowId={hoveredRowId}
                                 onHover={setHoveredRowId}
                                 getRowKey={(row) => row.id}
