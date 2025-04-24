@@ -29,15 +29,15 @@ function NavMenuTrainerMobile() {
                 </ResponsiveNavLink>
 
                 <ResponsiveNavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('clients.index')}
+                    active={route().current('clients.index')}
                 >
                     Zoznam klientov
                 </ResponsiveNavLink>
 
                 <ResponsiveNavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('history.all.tests')}
+                    active={route().current('history.all.tests')}
                 >
                     História testovaní
                 </ResponsiveNavLink>
@@ -70,8 +70,8 @@ function NavMenuClientMobile() {
                 </ResponsiveNavLink>
 
                 <ResponsiveNavLink
-                    href={route('all-tests.index')}
-                    active={route().current('all-tests.*')}
+                    href={route('history.all.tests')}
+                    active={route().current('history.all.tests')}
                 >
                     História
                 </ResponsiveNavLink>
