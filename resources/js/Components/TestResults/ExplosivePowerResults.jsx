@@ -3,7 +3,7 @@ import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import SortableTable from '@/Components/SortableTable';
 import { ClipLoader } from 'react-spinners';
-
+import { sortData } from '@/Utils/SortData';
 const ExplosivePowerResults = ({ clientId }) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
@@ -42,26 +42,6 @@ const ExplosivePowerResults = ({ clientId }) => {
                 setLoading(false);
             });
     }, [clientId]);
-
-    const sortData = (values, column, direction) => {
-        if (!column) return values;
-
-        return [...values].sort((a, b) => {
-            let valueA = a[column];
-            let valueB = b[column];
-
-            if (column === 'value') {
-                valueA = parseFloat(valueA);
-                valueB = parseFloat(valueB);
-            }
-
-            if (direction === 'asc') {
-                return valueA > valueB ? 1 : -1;
-            } else {
-                return valueA < valueB ? 1 : -1;
-            }
-        });
-    };
 
     const handleSort = (column) => {
         if (sortColumn === column) {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SortableTable from '@/Components/SortableTable';
 import ComparisonChart from "@/Components/GraphicCharts/ComparisonChart.jsx";
 
+
 const ComparisonModal = ({ testResults, onClose }) => {
     const [comparisonData, setComparisonData] = useState([]);
     const [sortColumn, setSortColumn] = useState(null);

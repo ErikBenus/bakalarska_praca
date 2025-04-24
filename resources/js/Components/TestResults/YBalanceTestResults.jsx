@@ -64,6 +64,7 @@ const YBalanceTestResults = ({ clientId }) => {
                     leftLeg: values.filter(v => v.limb_name === 'Ľavá noha').map(v => v.value),
                     absoluteDistanceRight: testValues[test.id].absoluteDistanceRight,
                     absoluteDistanceLeft: testValues[test.id].absoluteDistanceLeft,
+                    absoluteDifference: testValues[test.id].absoluteDifference,
                     relativeDistanceRight: testValues[test.id].relativeDistanceRight,
                     relativeDistanceLeft: testValues[test.id].relativeDistanceLeft,
                 });
@@ -81,6 +82,7 @@ const YBalanceTestResults = ({ clientId }) => {
         { key: 'attempt2', label: '2. pokus' },
         { key: 'attempt3', label: '3. pokus' },
         { key: 'absoluteDistance', label: 'Absolútna vzdialenosť' },
+        { key: 'absoluteDifference', label: 'Absolútny rozdiel' },
         { key: 'relativeDistance', label: 'Relatívna vzdialenosť (%)' },
     ];
 
@@ -97,6 +99,7 @@ const YBalanceTestResults = ({ clientId }) => {
                 attempt2: data.rightLeg[1],
                 attempt3: data.rightLeg[2],
                 absoluteDistance: data.absoluteDistanceRight,
+                absoluteDifference: data.absoluteDifference,
                 relativeDistance: data.relativeDistanceRight,
             },
             {
@@ -105,6 +108,7 @@ const YBalanceTestResults = ({ clientId }) => {
                 attempt2: data.leftLeg[1],
                 attempt3: data.leftLeg[2],
                 absoluteDistance: data.absoluteDistanceLeft,
+                absoluteDifference: data.absoluteDifference,
                 relativeDistance: data.relativeDistanceLeft,
             },
         ];
