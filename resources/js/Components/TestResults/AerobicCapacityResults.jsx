@@ -69,7 +69,7 @@ const AerobicCapacityResults = ({ clientId }) => {
                     return (
                         <div key={test.id} className="mb-4">
                             <SortableTable
-                                data={values}
+                                data={(values)}
                                 columns={baseColumns}
                                 hoveredRowId={hoveredRowId}
                                 onHover={setHoveredRowId}

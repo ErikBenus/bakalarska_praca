@@ -237,15 +237,15 @@ export default function HistoryOfAllTests() {
             sortable: false
         },
         ...(can('see trainer dashboard')
-            ? [{ key: 'clientName', label: 'Meno a priezvisko', render: row => row.clientName }]
+            ? [{ key: 'clientName', label: 'Meno a priezvisko', sortable: true , render: row => row.clientName }]
             : []),
-        { key: 'category', label: 'Kategória' },
-        { key: 'testName', label: 'Názov testu' },
-        { key: 'value', label: 'Hodnota' },
-        { key: 'limbName', label: 'Končatina' },
-        { key: 'weight', label: 'Váha' },
-        { key: 'metrics', label: 'Metriky' },
-        { key: 'createdAt', label: 'Prebehlo' },
+        { key: 'category', label: 'Kategória', sortable: true },
+        { key: 'testName', label: 'Názov testu', sortable: true },
+        { key: 'value', label: 'Hodnota', sortable: true },
+        { key: 'limbName', label: 'Končatina', sortable: true },
+        { key: 'weight', label: 'Váha', sortable: true },
+        { key: 'metrics', label: 'Metriky', sortable: true },
+        { key: 'createdAt', label: 'Prebehlo', sortable: true },
         {
             key: 'clientIcon',
             label: '',
