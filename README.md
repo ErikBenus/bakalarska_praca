@@ -72,3 +72,28 @@ Run in terminal:
 php artisan serve
 npm run dev
 ```
+
+### In Google:
+Open on adress localhost:8000
+
+Email login for client:
+``` 
+client@example.com
+```
+
+Email login for trainer:
+```
+trainer@example.com
+```
+
+Email login for admin:
+```
+admin@example.com
+```
+
+
+Password for all:
+```
+password
+```
+
