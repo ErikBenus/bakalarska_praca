@@ -41,10 +41,6 @@ npm install
 ```
 
 ### Database
-Installation MySQL:
-``` 
-
-```
 
 .evn settings:
 ``` 
@@ -56,10 +52,6 @@ DB_USERNAME=your_username
 DB_PASSWORD=your_password
 ```
 
-### Migration
-``` 
-php artisan migrate
-```
 ### React
 ``` 
 composer require laravel/breeze --dev
@@ -68,9 +60,15 @@ php artisan breeze:install react
 npm install
 ```
 
+### Migration & Seeders
+``` 
+php artisan migrate
+php artisan db:seed
+```
+
 ### Launch
 Run in terminal:
 ``` 
-php artisan server
+php artisan serve
 npm run dev
 ```
