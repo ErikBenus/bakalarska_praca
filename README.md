@@ -74,7 +74,7 @@ npm run dev
 ```
 
 ### In Google:
-Open on adress localhost:8000
+App URL: localhost:8000
 
 Email login for client:
 ``` 
