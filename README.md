@@ -60,6 +60,12 @@ php artisan breeze:install react
 npm install
 ```
 
+### .env
+``` 
+cp .env.example .env
+composer install
+```
+
 ### Migration & Seeders
 ``` 
 php artisan migrate
@@ -73,7 +79,7 @@ php artisan serve
 npm run dev
 ```
 
-### In Google:
+### In Browser:
 App URL: localhost:8000
 
 Email login for client:
