@@ -41,9 +41,9 @@ const JumpProfileResults = ({ clientId }) => {
     const processTestData = () => {
         if (!tests || !testValues) return { bothLegs: [], rightLeg: [], leftLeg: [] };
 
-        const bothLegs = [];
-        const rightLeg = [];
-        const leftLeg = [];
+        const bothLegsData = [];
+        const rightLegData = [];
+        const leftLegData = [];
 
         tests.forEach(test => {
             const values = testValues[test.id];
@@ -64,27 +64,65 @@ const JumpProfileResults = ({ clientId }) => {
                     };
 
                     if (!values[0].limb_name || values[0].limb_name === '-') {
-                        bothLegs.push(row);
+                        bothLegsData.push(row);
                     } else if (Number(values[0].id_limb) === 3) {
-                        rightLeg.push(row);
+                        rightLegData.push(row);
                     } else if (Number(values[0].id_limb) === 4) {
-                        leftLeg.push(row);
+                        leftLegData.push(row);
                     }
                 });
             }
         });
 
-        return { bothLegs, rightLeg, leftLeg };
+        const calculateEUR = (data) => {
+            const cmjValues = data.filter(item => item.name.includes('CMJ')).map(item => Math.max(Number(item.attempt1) || 0, Number(item.attempt2) || 0));
+            const sjValues = data.filter(item => item.name.includes('SJ')).map(item => Math.max(Number(item.attempt1) || 0, Number(item.attempt2) || 0));
+
+            const maxCMJ = cmjValues.length > 0 ? Math.max(...cmjValues) : 0;
+            const maxSJ = sjValues.length > 0 ? Math.max(...sjValues) : 0;
+
+            return maxSJ !== 0 ? (maxCMJ / maxSJ).toFixed(2) : 'N/A';
+        };
+
+        const addEURRow = (data) => {
+            const eurValue = calculateEUR(data);
+            return [...data, { name: 'EUR', attempt1: eurValue, attempt2: eurValue, __eur_value: eurValue }];
+        };
+
+        return {
+            bothLegs: addEURRow(bothLegsData),
+            rightLeg: addEURRow(rightLegData),
+            leftLeg: addEURRow(leftLegData)
+        };
     };
 
     const { bothLegs, rightLeg, leftLeg } = processTestData();
-
 
     const columns = [
         { key: 'name', label: 'Názov skoku' },
         { key: 'attempt1', label: '1. pokus' },
         { key: 'attempt2', label: '2. pokus' },
-    ];
+        {
+            key: '__eur_value',
+            label: 'EUR',
+            render: (row) => {
+                if (row.name === 'EUR') {
+                    const eurValue = parseFloat(row.__eur_value);
+                    let className = '';
+                    if (!isNaN(eurValue)) {
+                        if (eurValue >= 1.05 && eurValue <= 1.1) {
+                            className = 'text-green-500';
+                        } else {
+                            className = 'text-red-500';
+                        }
+                    }
+                    return <span className={className}>{row.__eur_value}</span>;
+                }
+                return null;
+            },
+        },
+    ].filter(col => col.key !== '__eur_value' || bothLegs.some(item => item.name === 'EUR') || rightLeg.some(item => item.name === 'EUR') || leftLeg.some(item => item.name === 'EUR'));
+
 
     return (
         <TestResultsBox>

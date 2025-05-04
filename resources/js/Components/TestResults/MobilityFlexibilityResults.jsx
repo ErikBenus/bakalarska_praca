@@ -48,7 +48,8 @@ const MobilityFlexibilityResults = ({ clientId }) => {
     };
 
     const calculateAsymmetry = (leftValue, rightValue) => {
-        return ((calculateDifference(leftValue, rightValue)) / Math.abs(Math.max(rightValue, leftValue)) * 100).toFixed(2);
+        const maxVal = Math.abs(Math.max(rightValue || 0, leftValue || 0));
+        return maxVal === 0 ? 0 : ((calculateDifference(leftValue, rightValue)) / maxVal * 100).toFixed(2);
     };
 
     const processTestData = () => {
@@ -82,7 +83,24 @@ const MobilityFlexibilityResults = ({ clientId }) => {
         { key: 'right', label: 'Pravá strana' },
         { key: 'left', label: 'Ľavá strana' },
         { key: 'difference', label: 'Rozdiel' },
-        { key: 'asymmetry', label: 'Asymetria' },
+        {
+            key: 'asymmetry',
+            label: 'Asymetria',
+            render: (row) => {
+                const asymmetry = parseFloat(row.asymmetry);
+                let className = '';
+                if (!isNaN(asymmetry)) {
+                    if (asymmetry > 10) {
+                        className = 'text-red-500';
+                    } else if (asymmetry >= 7 && asymmetry <= 10) {
+                        className = 'text-yellow-500';
+                    } else {
+                        className = 'text-green-500';
+                    }
+                }
+                return <span className={className}>{isNaN(asymmetry) ? 'N/A' : `${asymmetry}%`}</span>;
+            },
+        },
     ];
 
     return (
