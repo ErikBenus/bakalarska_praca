@@ -10,11 +10,19 @@ use Spatie\Permission\Models\Role;
 
 class ConclusionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $conclusions = Conclusion::with('client')->latest()->get();
+        $query = Conclusion::with('client')->latest();
+
+        if ($request->has('client_id')) {
+            $query->where('client_id', $request->input('client_id'));
+        }
+
+        $conclusions = $query->get();
+
         return response()->json($conclusions);
     }
+
 
     public function show($id)
     {

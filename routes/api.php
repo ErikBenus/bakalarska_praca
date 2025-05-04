@@ -24,11 +24,11 @@ Route::prefix('/api')->middleware('auth')->group(function () {
 
     // Easy Force Test
     // GET metódy
-    Route::get('/easy-force', [EasyForceController::class, 'index']); // Získanie posledných výsledkov Easy Force testu pre klienta
-    Route::get('/easy-force/all', [EasyForceController::class, 'indexAll']); // Získanie všetkých Easy Force testov pre klienta
-    Route::get('/easy-force/{testId}', [EasyForceController::class, 'show']); // Získanie konkrétneho Easy Force testu
-    // POST metódy
-    Route::post('/easy-force', [EasyForceController::class, 'store']); // Uloženie nového Easy Force testu
+//    Route::get('/easy-force', [EasyForceController::class, 'index']); // Získanie posledných výsledkov Easy Force testu pre klienta
+//    Route::get('/easy-force/all', [EasyForceController::class, 'indexAll']); // Získanie všetkých Easy Force testov pre klienta
+//    Route::get('/easy-force/{testId}', [EasyForceController::class, 'show']); // Získanie konkrétneho Easy Force testu
+//    // POST metódy
+//    Route::post('/easy-force', [EasyForceController::class, 'store']); // Uloženie nového Easy Force testu
 
     // Dáta klientov (Clients Data)
     // GET metódy

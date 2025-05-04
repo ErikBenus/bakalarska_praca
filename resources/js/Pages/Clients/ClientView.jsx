@@ -91,13 +91,22 @@ export default function ClientView({ clientId, clientName, conclusions }) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">
-                            {sortedConclusions.map((conclusion, index) => (
-                                <React.Fragment key={conclusion.id}>
-                                    <ConclusionItem conclusion={conclusion} canEdit={can('edit articles')} onSave={handleSave} />
-                                    {index < sortedConclusions.length - 1 && <hr key={`hr-${index}`} />}
-                                </React.Fragment>
-                            ))}
+                            {sortedConclusions.length === 0 ? (
+                                <p className="text-gray-600 italic">Žiadne odporúčania ešte neboli pridané.</p>
+                            ) : (
+                                sortedConclusions.map((conclusion, index) => (
+                                    <React.Fragment key={conclusion.id}>
+                                        <ConclusionItem
+                                            conclusion={conclusion}
+                                            canEdit={can('edit articles')}
+                                            onSave={handleSave}
+                                        />
+                                        {index < sortedConclusions.length - 1 && <hr key={`hr-${index}`}/>}
+                                    </React.Fragment>
+                                ))
+                            )}
                         </div>
+
                     </div>
                 </div>
             </div>
