@@ -85,7 +85,18 @@ const MaxPowerResults = ({ clientId }) => {
         { key: 'attempt', label: 'Pokus' },
         { key: 'weight', label: 'Dvíhaná váha' },
         { key: 'average', label: 'Average m/s' },
-        { key: 'mean_ms', label: 'Mean m/s' },
+        {
+            key: 'mean_ms',
+            label: 'Mean m/s',
+            render: (row) => {
+                const meanMs = row.mean_ms;
+                let className = '';
+                if (meanMs !== undefined) {
+                    className = meanMs >= 0.55 ? 'text-green-500' : 'text-red-500';
+                }
+                return <span className={className}>{meanMs !== undefined ? meanMs : '-'}</span>;
+            },
+        },
     ];
 
     return (

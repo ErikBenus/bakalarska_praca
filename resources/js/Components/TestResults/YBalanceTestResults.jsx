@@ -61,11 +61,11 @@ const YBalanceTestResults = ({ clientId }) => {
                     name: test.name,
                     rightLeg: values.filter(v => v.limb_name === 'Pravá noha').map(v => v.value),
                     leftLeg: values.filter(v => v.limb_name === 'Ľavá noha').map(v => v.value),
-                    absoluteDistanceRight: testValues[test.id].absoluteDistanceRight,
-                    absoluteDistanceLeft: testValues[test.id].absoluteDistanceLeft,
-                    absoluteDifference: testValues[test.id].absoluteDifference,
-                    relativeDistanceRight: testValues[test.id].relativeDistanceRight,
-                    relativeDistanceLeft: testValues[test.id].relativeDistanceLeft,
+                    absoluteDistanceRight: testValues[test.id]?.absoluteDistanceRight,
+                    absoluteDistanceLeft: testValues[test.id]?.absoluteDistanceLeft,
+                    absoluteDifference: testValues[test.id]?.absoluteDifference,
+                    relativeDistanceRight: testValues[test.id]?.relativeDistanceRight,
+                    relativeDistanceLeft: testValues[test.id]?.relativeDistanceLeft,
                 });
             }
         });
@@ -81,7 +81,18 @@ const YBalanceTestResults = ({ clientId }) => {
         { key: 'attempt2', label: '2. pokus' },
         { key: 'attempt3', label: '3. pokus' },
         { key: 'absoluteDistance', label: 'Absolútna vzdialenosť' },
-        { key: 'absoluteDifference', label: 'Absolútny rozdiel' },
+        {
+            key: 'absoluteDifference',
+            label: 'Absolútny rozdiel',
+            render: (row) => {
+                const difference = row.absoluteDifference;
+                let className = '';
+                if (difference !== undefined) {
+                    className = difference < 4 ? 'text-green-500' : 'text-red-500';
+                }
+                return <span className={className}>{difference !== undefined ? difference : '-'}</span>;
+            },
+        },
         { key: 'relativeDistance', label: 'Relatívna vzdialenosť (%)' },
     ];
 
@@ -123,7 +134,14 @@ const YBalanceTestResults = ({ clientId }) => {
                 leg: 'Ľavá',
                 distance: data.left,
             },
-        ];
+        ].map(item => ({
+            ...item,
+            distance: (
+                <span className={item.distance > 94 ? 'text-green-500' : 'text-red-500'}>
+                    {item.distance !== undefined ? item.distance : '-'}
+                </span>
+            ),
+        }));
     };
 
     return (
