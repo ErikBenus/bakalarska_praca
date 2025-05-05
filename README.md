@@ -24,15 +24,10 @@ This project utilizes the following technologies and tools:
 ## Installation Guide for LINUX (I used UBUNTU WSL on Windows)
 Youtube tutorial for installing LINUX on Windows:
 https://www.youtube.com/watch?v=HrAsmXy1-78&ab_channel=LogicLambda
-### Composer and Laravel (If php is not installed)
+### Composer and Laravel
 ``` 
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
-```
-
-### NODE.js (If nodejs is not installed)
-``` 
-npm install
 ```
 
 ### NPM install
