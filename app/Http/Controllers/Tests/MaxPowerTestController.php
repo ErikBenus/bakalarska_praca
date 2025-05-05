@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\MaxPowerTest;
 use App\Models\TestingLimb;
 use App\Models\ValueLimb;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +37,7 @@ class MaxPowerTestController extends Controller
                 ->get();
 
             return response()->json($maxPowerTests, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Chyba MaxPowerTestController@index: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
@@ -74,9 +76,9 @@ class MaxPowerTestController extends Controller
                 'test' => $maxPowerTest,
                 'values' => $valuesWithLimbNames,
             ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Test not found'], 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Chyba MaxPowerTestController@show: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
@@ -125,7 +127,7 @@ class MaxPowerTestController extends Controller
             DB::rollBack();
             Log::error('Chyba validácie MaxPowerTestController@store: ' . $e->getMessage());
             return response()->json(['error' => 'Chyba validácie', 'messages' => $e->errors()], 422);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             Log::error('Chyba MaxPowerTestController@store: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);

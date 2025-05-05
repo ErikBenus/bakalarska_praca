@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tests;
 
 use App\Http\Controllers\Controller;
 use App\Models\LimbLength;
+use App\Models\Test;
 use App\Models\TestingLimb;
 use App\Models\ValueLimb;
 use App\Models\YBalanceTest;
@@ -55,9 +56,7 @@ class YBalanceTestController extends Controller
 
             $valueLimbs = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)->get();
 
-
             $testDate = $yBalanceTest->created_at->toDateString();
-
 
             $limbLengths = LimbLength::where('client_id', $clientId)
                 ->whereDate('updated_at', '=', $testDate)
@@ -122,7 +121,6 @@ class YBalanceTestController extends Controller
 
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'client_id' => 'required|exists:users,id',
             'name' => 'required|string',
@@ -152,7 +150,6 @@ class YBalanceTestController extends Controller
                     }
                 }
             }
-
 
             $rightLegValues = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)
                 ->where('id_limb', 3) // Pravá noha
@@ -195,7 +192,7 @@ class YBalanceTestController extends Controller
             ->get();
 
         if ($tests->count() !== 3) {
-            return response()->json(['error' => 'POZOR!!! Nedostatok dát pre výpočet. Pre výpočet údajov, sú potrené dĺžky dolných končatín klienta a všetky 3 smery.'], 400);
+            return response()->json(['error' => 'Nedostatok dát pre výpočet. Chýbajú všetky 3 smery alebo dĺžky končatín'], 400);
         }
 
         $allRightValues = [];

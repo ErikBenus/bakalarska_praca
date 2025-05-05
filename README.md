@@ -29,15 +29,37 @@ https://www.youtube.com/watch?v=HrAsmXy1-78&ab_channel=LogicLambda
 Link:
 https://www.jetbrains.com/phpstorm/download/#section=windows
 
-### Composer and Laravel Installation on UBUNTU
+### PHP, Composer, npm and Laravel Installation on UBUNTU
+In UBUNTU CLI:
 ``` 
+sudo apt install php-cli
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
+sudo apt install npm
 sudo apt update
 ```
 
+### MySQL database installation and configuration on UBUNTU
+In UBUNTU CLI:
+``` 
+sudo apt instal php-zip
+sudo apt install php-mysql
+sudo apt install mysql-server
+```
 
-### NPM install
+``` 
+sudo mysql -u root -p
+```
+
+``` 
+CREATE DATABASE IF NOT EXISTS progym_db;
+CREATE USER IF NOT EXISTS 'user'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON progym_db.* TO 'user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+
+### NPM install 
 Use in local terminal (in PHPStorm):
 ``` 
 npm install
@@ -51,8 +73,8 @@ composer install
 ```
 
 ### Copy to .env
-
-.evn settings:
+Find the .env in project files in PhpStorm and change it all to this
+.env settings:
 ``` 
 APP_NAME='PROGYM Diagnostika'
 APP_ENV=local
@@ -122,8 +144,13 @@ VITE_APP_NAME="${APP_NAME}"
 ```
 
 ### Migration & Seeders
+Use in local terminal (in PHPStorm):
 ``` 
 php artisan migrate
+```
+
+``` 
+sudo apt install php-mbstring
 ```
 
 ``` 

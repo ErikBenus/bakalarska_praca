@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-const YBalanceTestForm = ({newTest, setNewTest}) => {
+const YBalanceTestForm = ({ newTest, setNewTest }) => {
     const [activeSection, setActiveSection] = useState('Anterior');
 
     const handleValueChange = (index, e) => {
         const updatedValues = [...newTest.values];
         updatedValues[index].value = e.target.value;
-        setNewTest({...newTest, values: updatedValues});
+        setNewTest({ ...newTest, values: updatedValues });
     };
 
     const handleSectionChange = (section) => {
@@ -39,9 +39,9 @@ const YBalanceTestForm = ({newTest, setNewTest}) => {
             <div className="mb-4">
                 <h4 className="font-semibold text-base mb-2">{activeSection} Test</h4>
                 {newTest.values
-                    .map((val, i) => ({val, i}))
-                    .filter(({val}) => val.name === activeSection)
-                    .map(({val, i}) => (
+                    .map((val, i) => ({ val, i }))
+                    .filter(({ val }) => val.name === activeSection)
+                    .map(({ val, i }) => (
                         <div key={i} className="grid grid-cols-3 gap-1 mt-1 mb-2">
                             <div className="flex items-center">
                                 <span className="text-gray-700 text-xs">
