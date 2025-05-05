@@ -226,7 +226,6 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             let base = '/api/tests';
 
             if (category === 'Y Balance Test') base = '/api/y-balance-test';
-            if (category === 'Easy Force') base = '/api/easy-force';
             if (category === 'Maximálna sila') base = '/api/max-power-tests';
 
             return id ? `${base}/${id}` : base;
