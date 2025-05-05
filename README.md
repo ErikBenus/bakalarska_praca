@@ -24,6 +24,11 @@ This project utilizes the following technologies and tools:
 ## Installation Guide for LINUX (I used UBUNTU WSL on Windows)
 Youtube tutorial for installing LINUX on Windows:
 https://www.youtube.com/watch?v=HrAsmXy1-78&ab_channel=LogicLambda
+
+## Installation of PhpStorm
+Link:
+https://www.jetbrains.com/phpstorm/download/#section=windows
+
 ### Composer and Laravel Installation on UBUNTU
 ``` 
 curl -sS https://getcomposer.org/installer | php
@@ -114,19 +119,25 @@ AWS_BUCKET=
 AWS_USE_PATH_STYLE_ENDPOINT=false
 
 VITE_APP_NAME="${APP_NAME}"
-
 ```
 
 ### Migration & Seeders
 ``` 
 php artisan migrate
+```
+
+``` 
 php artisan db:seed
 ```
 
 ### Launch
-Run in terminal:
+Run in 1.terminal:
 ``` 
 php artisan serve
+```
+
+Run in 2.terminal:
+``` 
 npm run dev
 ```
 
