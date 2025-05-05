@@ -14,32 +14,35 @@ Web application for a Fitness Center for Diagnostic Testing and Client Data Anal
 
 This project utilizes the following technologies and tools:
 
-- **Podman:** A container management tool that serves as an alternative to Docker, used to run and manage containers in a more secure and rootless way.
 - **Laravel:** A PHP framework for building web applications. It is used in the backend to manage routes, databases, authentication, and more.
 - **React:** A JavaScript library for building user interfaces, particularly single-page applications (SPA). Used in the frontend for interactive UI components.
 - **MySQL:** A relational database management system used for storing and managing data, including client and test information.
-- **HTML/CSS/JavaScript:** Core web technologies used for the frontend structure and styling.
-- **Bootstrap:** A popular CSS framework used to speed up frontend development and ensure responsive design.
 - **Composer:** A PHP dependency manager, essential for managing Laravel packages and libraries.
 - **NPM: JavaScript** package managers used for managing frontend dependencies like React and other JavaScript libraries.
 - **Git:** Version control system to manage project code and enable collaboration.
 
-## Installation Guide
-
-### Composer and Laravel
+## Installation Guide for LINUX (I used UBUNTU WSL on Windows)
+Youtube tutorial for installing LINUX on Windows:
+https://www.youtube.com/watch?v=HrAsmXy1-78&ab_channel=LogicLambda
+### Composer and Laravel (If php is not installed)
 ``` 
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
-### NPM
+### NODE.js (If nodejs is not installed)
 ``` 
-sudo apt install nodejs npm
+npm install
+```
 
+### NPM install
+Use in terminal:
+``` 
 npm install
 ```
 
 ### .env
+Use in terminal:
 ``` 
 cp .env.example .env
 composer install
@@ -141,17 +144,17 @@ npm run dev
 ### In Browser:
 App URL: localhost:8000
 
-Email login for client:
+Email login for example client:
 ``` 
 client@example.com
 ```
 
-Email login for trainer:
+Email login for example trainer:
 ```
 trainer@example.com
 ```
 
-Email login for admin:
+Email login for example admin:
 ```
 admin@example.com
 ```

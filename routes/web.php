@@ -23,7 +23,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // Všetky testy (All Tests)
+    // Všetky testy zobrazenie stránok (All Tests)
     Route::get('/all-tests', [AllTestsController::class, 'index'])->name('all-tests.index'); // Zobrazenie stránky so všetkými testami (tlačidlá)
     Route::get('/all-tests-y-balance-test', [AllTestsController::class, 'yBalanceTest'])->name('all-tests.y-balance-test'); // Zobrazenie stránky o Y-Balance Testovaní
     Route::get('/all-tests-maximal-strength', [AllTestsController::class, 'maximalStrength'])->name('all-tests.maximal-strength'); // Zobrazenie stránky o testovaní maximálnej sily
