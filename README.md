@@ -24,14 +24,16 @@ This project utilizes the following technologies and tools:
 ## Installation Guide for LINUX (I used UBUNTU WSL on Windows)
 Youtube tutorial for installing LINUX on Windows:
 https://www.youtube.com/watch?v=HrAsmXy1-78&ab_channel=LogicLambda
-### Composer and Laravel
+### Composer and Laravel Installation on UBUNTU
 ``` 
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
+sudo apt update
 ```
 
+
 ### NPM install
-Use in terminal:
+Use in local terminal (in PHPStorm):
 ``` 
 npm install
 ```
@@ -113,14 +115,6 @@ AWS_USE_PATH_STYLE_ENDPOINT=false
 
 VITE_APP_NAME="${APP_NAME}"
 
-```
-
-### React
-``` 
-composer require laravel/breeze --dev
-php artisan breeze:install react
-
-npm install
 ```
 
 ### Migration & Seeders
