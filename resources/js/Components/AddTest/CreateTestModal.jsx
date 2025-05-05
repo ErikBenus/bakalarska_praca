@@ -214,7 +214,21 @@ const AddTestForm = ({isOpen, onRequestClose, testId, testData}) => {
         });
     };
 
+    const areYBalanceDirectionsFilled = () => {
+        if (newTest.category === 'Y Balance Test') {
+            const directions = ['Anterior', 'Posteromedial', 'Posterolateral'];
+            return directions.every(direction =>
+                newTest.values.some(value => value.name === direction && value.value !== '' && value.value !== null && value.value !== undefined)
+            );
+        }
+        return true;
+    };
+
     const handleSave = () => {
+        if (newTest.category === 'Y Balance Test' && !areYBalanceDirectionsFilled()) {
+            toast.warning('Prosím, vyplňte hodnoty pre všetky 3 smery');
+            return;
+        }
         setIsSaving(true);
         let testDataToSave = {
             ...newTest,

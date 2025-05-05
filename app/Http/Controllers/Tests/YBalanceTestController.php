@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Tests;
 
 use App\Http\Controllers\Controller;
 use App\Models\LimbLength;
-use App\Models\Test;
 use App\Models\TestingLimb;
 use App\Models\ValueLimb;
 use App\Models\YBalanceTest;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 
 class YBalanceTestController extends Controller
@@ -35,7 +37,7 @@ class YBalanceTestController extends Controller
                 ->get();
 
             return response()->json($yBalanceTests, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -53,10 +55,10 @@ class YBalanceTestController extends Controller
 
             $valueLimbs = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)->get();
 
-            // Získajte dátum vytvorenia testu
+
             $testDate = $yBalanceTest->created_at->toDateString();
 
-            // Vyhľadajte dĺžky končatín s rovnakým dátumom
+
             $limbLengths = LimbLength::where('client_id', $clientId)
                 ->whereDate('updated_at', '=', $testDate)
                 ->get()
@@ -111,16 +113,16 @@ class YBalanceTestController extends Controller
                 'relativeDistanceRight' => $relativeDistanceRight,
                 'relativeDistanceLeft' => $relativeDistanceLeft,
             ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Test not found'], 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Server error'], 500);
         }
     }
 
     public function store(Request $request)
     {
-        // Validácia vstupov
+
         $validated = $request->validate([
             'client_id' => 'required|exists:users,id',
             'name' => 'required|string',
@@ -151,7 +153,7 @@ class YBalanceTestController extends Controller
                 }
             }
 
-            // Oprava stĺpca na y_balance_test_id
+
             $rightLegValues = ValueLimb::where('y_balance_test_id', $yBalanceTest->id)
                 ->where('id_limb', 3) // Pravá noha
                 ->pluck('value')
@@ -172,10 +174,10 @@ class YBalanceTestController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Y Balance Test vytvorený úspešne', 'test' => $yBalanceTest]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             DB::rollBack();
             return response()->json(['error' => 'Chyba validácie', 'messages' => $e->errors()], 422);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['error' => 'Server error'], 500);
         }
@@ -193,7 +195,7 @@ class YBalanceTestController extends Controller
             ->get();
 
         if ($tests->count() !== 3) {
-            return response()->json(['error' => 'Nedostatok dát pre výpočet.'], 400);
+            return response()->json(['error' => 'POZOR!!! Nedostatok dát pre výpočet. Pre výpočet údajov, sú potrené dĺžky dolných končatín klienta a všetky 3 smery.'], 400);
         }
 
         $allRightValues = [];
