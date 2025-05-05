@@ -1,7 +1,7 @@
 // SectionButtons.jsx
 import React from 'react';
 
-const SectionButtons = ({ sections, activeSection, onSectionChange }) => {
+const SectionButtons = ({sections, activeSection, onSectionChange}) => {
     const generateButtons = () => {
         const sectionNames = Object.keys(sections);
 

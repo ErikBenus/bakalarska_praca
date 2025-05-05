@@ -1,8 +1,8 @@
-import { Head } from "@inertiajs/react";
+import {Head} from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import BackLink from "@/Components/BackLink.jsx";
 
-export default function EasyForce({ auth }) {
+export default function EasyForce({auth}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -11,9 +11,9 @@ export default function EasyForce({ auth }) {
                     Easy Force – Testovanie
                 </h2>
             }
-            rightHeader={<BackLink routeName="all-tests.index" text="štandardné testy" />}
+            rightHeader={<BackLink routeName="all-tests.index" text="štandardné testy"/>}
         >
-            <Head title="Easy Force – Testovanie" />
+            <Head title="Easy Force – Testovanie"/>
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -22,7 +22,10 @@ export default function EasyForce({ auth }) {
                             <h2 className="mt-8 mb-4 text-lg font-semibold">Easy Force – čo to je a ako funguje?</h2>
 
                             <p className="mb-4">
-                                Testovanie **Easy Force** hodnotí silu svalov predného a zadného svalového reťazca dolnej končatiny, konkrétne quadriceps (predný sval) a hamstring (zadný sval). Tento test poskytuje podrobné informácie o sile oboch svalov na pravej a ľavej nohe, čo nám pomáha identifikovať prípadné asymetrie alebo nerovnováhu medzi nimi.
+                                Testovanie **Easy Force** hodnotí silu svalov predného a zadného svalového reťazca
+                                dolnej končatiny, konkrétne quadriceps (predný sval) a hamstring (zadný sval). Tento
+                                test poskytuje podrobné informácie o sile oboch svalov na pravej a ľavej nohe, čo nám
+                                pomáha identifikovať prípadné asymetrie alebo nerovnováhu medzi nimi.
                             </p>
 
                             <h3 className="mt-8 mb-4 text-md font-semibold">Výsledky testu Easy Force</h3>
@@ -69,7 +72,8 @@ export default function EasyForce({ auth }) {
                                 </tbody>
                             </table>
 
-                            <h3 className="mt-8 mb-4 text-md font-semibold">Porovnanie predného a zadného svalového reťazca</h3>
+                            <h3 className="mt-8 mb-4 text-md font-semibold">Porovnanie predného a zadného svalového
+                                reťazca</h3>
 
                             <table className="min-w-full bg-white shadow-md border border-gray-200">
                                 <thead>
@@ -96,10 +100,12 @@ export default function EasyForce({ auth }) {
                             <h3 className="mt-8 mb-4 text-md font-semibold">Výsledky a hodnotenie</h3>
 
                             <p className="mb-4">
-                                Výsledky testu umožňujú detailné porovnanie predného a zadného svalového reťazca dolnej končatiny. Ak je rozdiel medzi svalmi väčší ako 20%, môže to naznačovať slabšie svaly, ktoré si vyžadujú cielené cvičenia a rehabilitáciu.
+                                Výsledky testu umožňujú detailné porovnanie predného a zadného svalového reťazca dolnej
+                                končatiny. Ak je rozdiel medzi svalmi väčší ako 20%, môže to naznačovať slabšie svaly,
+                                ktoré si vyžadujú cielené cvičenia a rehabilitáciu.
                             </p>
 
-                            <BackLink routeName="all-tests.index" text="štandardné testy" />
+                            <BackLink routeName="all-tests.index" text="štandardné testy"/>
                         </div>
                     </div>
                 </div>

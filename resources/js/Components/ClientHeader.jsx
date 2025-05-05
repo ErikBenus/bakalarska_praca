@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import TrainerConclusionsModal from "@/Components/Conclusions/TrainerConclusionsModal.jsx";
 
-const ClientHeader = ({ client, onCreateTestClick, clientId, onSave }) => {
+const ClientHeader = ({client, onCreateTestClick, clientId, onSave}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => {

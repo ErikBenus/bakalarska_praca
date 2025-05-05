@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-modal';
 
-const AddTrainerForm = ({ isOpen, onRequestClose, trainerId, trainerData }) => {
+const AddTrainerForm = ({isOpen, onRequestClose, trainerId, trainerData}) => {
     const [newTrainer, setNewTrainer] = useState({
         first_name: '',
         last_name: '',
@@ -21,8 +21,8 @@ const AddTrainerForm = ({ isOpen, onRequestClose, trainerId, trainerData }) => {
     }, [trainerData]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewTrainer({ ...newTrainer, [name]: value });
+        const {name, value} = e.target;
+        setNewTrainer({...newTrainer, [name]: value});
     };
 
     const handleSave = () => {
@@ -119,7 +119,7 @@ const AddTrainerForm = ({ isOpen, onRequestClose, trainerId, trainerData }) => {
                 >
                     Zrušiť
                 </button>
-                <ToastContainer />
+                <ToastContainer/>
             </div>
         </Modal>
     );

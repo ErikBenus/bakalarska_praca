@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart, registerables } from 'chart.js';
+import React, {useEffect, useRef, useState} from 'react';
+import {Bar} from 'react-chartjs-2';
+import {Chart, registerables} from 'chart.js';
 
 Chart.register(...registerables);
 
-const ComparisonChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
+const ComparisonChart = ({data, labels, title, xAxisLabel, yAxisLabel}) => {
     const [chartData, setChartData] = useState(null);
     const chartColors = useRef([]);
 
@@ -17,7 +17,7 @@ const ComparisonChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
                 }));
             }
 
-            // Upravené generovanie dát pre graf
+
             const datasets = data.map((dataset, index) => ({
                 label: `Nameraná hodnota ${index + 1}`,
                 data: dataset,
@@ -26,8 +26,8 @@ const ComparisonChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
                 borderWidth: 1,
             }));
 
-            // Upravené generovanie labelov pre os X
-            const xAxisLabels = labels[0]; // Použijeme dátumy ako labely
+
+            const xAxisLabels = labels[0];
 
             const generatedChartData = {
                 labels: xAxisLabels,
@@ -59,7 +59,7 @@ const ComparisonChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
         return null;
     }
 
-    return <Bar data={chartData} options={options} />;
+    return <Bar data={chartData} options={options}/>;
 };
 
 export default ComparisonChart;

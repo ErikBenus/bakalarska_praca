@@ -1,6 +1,6 @@
-import { Link } from "@inertiajs/react";
+import {Link} from "@inertiajs/react";
 
-export default function BackLink({ routeName, text }) {
+export default function BackLink({routeName, text}) {
     return (
         <Link
             href={route(routeName)}

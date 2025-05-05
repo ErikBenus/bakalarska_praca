@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
+import {Head, Link} from "@inertiajs/react";
 import EasyForceResults from "@/Components/TestResults/EasyForceResults.jsx";
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import ClientHeader from "@/Components/ClientHeader.jsx";
@@ -18,7 +18,7 @@ import MobilityFlexibilityResults from "@/Components/TestResults/MobilityFlexibi
 import SpecialTestResults from "@/Components/TestResults/SpecialTestResults.jsx";
 import axios from "axios";
 
-export default function ClientDetails({ client, clientId }) {
+export default function ClientDetails({client, clientId}) {
     const [clientData, setClientData] = useState(null);
     const [showAddTestForm, setShowAddTestForm] = useState(false);
     const [activeSection, setActiveSection] = useState(null);
@@ -85,8 +85,8 @@ export default function ClientDetails({ client, clientId }) {
     if (!client) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Klient nenájdený</h2>}
-                                 rightHeader={<CreateTestingButton />}>
-                <Head title="Klient nenájdený" />
+                                 rightHeader={<CreateTestingButton/>}>
+                <Head title="Klient nenájdený"/>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <p>Klient s ID {clientId} nebol nájdený.</p>
@@ -106,8 +106,8 @@ export default function ClientDetails({ client, clientId }) {
                     onSave={handleSave}
                 />
             }
-            rightHeader={<CreateTestingButton />}>
-            <Head title={`${client.first_name} ${client.last_name}`} />
+            rightHeader={<CreateTestingButton/>}>
+            <Head title={`${client.first_name} ${client.last_name}`}/>
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -211,7 +211,7 @@ export default function ClientDetails({ client, clientId }) {
                 <SectionRenderer
                     sections={sectionComponents}
                     activeSection={activeSection}
-                    parameters={{ clientId: client.id }}
+                    parameters={{clientId: client.id}}
                 />
             </div>
             {showAddTestForm && (

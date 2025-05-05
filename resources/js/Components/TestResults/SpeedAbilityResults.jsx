@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
-import { ClipLoader } from 'react-spinners';
+import {ClipLoader} from 'react-spinners';
 import SortableTable from '@/Components/SortableTable';
-import { sortData } from '@/Utils/SortData';
+import {sortData} from '@/Utils/SortData';
 
-const SpeedAbilityResults = ({ clientId }) => {
+const SpeedAbilityResults = ({clientId}) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
@@ -69,17 +69,17 @@ const SpeedAbilityResults = ({ clientId }) => {
 
 
     const columns = [
-        { key: 'testName', label: 'Názov testu' },
-        { key: 'value', label: 'Hodnota' },
-        ...(showLimbColumn ? [{ key: 'limbName', label: 'Končatina' }] : []),
-        { key: 'metrics', label: 'Metriky' },
+        {key: 'testName', label: 'Názov testu'},
+        {key: 'value', label: 'Hodnota'},
+        ...(showLimbColumn ? [{key: 'limbName', label: 'Končatina'}] : []),
+        {key: 'metrics', label: 'Metriky'},
     ];
 
     return (
         <TestResultsBox>
             {loading ? (
                 <div className="flex justify-center">
-                    <ClipLoader size={20} color={'#123abc'} />
+                    <ClipLoader size={20} color={'#123abc'}/>
                 </div>
             ) : (
                 <SortableTable

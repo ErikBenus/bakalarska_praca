@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
-import { ClipLoader } from 'react-spinners';
+import {ClipLoader} from 'react-spinners';
 import SortableTable from '@/Components/SortableTable';
-import { sortData } from '@/Utils/SortData';
+import {sortData} from '@/Utils/SortData';
 
-const JumpProfileResults = ({ clientId }) => {
+const JumpProfileResults = ({clientId}) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ const JumpProfileResults = ({ clientId }) => {
     }, [clientId]);
 
     const processTestData = () => {
-        if (!tests || !testValues) return { bothLegs: [], rightLeg: [], leftLeg: [] };
+        if (!tests || !testValues) return {bothLegs: [], rightLeg: [], leftLeg: []};
 
         const bothLegsData = [];
         const rightLegData = [];
@@ -51,7 +51,7 @@ const JumpProfileResults = ({ clientId }) => {
                 const groupedValues = {};
                 values.forEach(value => {
                     if (!groupedValues[value.name]) {
-                        groupedValues[value.name] = { name: test.name, attempts: {} };
+                        groupedValues[value.name] = {name: test.name, attempts: {}};
                     }
                     groupedValues[value.name].attempts[value.attempt] = value.value;
                 });
@@ -86,7 +86,7 @@ const JumpProfileResults = ({ clientId }) => {
 
         const addEURRow = (data) => {
             const eurValue = calculateEUR(data);
-            return [...data, { name: 'EUR', attempt1: eurValue, attempt2: eurValue, __eur_value: eurValue }];
+            return [...data, {name: 'EUR', attempt1: eurValue, attempt2: eurValue, __eur_value: eurValue}];
         };
 
         return {
@@ -96,12 +96,12 @@ const JumpProfileResults = ({ clientId }) => {
         };
     };
 
-    const { bothLegs, rightLeg, leftLeg } = processTestData();
+    const {bothLegs, rightLeg, leftLeg} = processTestData();
 
     const columns = [
-        { key: 'name', label: 'Názov skoku' },
-        { key: 'attempt1', label: '1. pokus' },
-        { key: 'attempt2', label: '2. pokus' },
+        {key: 'name', label: 'Názov skoku'},
+        {key: 'attempt1', label: '1. pokus'},
+        {key: 'attempt2', label: '2. pokus'},
         {
             key: '__eur_value',
             label: 'EUR',
@@ -128,7 +128,7 @@ const JumpProfileResults = ({ clientId }) => {
         <TestResultsBox>
             {loading ? (
                 <div className="flex justify-center">
-                    <ClipLoader size={20} color={'#123abc'} />
+                    <ClipLoader size={20} color={'#123abc'}/>
                 </div>
             ) : (
                 <>

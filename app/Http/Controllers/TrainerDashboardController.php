@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Test;
+use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class TrainerDashboardController extends Controller
@@ -25,7 +26,7 @@ class TrainerDashboardController extends Controller
                 $query->whereHas('roles', function ($query) {
                     $query->where('name', 'client');
                 });
-            })->with('user')->latest()->take(5)->get(); // Zmena tu
+            })->with('user')->latest()->take(5)->get();
 
             return response()->json([
                 'clientCount' => $clientCount,
@@ -33,7 +34,7 @@ class TrainerDashboardController extends Controller
                 'latestClients' => $latestClients,
                 'latestTests' => $latestTests,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Chyba v TrainerDashboardController: ' . $e->getMessage());
             return response()->json(['error' => 'Interná chyba servera'], 500);
         }

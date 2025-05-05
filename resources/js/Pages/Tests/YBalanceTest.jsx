@@ -1,21 +1,21 @@
-import { Head } from "@inertiajs/react";
+import {Head} from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import BackLink from "@/Components/BackLink.jsx"
 
-export default function YBalanceTest({ auth }) {
+export default function YBalanceTest({auth}) {
 
 
     return (
         <AuthenticatedLayout
-            user = {auth.user}
+            user={auth.user}
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     Y Balance Test
                 </h2>
             }
-            rightHeader={<BackLink routeName="all-tests.index" text="štandardné testy" />}
+            rightHeader={<BackLink routeName="all-tests.index" text="štandardné testy"/>}
         >
-            <Head title="Y Balance Test" />
+            <Head title="Y Balance Test"/>
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">

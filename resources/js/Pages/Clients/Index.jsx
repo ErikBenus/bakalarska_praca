@@ -1,14 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import {Head, Link} from '@inertiajs/react';
+import {useState} from 'react';
 import axios from 'axios';
 import AddClientForm from '@/Components/AddClientForm.jsx';
 import {usePermissions} from "@/Components/UsePermissions.jsx";
 import {toast, ToastContainer} from "react-toastify";
 
 
-
-export default function ClientsIndex({ clients }) {
+export default function ClientsIndex({clients}) {
     const [filter, setFilter] = useState('');
     const [showAddClientForm, setShowAddClientForm] = useState(false);
     const [clientId, setClientId] = useState(null);
@@ -17,7 +16,7 @@ export default function ClientsIndex({ clients }) {
         setShowAddClientForm(!showAddClientForm);
     };
     const closeModal = () => setShowAddClientForm(false);
-    const { can } = usePermissions();
+    const {can} = usePermissions();
 
 
     const handleEdit = (id) => {
@@ -57,7 +56,7 @@ export default function ClientsIndex({ clients }) {
     if (can('edit articles')) {
         return (
             <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800">Správa klientov</h2>}>
-                <Head title="Klienti" />
+                <Head title="Klienti"/>
 
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -92,7 +91,8 @@ export default function ClientsIndex({ clients }) {
 
 
                                         <td className="px-6 py-4 whitespace-nowrap text-center">
-                                            <Link href={`/clients/${client.id}`} className="text-blue-600 hover:text-blue-800">
+                                            <Link href={`/clients/${client.id}`}
+                                                  className="text-blue-600 hover:text-blue-800">
                                                 Zobraziť detaily
                                             </Link>
 
@@ -131,7 +131,7 @@ export default function ClientsIndex({ clients }) {
                             <AddClientForm isOpen={showAddClientForm}
                                            onRequestClose={closeModal} clientId={clientId} clientData={clientData}/>
                         )}
-                        <ToastContainer />
+                        <ToastContainer/>
                     </div>
                 </div>
             </AuthenticatedLayout>

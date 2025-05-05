@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class ManageTrainersController extends Controller
 {
@@ -55,7 +56,7 @@ class ManageTrainersController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Tréner úspešne pridaný'], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json([
                 'message' => 'Chyba pri pridávaní trénera',
@@ -106,7 +107,7 @@ class ManageTrainersController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Tréner úspešne aktualizovaný'], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Chyba pri aktualizácii trénera'], 500);
         }
@@ -128,7 +129,7 @@ class ManageTrainersController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Tréner úspešne odstránený'], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Chyba pri odstraňovaní trénera'], 500);
         }
@@ -151,7 +152,7 @@ class ManageTrainersController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Tréner úspešne povýšený na admina'], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Chyba pri povýšení trénera na admina'], 500);
         }

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
 import SortableTable from '@/Components/SortableTable';
-import { ClipLoader } from 'react-spinners';
-import { sortData } from '@/Utils/SortData';
-const ExplosivePowerResults = ({ clientId }) => {
+import {ClipLoader} from 'react-spinners';
+import {sortData} from '@/Utils/SortData';
+
+const ExplosivePowerResults = ({clientId}) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
@@ -42,21 +43,21 @@ const ExplosivePowerResults = ({ clientId }) => {
     }, [clientId]);
 
     const baseColumns = [
-        { key: 'test_name', label: 'Názov testu' },
-        { key: 'value', label: 'Hodnota' },
+        {key: 'test_name', label: 'Názov testu'},
+        {key: 'value', label: 'Hodnota'},
     ];
 
     if (showLimbColumn) {
-        baseColumns.push({ key: 'limb_name', label: 'Končatina' });
+        baseColumns.push({key: 'limb_name', label: 'Končatina'});
     }
 
-    baseColumns.push({ key: 'metrics', label: 'Metriky' });
+    baseColumns.push({key: 'metrics', label: 'Metriky'});
 
     return (
         <TestResultsBox>
             {loading ? (
                 <div className="flex justify-center">
-                    <ClipLoader size={20} color={'#123abc'} />
+                    <ClipLoader size={20} color={'#123abc'}/>
                 </div>
             ) : (
                 tests.map(test => {

@@ -6,11 +6,12 @@ use App\Models\ClientsData;
 use App\Models\LimbLength;
 use App\Models\Test;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Inertia\Inertia;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class ManageClientsController extends Controller
 {
@@ -58,7 +59,7 @@ class ManageClientsController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
-                'phone_number' =>$request->phone_number,
+                'phone_number' => $request->phone_number,
                 'password' => Hash::make('password'),
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
@@ -114,7 +115,7 @@ class ManageClientsController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Klient úspešne pridaný'], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json([
                 'message' => 'Chyba pri pridávaní klienta',
@@ -134,6 +135,7 @@ class ManageClientsController extends Controller
 
         return response()->json($user);
     }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -229,7 +231,7 @@ class ManageClientsController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Klient úspešne aktualizovaný'], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Chyba pri aktualizácii klienta'], 500);
         }
@@ -251,7 +253,7 @@ class ManageClientsController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Klient úspešne odstránený'], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['message' => 'Chyba pri odstraňovaní klienta'], 500);
         }
@@ -268,8 +270,6 @@ class ManageClientsController extends Controller
             'clientId' => $clientId,
         ]);
     }
-
-
 
 
 }

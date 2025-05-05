@@ -1,38 +1,38 @@
-import { Head } from "@inertiajs/react";
+import {Head, Link} from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
-import { Link } from '@inertiajs/react';
 
-export default function All({ auth }) {
+export default function All({auth}) {
 
     const testLinks = [
-        { name: 'Y Balance Test', href: route('all-tests.y-balance-test') },
-        { name: 'Maximálna sila', href: route('all-tests.maximal-strength') },
-        { name: 'Rýchlostné schopnosti', href: route('all-tests.speed-abilities') },
-        { name: 'Aeróbna kapacita', href: route('all-tests.aerobic-capacity') },
-        { name: 'Svalová vytrvalosť', href: route('all-tests.muscle-endurance') },
-        { name: 'Vybušná sila', href: route('all-tests.explosive-power') },
-        { name: 'Skokový profil', href: route('all-tests.jump-profile') },
-        { name: 'Mobilita a flexibilita', href: route('all-tests.mobility-flexibility') },
-        { name: 'Easy Force', href: route('all-tests.easy-force') },
+        {name: 'Y Balance Test', href: route('all-tests.y-balance-test')},
+        {name: 'Maximálna sila', href: route('all-tests.maximal-strength')},
+        {name: 'Rýchlostné schopnosti', href: route('all-tests.speed-abilities')},
+        {name: 'Aeróbna kapacita', href: route('all-tests.aerobic-capacity')},
+        {name: 'Svalová vytrvalosť', href: route('all-tests.muscle-endurance')},
+        {name: 'Vybušná sila', href: route('all-tests.explosive-power')},
+        {name: 'Skokový profil', href: route('all-tests.jump-profile')},
+        {name: 'Mobilita a flexibilita', href: route('all-tests.mobility-flexibility')},
+        {name: 'Easy Force', href: route('all-tests.easy-force')},
     ];
 
     return (
         <AuthenticatedLayout
-            user = {auth.user}
+            user={auth.user}
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
                     Štandardné testy
                 </h2>
             }
         >
-            <Head title="Štandardné testy" />
+            <Head title="Štandardné testy"/>
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200">
                             <p className="mb-4">
-                                {auth.user.first_name}, v tejto sekcii nájdete zoznam štandardizovaných testov, ktoré sa používajú na hodnotenie
+                                {auth.user.first_name}, v tejto sekcii nájdete zoznam štandardizovaných testov, ktoré sa
+                                používajú na hodnotenie
                                 výkonnosti klientov. Testy sú rozdelené do kategórií podľa zamerania, aby ste si mohli
                                 jednoducho vybrať ten správny. Po výbere konkrétneho testu získate podrobné informácie o
                                 jeho vykonávaní a interpretácii výsledkov.

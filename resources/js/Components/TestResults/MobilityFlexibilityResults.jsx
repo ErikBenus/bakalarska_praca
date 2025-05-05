@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import TestResultsBox from "@/Components/TestResultsBox.jsx";
-import { ClipLoader } from "react-spinners";
+import {ClipLoader} from "react-spinners";
 import SortableTable from '@/Components/SortableTable';
-import { sortData } from '@/Utils/SortData';
+import {sortData} from '@/Utils/SortData';
 
-const MobilityFlexibilityResults = ({ clientId }) => {
+const MobilityFlexibilityResults = ({clientId}) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [loading, setLoading] = useState(true);
@@ -79,10 +79,10 @@ const MobilityFlexibilityResults = ({ clientId }) => {
     const processedTestData = processTestData();
 
     const columns = [
-        { key: 'name', label: 'Názov testu' },
-        { key: 'right', label: 'Pravá strana' },
-        { key: 'left', label: 'Ľavá strana' },
-        { key: 'difference', label: 'Rozdiel' },
+        {key: 'name', label: 'Názov testu'},
+        {key: 'right', label: 'Pravá strana'},
+        {key: 'left', label: 'Ľavá strana'},
+        {key: 'difference', label: 'Rozdiel'},
         {
             key: 'asymmetry',
             label: 'Asymetria',
@@ -107,7 +107,7 @@ const MobilityFlexibilityResults = ({ clientId }) => {
         <TestResultsBox>
             {loading ? (
                 <div className="flex justify-center">
-                    <ClipLoader size={20} color={'#123abc'} />
+                    <ClipLoader size={20} color={'#123abc'}/>
                 </div>
             ) : (
                 <SortableTable

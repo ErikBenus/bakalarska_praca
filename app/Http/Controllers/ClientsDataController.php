@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClientsData;
 use App\Models\LimbLength;
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Models\ClientsData;
 
 class ClientsDataController extends Controller
 {

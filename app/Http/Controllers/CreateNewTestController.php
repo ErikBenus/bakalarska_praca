@@ -7,6 +7,7 @@ use App\Models\TestingLimb;
 use App\Models\ValueLimb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class CreateNewTestController extends Controller
 {
@@ -45,7 +46,7 @@ class CreateNewTestController extends Controller
                 ->get();
 
             return response()->json($tests);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -124,7 +125,7 @@ class CreateNewTestController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Test vytvorený úspešne', 'id' => $test->id], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Chyba pri vytváraní testu', 'error' => $e->getMessage()], 500);
         }

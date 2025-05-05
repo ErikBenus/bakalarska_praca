@@ -3,7 +3,7 @@ import {usePermissions} from "@/Components/UsePermissions.jsx";
 import React from "react";
 
 function ShowTrainersButton() {
-    const { can } = usePermissions();
+    const {can} = usePermissions();
 
     if (can("use admin privileges")) {
         return (
@@ -13,7 +13,8 @@ function ShowTrainersButton() {
             >
                 Zoznam trénerov
             </NavLink>
-        );}
+        );
+    }
 
     return null;
 }

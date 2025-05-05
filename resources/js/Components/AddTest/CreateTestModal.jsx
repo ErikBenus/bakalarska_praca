@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EasyForceForm from "@/Components/AddTest/EasyForceForm.jsx";
 import YBalanceTestForm from "@/Components/AddTest/YBalanceTestForm.jsx";
@@ -12,7 +12,7 @@ import MaxPowerTestForm from "@/Components/AddTest/MaxPowerTestForm.jsx";
 import {Transition} from "@headlessui/react";
 import PrimaryButton from "@/Components/PrimaryButton.jsx";
 
-const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
+const AddTestForm = ({isOpen, onRequestClose, testId, testData}) => {
     const [newTest, setNewTest] = useState({
         client_id: '',
         name: '',
@@ -20,7 +20,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
         metrics: '',
         description: '',
         values: [
-            { id_limb: '', value: '', attempt: '', weight: '' },
+            {id_limb: '', value: '', attempt: '', weight: ''},
         ],
     });
 
@@ -31,7 +31,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     const [newMaxPowerTest, setNewMaxPowerTest] = useState({
         exercise_name: '',
         description: '',
-        values: [{ weight: '', mean_ms: '', average: '', attempt: 1, id_limb: '' }],
+        values: [{weight: '', mean_ms: '', average: '', attempt: 1, id_limb: ''}],
     });
 
     const muscles = [
@@ -49,15 +49,15 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     ];
 
     const jumpTests = [
-        { name: 'RSI', id_limb: 5 },
-        { name: 'GCT', id_limb: 5 },
-        { name: 'CMJ', id_limb: 5 },
-        { name: 'SJ', id_limb: 5 },
-        { name: 'H', id_limb: 5 },
-        { name: 'CMJ Right', id_limb: 3 },
-        { name: 'SJ Right', id_limb: 3 },
-        { name: 'CMJ Left', id_limb: 4 },
-        { name: 'SJ Left', id_limb: 4 },
+        {name: 'RSI', id_limb: 5},
+        {name: 'GCT', id_limb: 5},
+        {name: 'CMJ', id_limb: 5},
+        {name: 'SJ', id_limb: 5},
+        {name: 'H', id_limb: 5},
+        {name: 'CMJ Right', id_limb: 3},
+        {name: 'SJ Right', id_limb: 3},
+        {name: 'CMJ Left', id_limb: 4},
+        {name: 'SJ Left', id_limb: 4},
     ];
 
 
@@ -68,19 +68,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     }, [testData]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
 
         if (name === 'category') {
             if (value === 'Easy Force') {
                 const generatedValues = [
-                    { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-                    { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-                    { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Quadriceps' },
-                    { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Quadriceps' },
-                    { id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-                    { id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
-                    { id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Hamstring' },
-                    { id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Hamstring' },
+                    {id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Quadriceps'},
+                    {id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Quadriceps'},
+                    {id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Quadriceps'},
+                    {id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Quadriceps'},
+                    {id_limb: '3', value: '', attempt: 1, weight: '', muscle: 'Hamstring'},
+                    {id_limb: '3', value: '', attempt: 2, weight: '', muscle: 'Hamstring'},
+                    {id_limb: '4', value: '', attempt: 1, weight: '', muscle: 'Hamstring'},
+                    {id_limb: '4', value: '', attempt: 2, weight: '', muscle: 'Hamstring'},
                 ];
                 setNewTest({
                     ...newTest,
@@ -92,26 +92,26 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
             } else if (value === 'Y Balance Test') {
                 const yBalanceValues = [
                     // Anterior
-                    { id_limb: '3', value: '', attempt: 1, weight: '', name: 'Anterior' },
-                    { id_limb: '3', value: '', attempt: 2, weight: '', name: 'Anterior' },
-                    { id_limb: '3', value: '', attempt: 3, weight: '', name: 'Anterior' },
-                    { id_limb: '4', value: '', attempt: 1, weight: '', name: 'Anterior' },
-                    { id_limb: '4', value: '', attempt: 2, weight: '', name: 'Anterior' },
-                    { id_limb: '4', value: '', attempt: 3, weight: '', name: 'Anterior' },
+                    {id_limb: '3', value: '', attempt: 1, weight: '', name: 'Anterior'},
+                    {id_limb: '3', value: '', attempt: 2, weight: '', name: 'Anterior'},
+                    {id_limb: '3', value: '', attempt: 3, weight: '', name: 'Anterior'},
+                    {id_limb: '4', value: '', attempt: 1, weight: '', name: 'Anterior'},
+                    {id_limb: '4', value: '', attempt: 2, weight: '', name: 'Anterior'},
+                    {id_limb: '4', value: '', attempt: 3, weight: '', name: 'Anterior'},
                     // Posteromedial
-                    { id_limb: '3', value: '', attempt: 1, weight: '', name: 'Posteromedial' },
-                    { id_limb: '3', value: '', attempt: 2, weight: '', name: 'Posteromedial' },
-                    { id_limb: '3', value: '', attempt: 3, weight: '', name: 'Posteromedial' },
-                    { id_limb: '4', value: '', attempt: 1, weight: '', name: 'Posteromedial' },
-                    { id_limb: '4', value: '', attempt: 2, weight: '', name: 'Posteromedial' },
-                    { id_limb: '4', value: '', attempt: 3, weight: '', name: 'Posteromedial' },
+                    {id_limb: '3', value: '', attempt: 1, weight: '', name: 'Posteromedial'},
+                    {id_limb: '3', value: '', attempt: 2, weight: '', name: 'Posteromedial'},
+                    {id_limb: '3', value: '', attempt: 3, weight: '', name: 'Posteromedial'},
+                    {id_limb: '4', value: '', attempt: 1, weight: '', name: 'Posteromedial'},
+                    {id_limb: '4', value: '', attempt: 2, weight: '', name: 'Posteromedial'},
+                    {id_limb: '4', value: '', attempt: 3, weight: '', name: 'Posteromedial'},
                     // Posterolateral
-                    { id_limb: '3', value: '', attempt: 1, weight: '', name: 'Posterolateral' },
-                    { id_limb: '3', value: '', attempt: 2, weight: '', name: 'Posterolateral' },
-                    { id_limb: '3', value: '', attempt: 3, weight: '', name: 'Posterolateral' },
-                    { id_limb: '4', value: '', attempt: 1, weight: '', name: 'Posterolateral' },
-                    { id_limb: '4', value: '', attempt: 2, weight: '', name: 'Posterolateral' },
-                    { id_limb: '4', value: '', attempt: 3, weight: '', name: 'Posterolateral' },
+                    {id_limb: '3', value: '', attempt: 1, weight: '', name: 'Posterolateral'},
+                    {id_limb: '3', value: '', attempt: 2, weight: '', name: 'Posterolateral'},
+                    {id_limb: '3', value: '', attempt: 3, weight: '', name: 'Posterolateral'},
+                    {id_limb: '4', value: '', attempt: 1, weight: '', name: 'Posterolateral'},
+                    {id_limb: '4', value: '', attempt: 2, weight: '', name: 'Posterolateral'},
+                    {id_limb: '4', value: '', attempt: 3, weight: '', name: 'Posterolateral'},
                 ];
                 setNewTest({
                     ...newTest,
@@ -127,7 +127,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     metrics: 'Stupne',
                     values: [], // Inicializácia prázdneho poľa values
                 });
-        } else if (value === 'Skokový profil') {
+            } else if (value === 'Skokový profil') {
                 const jumpProfileValues = jumpTests.flatMap((test) => [
                     {id_limb: test.id_limb, value: '', attempt: 1, name: test.name},
                     {id_limb: test.id_limb, value: '', attempt: 2, name: test.name},
@@ -143,7 +143,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 setNewMaxPowerTest({
                     exercise_name: '',
                     description: '',
-                    values: [{ weight: '', mean_ms: '', average: '', attempt: '', id_limb: '5' }],
+                    values: [{weight: '', mean_ms: '', average: '', attempt: '', id_limb: '5'}],
                 });
                 setNewTest({
                     ...newTest,
@@ -155,18 +155,17 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                     category: value,
                     name: '',
                     metrics: '',
-                    values: [{ id_limb: '5', value: '', attempt: '', weight: '' }],
+                    values: [{id_limb: '5', value: '', attempt: '', weight: ''}],
                 });
             }
         } else {
-            setNewTest({ ...newTest, [name]: value });
+            setNewTest({...newTest, [name]: value});
         }
     };
 
 
-
     const handleValueChange = (index, e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setNewTest(prevTest => {
             const updatedValues = [...prevTest.values];
             updatedValues[index] = {
@@ -181,7 +180,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
     };
 
     const handleValueChangeMobilityFlexibility = (index, e) => {
-        const { name, value, id_limb, muscle } = e.target || {};
+        const {name, value, id_limb, muscle} = e.target || {};
         setNewTest(prevTest => {
             const updatedValues = [...prevTest.values];
             updatedValues[index] = {
@@ -199,19 +198,19 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
 
     const handleValueMaxTestChange = (index, e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         const updatedValues = [...newMaxPowerTest.values];
         updatedValues[index] = {
             ...updatedValues[index],
             [name]: value,
         };
-        setNewMaxPowerTest({ ...newMaxPowerTest, values: updatedValues });
+        setNewMaxPowerTest({...newMaxPowerTest, values: updatedValues});
     };
 
     const addLimbValue = () => {
         setNewTest({
             ...newTest,
-            values: [...newTest.values, { id_limb: '5', value: '', attempt: '', weight: '' }],
+            values: [...newTest.values, {id_limb: '5', value: '', attempt: '', weight: ''}],
         });
     };
 
@@ -311,8 +310,8 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                         ...testDataToSave,
                         name: muscleName,
                         values: [
-                            { id_limb: '3', value: rightValue },
-                            { id_limb: '4', value: leftValue },
+                            {id_limb: '3', value: rightValue},
+                            {id_limb: '4', value: leftValue},
                         ],
                     };
                     return saveTest(muscleData);
@@ -420,10 +419,10 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
 
             {newTest.category === 'Skokový profil' &&
                 (<JumpProfileForm
-                    newTest={newTest}
-                    setNewTest={setNewTest}
-                    handleValueChange={handleValueChange}
-                />
+                        newTest={newTest}
+                        setNewTest={setNewTest}
+                        handleValueChange={handleValueChange}
+                    />
                 )}
 
 
@@ -431,7 +430,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 newTest.category !== 'Y Balance Test' &&
                 newTest.category !== 'Mobilita a flexibilita' &&
                 newTest.category !== 'Maximálna sila' &&
-                newTest.category !== 'Skokový profil' &&(
+                newTest.category !== 'Skokový profil' && (
                     <GeneralAddTestForm
                         newTest={newTest}
                         handleInputChange={handleInputChange}
@@ -462,7 +461,7 @@ const AddTestForm = ({ isOpen, onRequestClose, testId, testData }) => {
                 >
                     Zrušiť
                 </button>
-                <ToastContainer />
+                <ToastContainer/>
             </div>
         </Modal>
     );

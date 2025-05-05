@@ -1,6 +1,6 @@
 import React from 'react';
 
-const GeneralAddTestForm = ({ newTest, handleInputChange, handleValueChange, addLimbValue }) => {
+const GeneralAddTestForm = ({newTest, handleInputChange, handleValueChange, addLimbValue}) => {
 
     return (
         <>

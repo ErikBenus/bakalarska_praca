@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const ResultsTestContainer = ({ component: Component, parameters }) => {
+const ResultsTestContainer = ({component: Component, parameters}) => {
 
     return (
         <Component {...parameters} />

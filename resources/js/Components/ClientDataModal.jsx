@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ClientDataModal = ({ clientData, onClose }) => {
+const ClientDataModal = ({clientData, onClose}) => {
     if (!clientData) return null;
 
     const formatDate = (dateString) => new Date(dateString).toLocaleDateString('sk-SK');
@@ -79,7 +79,8 @@ const ClientDataModal = ({ clientData, onClose }) => {
                         </div>
                     </div>
                 </div>
-                <button onClick={onClose} className="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
+                <button onClick={onClose}
+                        className="mt-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
                     Zavrieť
                 </button>
             </div>

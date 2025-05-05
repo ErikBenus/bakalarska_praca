@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-const EasyForceForm = ({ newTest, setNewTest }) => {
+const EasyForceForm = ({newTest, setNewTest}) => {
 
 
     const handleValueChange = (index, e) => {
         const updatedValues = [...newTest.values];
         updatedValues[index].value = e.target.value;
-        setNewTest({ ...newTest, values: updatedValues });
+        setNewTest({...newTest, values: updatedValues});
     };
 
     return (
@@ -15,9 +15,9 @@ const EasyForceForm = ({ newTest, setNewTest }) => {
                 <div key={muscle} className="mb-4">
                     <h4 className="font-semibold text-lg mb-2">{muscle}</h4>
                     {newTest.values
-                        .map((val, i) => ({ val, i }))
-                        .filter(({ val }) => val.muscle === muscle)
-                        .map(({ val, i }) => (
+                        .map((val, i) => ({val, i}))
+                        .filter(({val}) => val.muscle === muscle)
+                        .map(({val, i}) => (
                             <div key={i} className="grid grid-cols-3 gap-2 mb-2">
                                 <div className="flex items-center">
                                     <span className="text-gray-700 text-sm">

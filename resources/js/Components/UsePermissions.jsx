@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
 
 export function usePermissions() {
@@ -13,5 +13,5 @@ export function usePermissions() {
 
     const can = (permission) => permissions?.includes(permission) ?? false;
 
-    return { permissions, can };
+    return {permissions, can};
 }

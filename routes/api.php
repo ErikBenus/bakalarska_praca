@@ -10,7 +10,6 @@ use App\Http\Controllers\Tests\MaxPowerTestController;
 use App\Http\Controllers\Tests\YBalanceTestController;
 use App\Http\Controllers\TrainerDashboardController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Tests\EasyForceController;
 
 
 Route::prefix('/api')->middleware('auth')->group(function () {
@@ -21,14 +20,6 @@ Route::prefix('/api')->middleware('auth')->group(function () {
     Route::post('/all-clients', [ManageClientsController::class, 'store']); // Vytvorenie nového klienta
     Route::put('/all-clients/{id}', [ManageClientsController::class, 'update']); // Aktualizácia existujúceho klienta
     Route::delete('/all-clients/{id}', [ManageClientsController::class, 'destroy']); // Odstránenie klienta
-
-    // Easy Force Test
-    // GET metódy
-//    Route::get('/easy-force', [EasyForceController::class, 'index']); // Získanie posledných výsledkov Easy Force testu pre klienta
-//    Route::get('/easy-force/all', [EasyForceController::class, 'indexAll']); // Získanie všetkých Easy Force testov pre klienta
-//    Route::get('/easy-force/{testId}', [EasyForceController::class, 'show']); // Získanie konkrétneho Easy Force testu
-//    // POST metódy
-//    Route::post('/easy-force', [EasyForceController::class, 'store']); // Uloženie nového Easy Force testu
 
     // Dáta klientov (Clients Data)
     // GET metódy

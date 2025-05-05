@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 const muscles = [
     'Illiopsoas',
@@ -14,7 +14,7 @@ const muscles = [
     'Extenzia v Abdukcii',
 ];
 
-const MobilityFlexibilityForm = ({handleValueChange }) => {
+const MobilityFlexibilityForm = ({handleValueChange}) => {
     const [selectedMuscle, setSelectedMuscle] = useState('');
     const [muscleValues, setMuscleValues] = useState([]);
 
@@ -22,7 +22,7 @@ const MobilityFlexibilityForm = ({handleValueChange }) => {
         if (selectedMuscle) {
             setMuscleValues([
                 ...muscleValues,
-                { muscle: selectedMuscle, right: '', left: '' },
+                {muscle: selectedMuscle, right: '', left: ''},
             ]);
             setSelectedMuscle('');
         }
@@ -35,8 +35,22 @@ const MobilityFlexibilityForm = ({handleValueChange }) => {
 
         const muscleIndex = muscles.indexOf(updatedValues[index].muscle);
         if (muscleIndex !== -1) {
-            handleValueChange(muscleIndex * 2, { target: { value: updatedValues[index].right, name: 'value', id_limb: '3', muscle: updatedValues[index].muscle } }); // Pravá
-            handleValueChange(muscleIndex * 2 + 1, { target: { value: updatedValues[index].left, name: 'value', id_limb: '4', muscle: updatedValues[index].muscle } }); // Ľavá
+            handleValueChange(muscleIndex * 2, {
+                target: {
+                    value: updatedValues[index].right,
+                    name: 'value',
+                    id_limb: '3',
+                    muscle: updatedValues[index].muscle
+                }
+            }); // Pravá
+            handleValueChange(muscleIndex * 2 + 1, {
+                target: {
+                    value: updatedValues[index].left,
+                    name: 'value',
+                    id_limb: '4',
+                    muscle: updatedValues[index].muscle
+                }
+            }); // Ľavá
         }
     };
 

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import TestResultsBox from '@/Components/TestResultsBox';
-import { ClipLoader } from 'react-spinners';
+import {ClipLoader} from 'react-spinners';
 import SortableTable from '@/Components/SortableTable';
 
-const YBalanceTestResults = ({ clientId }) => {
+const YBalanceTestResults = ({clientId}) => {
     const [tests, setTests] = useState([]);
     const [testValues, setTestValues] = useState({});
     const [compositeDistance, setCompositeDistance] = useState(null);
@@ -76,11 +76,11 @@ const YBalanceTestResults = ({ clientId }) => {
     const processedTestData = processTestData();
 
     const columns = [
-        { key: 'leg', label: 'Noha' },
-        { key: 'attempt1', label: '1. pokus' },
-        { key: 'attempt2', label: '2. pokus' },
-        { key: 'attempt3', label: '3. pokus' },
-        { key: 'absoluteDistance', label: 'Absolútna vzdialenosť' },
+        {key: 'leg', label: 'Noha'},
+        {key: 'attempt1', label: '1. pokus'},
+        {key: 'attempt2', label: '2. pokus'},
+        {key: 'attempt3', label: '3. pokus'},
+        {key: 'absoluteDistance', label: 'Absolútna vzdialenosť'},
         {
             key: 'absoluteDifference',
             label: 'Absolútny rozdiel',
@@ -93,12 +93,12 @@ const YBalanceTestResults = ({ clientId }) => {
                 return <span className={className}>{difference !== undefined ? difference : '-'}</span>;
             },
         },
-        { key: 'relativeDistance', label: 'Relatívna vzdialenosť (%)' },
+        {key: 'relativeDistance', label: 'Relatívna vzdialenosť (%)'},
     ];
 
     const compositeColumns = [
-        { key: 'leg', label: 'Noha' },
-        { key: 'distance', label: 'Zložená vzdialenosť' },
+        {key: 'leg', label: 'Noha'},
+        {key: 'distance', label: 'Zložená vzdialenosť'},
     ];
 
     const generateTableData = (data) => {
@@ -148,7 +148,7 @@ const YBalanceTestResults = ({ clientId }) => {
         <TestResultsBox>
             {loading ? (
                 <div className="flex justify-center">
-                    <ClipLoader size={20} color={'#123abc'} />
+                    <ClipLoader size={20} color={'#123abc'}/>
                 </div>
             ) : error ? (
                 <p>{error}</p>

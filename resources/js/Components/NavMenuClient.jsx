@@ -28,7 +28,7 @@ export default function NavMenuClient() {
                     História Testovaní
                 </NavLink>
                 <NavLink
-                    href={route('conclusions.client.view', { clientId: user.id })}
+                    href={route('conclusions.client.view', {clientId: user.id})}
                     active={route().current('conclusions.client.view')}
                 >
                     Odporúčania

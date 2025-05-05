@@ -1,17 +1,16 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
-import { usePermissions } from "@/Components/UsePermissions.jsx";
-import React, { useState, useEffect, useMemo } from "react";
+import {Head, usePage} from '@inertiajs/react';
+import {usePermissions} from "@/Components/UsePermissions.jsx";
+import React, {useEffect, useMemo, useState} from "react";
 import axios from 'axios';
 import SortableTable from '@/Components/SortableTable';
-import { sortData } from '@/Utils/SortData';
+import {sortData} from '@/Utils/SortData';
 import ComparisonModal from '@/Components/TestResults/ComparisonModal.jsx'
 import ClientDataModal from '@/Components/ClientDataModal.jsx';
 
-const CategoryFilter = ({ categories, onFilterChange }) => {
+const CategoryFilter = ({categories, onFilterChange}) => {
 
     const [selectedCategories, setSelectedCategories] = useState(categories);
-
 
 
     const handleCheckboxChange = (category) => {
@@ -23,13 +22,11 @@ const CategoryFilter = ({ categories, onFilterChange }) => {
             : [...selectedCategories, category];
 
 
-
         setSelectedCategories(newSelectedCategories);
 
         onFilterChange(newSelectedCategories);
 
     };
-
 
 
     return (
@@ -69,8 +66,8 @@ const CategoryFilter = ({ categories, onFilterChange }) => {
 };
 
 export default function HistoryOfAllTests() {
-    const { can } = usePermissions();
-    const { auth } = usePage().props;
+    const {can} = usePermissions();
+    const {auth} = usePage().props;
     const [testResults, setTestResults] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sortColumn, setSortColumn] = useState(null);
@@ -146,7 +143,7 @@ export default function HistoryOfAllTests() {
 
         const unique = [...new Map(
             data.filter(d => d.clientName !== 'N/A')
-                .map(client => [client.clientId, { id: client.clientId, name: client.clientName }])
+                .map(client => [client.clientId, {id: client.clientId, name: client.clientName}])
         ).values()];
 
         setUniqueClients(unique);
@@ -237,15 +234,15 @@ export default function HistoryOfAllTests() {
             sortable: false
         },
         ...(can('see trainer dashboard')
-            ? [{ key: 'clientName', label: 'Meno a priezvisko', sortable: true , render: row => row.clientName }]
+            ? [{key: 'clientName', label: 'Meno a priezvisko', sortable: true, render: row => row.clientName}]
             : []),
-        { key: 'category', label: 'Kategória', sortable: true },
-        { key: 'testName', label: 'Názov testu', sortable: true },
-        { key: 'value', label: 'Hodnota', sortable: true },
-        { key: 'limbName', label: 'Končatina', sortable: true },
-        { key: 'weight', label: 'Váha', sortable: true },
-        { key: 'metrics', label: 'Metriky', sortable: true },
-        { key: 'createdAt', label: 'Prebehlo', sortable: true },
+        {key: 'category', label: 'Kategória', sortable: true},
+        {key: 'testName', label: 'Názov testu', sortable: true},
+        {key: 'value', label: 'Hodnota', sortable: true},
+        {key: 'limbName', label: 'Končatina', sortable: true},
+        {key: 'weight', label: 'Váha', sortable: true},
+        {key: 'metrics', label: 'Metriky', sortable: true},
+        {key: 'createdAt', label: 'Prebehlo', sortable: true},
         {
             key: 'clientIcon',
             label: '',
@@ -261,7 +258,7 @@ export default function HistoryOfAllTests() {
             user={auth.user}
             header={<h2 className="text-xl font-semibold leading-tight text-gray-800">História testovaní</h2>}
         >
-            <Head title="História testovaní" />
+            <Head title="História testovaní"/>
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import SortableTable from '@/Components/SortableTable';
 import ComparisonChart from "@/Components/GraphicCharts/ComparisonChart.jsx";
 
 
-const ComparisonModal = ({ testResults, onClose }) => {
+const ComparisonModal = ({testResults, onClose}) => {
     const [comparisonData, setComparisonData] = useState([]);
     const [sortColumn, setSortColumn] = useState(null);
     const [sortDirection, setSortDirection] = useState('asc');
@@ -50,17 +50,17 @@ const ComparisonModal = ({ testResults, onClose }) => {
     };
 
     const columns = [
-        { key: 'kategoria', label: 'Kategória' },
-        { key: 'nazovTestu', label: 'Názov testu' },
-        ...Array.from({ length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('hodnota')).length)) }, (_, i) => ({
+        {key: 'kategoria', label: 'Kategória'},
+        {key: 'nazovTestu', label: 'Názov testu'},
+        ...Array.from({length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('hodnota')).length))}, (_, i) => ({
             key: `hodnota${i + 1}`,
             label: `Hodnota ${i + 1}`,
         })),
-        ...Array.from({ length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('rozdiel')).length)) }, (_, i) => ({
+        ...Array.from({length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('rozdiel')).length))}, (_, i) => ({
             key: `rozdiel${i + 1}`,
             label: `Rozdiel ${i + 1}`,
         })),
-        ...Array.from({ length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('prebehlo')).length)) }, (_, i) => ({
+        ...Array.from({length: Math.max(...comparisonData.map(row => Object.keys(row).filter(key => key.startsWith('prebehlo')).length))}, (_, i) => ({
             key: `prebehlo${i + 1}`,
             label: `Prebehlo ${i + 1}`,
         })),
@@ -76,25 +76,30 @@ const ComparisonModal = ({ testResults, onClose }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
+        <div
+            className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
             <div className="bg-white rounded-lg p-8">
-                <button onClick={handleCompare} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Porovnať</button>
-                <button onClick={onClose} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Zavrieť</button>
+                <button onClick={handleCompare}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">Porovnať
+                </button>
+                <button onClick={onClose}
+                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Zavrieť
+                </button>
 
                 {comparisonData.length > 0 && (
                     <>
-                    <div className="mb-12 mt-16">
-                        <SortableTable
-                            data={comparisonData}
-                            columns={columns}
-                            sortColumn={sortColumn}
-                            sortDirection={sortDirection}
-                            onSort={handleSort}
-                            hoveredRowId={hoveredRowId}
-                            onHover={setHoveredRowId}
-                            getRowKey={(row, index) => `${row.nazovTestu}-${row.koncatina}-${index}`}
-                        />
-                    </div>
+                        <div className="mb-12 mt-16">
+                            <SortableTable
+                                data={comparisonData}
+                                columns={columns}
+                                sortColumn={sortColumn}
+                                sortDirection={sortDirection}
+                                onSort={handleSort}
+                                hoveredRowId={hoveredRowId}
+                                onHover={setHoveredRowId}
+                                getRowKey={(row, index) => `${row.nazovTestu}-${row.koncatina}-${index}`}
+                            />
+                        </div>
                         {showChart && (
                             <ComparisonChart
                                 data={comparisonData.map(row => {
@@ -113,10 +118,10 @@ const ComparisonModal = ({ testResults, onClose }) => {
                             />
                         )}
                     </>
-                    )}
-                    </div>
-                    </div>
-                    );
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default ComparisonModal;

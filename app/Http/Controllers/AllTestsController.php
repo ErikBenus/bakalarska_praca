@@ -8,6 +8,7 @@ use App\Models\TestingLimb;
 use App\Models\User;
 use App\Models\ValueLimb;
 use App\Models\YBalanceTest;
+use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -78,7 +79,7 @@ class AllTestsController extends Controller
             }
 
             return response()->json($allTests, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -160,7 +161,7 @@ class AllTestsController extends Controller
             }
 
             return response()->json($allTests, 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => 'Server error'], 500);
         }
     }
@@ -170,7 +171,8 @@ class AllTestsController extends Controller
         return Inertia::render('Clients/HistoryOfAllTests');
     }
 
-    public function index() {
+    public function index()
+    {
         return Inertia::render('Tests/All', []);
     }
 

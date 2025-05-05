@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart, registerables } from 'chart.js';
+import React, {useEffect, useRef, useState} from 'react';
+import {Line} from 'react-chartjs-2';
+import {Chart, registerables} from 'chart.js';
 
 Chart.register(...registerables);
 
-const MaxPowerChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
+const MaxPowerChart = ({data, labels, title, xAxisLabel, yAxisLabel}) => {
     const [chartData, setChartData] = useState(null);
     const chartColors = useRef([]);
 
@@ -33,9 +33,9 @@ const MaxPowerChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: 'rgba(255, 99, 132)',
                 fill: false,
-                pointRadius: 5, // Zväčšenie veľkosti bodov
-                pointHoverRadius: 7, // Zväčšenie veľkosti bodov pri hoveri
-                pointHitRadius: 10, // Zväčšenie hit radiusu pre lepšiu interakciu
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointHitRadius: 10,
             }));
 
             const generatedChartData = {
@@ -67,7 +67,7 @@ const MaxPowerChart = ({ data, labels, title, xAxisLabel, yAxisLabel }) => {
         return null;
     }
 
-    return <Line data={chartData} options={options} />;
+    return <Line data={chartData} options={options}/>;
 };
 
 export default MaxPowerChart;

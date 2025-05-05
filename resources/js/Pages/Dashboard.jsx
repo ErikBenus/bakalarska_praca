@@ -18,8 +18,8 @@ import TrainerDashboard from "@/Pages/Trainers/TrainerDashboard.jsx";
 
 export default function Dashboard() {
 
-    const { can } = usePermissions();
-    const { auth } = usePage().props;
+    const {can} = usePermissions();
+    const {auth} = usePage().props;
     const [activeSection, setActiveSection] = useState();
 
     const handleSectionChange = (section) => {
@@ -40,7 +40,7 @@ export default function Dashboard() {
     };
 
     if (can('see trainer dashboard')) {
-        return <TrainerDashboard />;
+        return <TrainerDashboard/>;
     }
 
     if (can('see client dashboard')) {
@@ -78,7 +78,7 @@ export default function Dashboard() {
                             <SectionRenderer
                                 sections={sectionComponents}
                                 activeSection={activeSection}
-                                parameters={{ clientId: auth.user.id }}
+                                parameters={{clientId: auth.user.id}}
                             />
                         </div>
                     </div>

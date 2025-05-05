@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Conclusion extends Model
 {
     use HasFactory;
+
     protected $table = 'conclusions';
 
     protected $fillable = [

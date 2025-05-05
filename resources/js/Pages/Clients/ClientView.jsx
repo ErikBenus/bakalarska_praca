@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
-import { Head, usePage } from "@inertiajs/react";
+import {Head, usePage} from "@inertiajs/react";
 import CreateTestingButton from "@/Components/CreateTestingButton.jsx";
 import TrainerConclusionsModal from "@/Components/Conclusions/TrainerConclusionsModal.jsx";
 import {usePermissions} from "@/Components/UsePermissions.jsx";
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('sk-SK', { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+    return new Intl.DateTimeFormat('sk-SK', {year: 'numeric', month: 'long', day: 'numeric'}).format(date);
 }
 
-function ConclusionItem({ conclusion, canEdit, onSave }) {
+function ConclusionItem({conclusion, canEdit, onSave}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
@@ -34,8 +34,12 @@ function ConclusionItem({ conclusion, canEdit, onSave }) {
             <p><strong>Záver:</strong> {conclusion.final_outcome}</p>
             {canEdit && (
                 <div className="flex gap-2 mt-2">
-                    <button onClick={openModal} className="px-3 py-1 text-sm text-white bg-blue-800 rounded-md hover:bg-blue-900">Upraviť</button>
-                    <button onClick={handleDelete} className="px-3 py-1 text-sm text-white bg-red-600 rounded-md hover:bg-red-700">Odstrániť</button>
+                    <button onClick={openModal}
+                            className="px-3 py-1 text-sm text-white bg-blue-800 rounded-md hover:bg-blue-900">Upraviť
+                    </button>
+                    <button onClick={handleDelete}
+                            className="px-3 py-1 text-sm text-white bg-red-600 rounded-md hover:bg-red-700">Odstrániť
+                    </button>
                 </div>
             )}
             <TrainerConclusionsModal
@@ -48,9 +52,9 @@ function ConclusionItem({ conclusion, canEdit, onSave }) {
     );
 }
 
-export default function ClientView({ clientId, clientName, conclusions }) {
-    const { auth } = usePage().props;
-    const { can } = usePermissions();
+export default function ClientView({clientId, clientName, conclusions}) {
+    const {auth} = usePage().props;
+    const {can} = usePermissions();
     const [sortedConclusions, setSortedConclusions] = useState(conclusions.slice().sort((a, b) => new Date(b.testing_date) - new Date(a.testing_date)));
 
     const handleSave = async () => {
@@ -83,9 +87,9 @@ export default function ClientView({ clientId, clientName, conclusions }) {
         <AuthenticatedLayout
             user={auth.user}
             header={headerContent}
-            rightHeader={<CreateTestingButton user={auth.user} />}
+            rightHeader={<CreateTestingButton user={auth.user}/>}
         >
-            <Head title={pageTitle} />
+            <Head title={pageTitle}/>
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">

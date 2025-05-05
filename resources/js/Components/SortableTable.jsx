@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import { sortData } from '@/Utils/SortData';
+import {sortData} from '@/Utils/SortData';
 
 const SortableTable = ({
                            data,

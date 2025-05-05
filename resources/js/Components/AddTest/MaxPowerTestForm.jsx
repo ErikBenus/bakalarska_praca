@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 
-const MaxPowerTestForm = ({ newTest, setNewTest, handleValueMaxTestChange }) => {
+const MaxPowerTestForm = ({newTest, setNewTest, handleValueMaxTestChange}) => {
     useEffect(() => {
         if (newTest.values && newTest.values.length > 0) {
             const updatedValues = newTest.values.map((val, index) => ({
                 ...val,
                 attempt: index + 1,
             }));
-            setNewTest({ ...newTest, values: updatedValues });
+            setNewTest({...newTest, values: updatedValues});
         }
     }, []);
 
@@ -16,7 +16,7 @@ const MaxPowerTestForm = ({ newTest, setNewTest, handleValueMaxTestChange }) => 
             const newAttempt = newTest.values.length + 1;
             setNewTest({
                 ...newTest,
-                values: [...newTest.values, { weight: '', mean_ms: '', average: '', attempt: newAttempt, id_limb: '5' }],
+                values: [...newTest.values, {weight: '', mean_ms: '', average: '', attempt: newAttempt, id_limb: '5'}],
             });
         }
     };

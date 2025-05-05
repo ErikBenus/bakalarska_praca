@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 const jumpTests = {
     obojnozne: [
-        { name: 'RSI', id_limb: 5 },
-        { name: 'GCT', id_limb: 5 },
-        { name: 'CMJ', id_limb: 5 },
-        { name: 'SJ', id_limb: 5 },
-        { name: 'H', id_limb: 5 },
+        {name: 'RSI', id_limb: 5},
+        {name: 'GCT', id_limb: 5},
+        {name: 'CMJ', id_limb: 5},
+        {name: 'SJ', id_limb: 5},
+        {name: 'H', id_limb: 5},
     ],
     pravaNoha: [
-        { name: 'CMJ Right', id_limb: 3 },
-        { name: 'SJ Right', id_limb: 3 },
+        {name: 'CMJ Right', id_limb: 3},
+        {name: 'SJ Right', id_limb: 3},
     ],
     lavaNoha: [
-        { name: 'CMJ Left', id_limb: 4 },
-        { name: 'SJ Left', id_limb: 4 },
+        {name: 'CMJ Left', id_limb: 4},
+        {name: 'SJ Left', id_limb: 4},
     ],
 };
 
-const JumpProfileForm = ({ newTest, setNewTest }) => {
+const JumpProfileForm = ({newTest, setNewTest}) => {
     const [activeSection, setActiveSection] = useState('obojnozne');
 
     const handleValueChange = (index, e) => {
         const updatedValues = [...newTest.values];
         updatedValues[index].value = e.target.value;
-        setNewTest({ ...newTest, values: updatedValues });
+        setNewTest({...newTest, values: updatedValues});
     };
 
     const handleSectionChange = (section) => {
@@ -58,9 +58,9 @@ const JumpProfileForm = ({ newTest, setNewTest }) => {
                 <div key={test.name} className="mb-4">
                     <h4 className="font-semibold text-base mb-2">{test.name}</h4>
                     {newTest.values
-                        .map((val, i) => ({ val, i }))
-                        .filter(({ val }) => val.name === test.name)
-                        .map(({ val, i }) => (
+                        .map((val, i) => ({val, i}))
+                        .filter(({val}) => val.name === test.name)
+                        .map(({val, i}) => (
                             <div key={i} className="grid grid-cols-3 gap-1 mt-1 mb-2">
                                 <div className="flex items-center">
                                     <span className="text-gray-700 text-xs">

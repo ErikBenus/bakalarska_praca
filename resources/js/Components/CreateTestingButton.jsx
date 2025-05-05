@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
+import {Link} from '@inertiajs/react';
 import {usePermissions} from "@/Components/UsePermissions.jsx";
+
 function CreateTestingButton() {
-    const { can } = usePermissions();
+    const {can} = usePermissions();
 
     if (can("edit articles")) {
         return (
