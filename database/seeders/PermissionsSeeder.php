@@ -22,13 +22,25 @@ class PermissionsSeeder extends Seeder
 
             // Create permissions
             $editAll = Permission::create(['name' => 'edit all']);
-            $editPermission = Permission::create(['name' => 'edit articles']);
-            $viewPermission = Permission::create(['name' => 'view articles']);
+            $editArticles = Permission::create(['name' => 'edit articles']);
+            $viewArticles= Permission::create(['name' => 'view articles']);
+            $seeClientDashboard = Permission::create(['name' => 'see client dashboard']);
+            $seeTrainerDashboard = Permission::create(['name' => 'see trainer dashboard']);
+            $useAdminPrivileges = Permission::create(['name' => 'use admin privileges']);
 
             // Assign permissions to roles
-            $adminRole->givePermissionTo($editAll, $editPermission, $viewPermission);
-            $trainerRole->givePermissionTo($editPermission, $viewPermission);
-            $clientRole->givePermissionTo($viewPermission);
+            $adminRole->givePermissionTo($editAll);
+            $adminRole->givePermissionTo($editArticles);
+            $adminRole->givePermissionTo($viewArticles);
+            $adminRole->givePermissionTo($seeTrainerDashboard);
+            $adminRole->givePermissionTo($useAdminPrivileges);
+
+            $trainerRole->givePermissionTo($editArticles);
+            $trainerRole->givePermissionTo($viewArticles);
+            $trainerRole->givePermissionTo($seeTrainerDashboard);
+
+            $clientRole->givePermissionTo($viewArticles);
+            $clientRole->givePermissionTo($seeClientDashboard);
 
             // Assign role to user
             $user = User::find(1);
